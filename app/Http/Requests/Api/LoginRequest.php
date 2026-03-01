@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
         return [
             'national_id' => 'required|string',
             'password' => 'required|string',
-            'membership_card_number' => 'required|string',
+            // 'membership_card_number' => 'required|string',
         ];
     }
 }

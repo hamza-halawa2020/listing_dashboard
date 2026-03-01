@@ -15,16 +15,20 @@ use App\Http\Controllers\Api\AuthController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
+
 Route::get('/locations', [LocationController::class, 'index']);
 Route::get('/locations/{id}', [LocationController::class, 'show']);
+
 Route::get('/subscription-plans', [SubscriptionPlanController::class, 'index']);
 Route::get('/subscription-plans/{id}', [SubscriptionPlanController::class, 'show']);
+
 Route::get('/settings', [SettingController::class, 'index']);
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
-
 
 Route::get('/reviews', [ReviewController::class, 'index']);
 
@@ -37,12 +41,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/listings/{id}', [ListingController::class, 'show']);
 
     // Subscriptions routes
-    Route::prefix('/subscriptions')->group(function () {
-        Route::get('/current', [SubscriptionsController::class, 'current']);
-        Route::get('/plans', [SubscriptionsController::class, 'plans']);
-        Route::post('/', [SubscriptionsController::class, 'store']);
-        Route::post('/{subscription}/cancel', [SubscriptionsController::class, 'cancel']);
-    });
-
+    // Route::prefix('/subscriptions')->group(function () {
+    //     Route::get('/current', [SubscriptionsController::class, 'current']);
+    //     Route::get('/plans', [SubscriptionsController::class, 'plans']);
+    //     Route::post('/', [SubscriptionsController::class, 'store']);
+    //     Route::post('/{subscription}/cancel', [SubscriptionsController::class, 'cancel']);
+    // });
 
 });

@@ -13,6 +13,8 @@ class ReviewController extends ApiController
     {
         $this->model = Review::class;
         $this->resource = ReviewResource::class;
+        $this->with = ['createdBy'];
+
     }
 
 }

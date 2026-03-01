@@ -20,7 +20,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'national_id' => $request->national_id,
-            'membership_card_number' => $request->membership_card_number,
+            // 'membership_card_number' => $request->membership_card_number,
             'phone' => $request->phone,
             'role' => 'member', // Default role for API registration
         ]);
@@ -37,7 +37,7 @@ class AuthController extends Controller
     {
 
         $user = User::where('national_id', $request->national_id)
-                    ->where('membership_card_number', $request->membership_card_number)
+                    // ->where('membership_card_number', $request->membership_card_number)
                     ->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
