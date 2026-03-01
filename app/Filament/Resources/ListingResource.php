@@ -274,7 +274,7 @@ class ListingResource extends Resource
                                 FileUpload::make('image_path')
                                     ->label('Image')
                                     ->image()
-                                    ->directory('listings')
+                                    // ->directory('listings')
                                     ->required()
                                     ->columnSpanFull(),
                                 Toggle::make('is_cover')

@@ -48,7 +48,8 @@ class PaymentForm
                     ->required(),
                 FileUpload::make('attachment')
                     ->image()
-                    ->directory('payments/attachments'),
+                    // ->directory('payments/attachments')
+                    ,
                 Textarea::make('notes')
                     ->columnSpanFull(),
                 DateTimePicker::make('paid_at'),

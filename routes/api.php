@@ -35,17 +35,12 @@ Route::get('/reviews', [ReviewController::class, 'index']);
 Route::post('/contacts', [ContactController::class, 'store']);
 
 // Protected routes - require authentication
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     // Listings routes (subscription-based access)
     Route::get('/listings', [ListingController::class, 'index']);
     Route::get('/listings/{id}', [ListingController::class, 'show']);
 
     // Subscriptions routes
-    // Route::prefix('/subscriptions')->group(function () {
-    //     Route::get('/current', [SubscriptionsController::class, 'current']);
-    //     Route::get('/plans', [SubscriptionsController::class, 'plans']);
-    //     Route::post('/', [SubscriptionsController::class, 'store']);
-    //     Route::post('/{subscription}/cancel', [SubscriptionsController::class, 'cancel']);
-    // });
+    Route::post('/payments', [App\Http\Controllers\Api\PaymentController::class, 'store']);
 
-// });
+});

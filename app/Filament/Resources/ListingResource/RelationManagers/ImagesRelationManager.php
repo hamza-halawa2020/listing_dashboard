@@ -28,7 +28,7 @@ class ImagesRelationManager extends RelationManager
                 FileUpload::make('image_path')
                     ->label('Image')
                     ->image()
-                    ->directory('listings')
+                    // ->directory('listings')
                     ->required(),
                 Toggle::make('is_cover')
                     ->label('Cover Image')

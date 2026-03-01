@@ -24,6 +24,10 @@ class ListingResource extends JsonResource
             'is_active' => $this->is_active,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'location' => new LocationResource($this->whenLoaded('location')),
+            'working_hours' => $this->whenLoaded('workingHours'),
+            'offers' => $this->whenLoaded('offers'),
+            'images' => $this->whenLoaded('images'),
+            'phones' => $this->whenLoaded('phones'),
         ];
     }
 }

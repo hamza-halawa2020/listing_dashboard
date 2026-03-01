@@ -32,4 +32,17 @@ class Category extends Model
     {
         return $this->hasMany(Listing::class);
     }
+
+    public function getBranchIds()
+    {
+        $ids = [$this->id];
+
+        if ($this->parent_id) {
+            $ids[] = $this->parent_id;
+        }
+
+        $childrenIds = $this->children()->pluck('id')->toArray();
+        
+        return array_unique(array_merge($ids, $childrenIds));
+    }
 }

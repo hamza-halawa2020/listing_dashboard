@@ -13,7 +13,7 @@ class CategoryController extends ApiController
     {
         $this->model = Category::class;
         $this->resource = CategoryResource::class;
-        $this->with = ['children', 'listings'];
+        $this->with = ['children', 'listings','parent'];
     }
 
     public function index(Request $request)

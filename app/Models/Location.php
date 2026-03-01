@@ -27,4 +27,13 @@ class Location extends Model
     {
         return $this->hasMany(Location::class, 'parent_id');
     }
+
+    public function getDescendantIds()
+    {
+        $ids = [$this->id];
+        foreach ($this->children as $child) {
+            $ids = array_merge($ids, $child->getDescendantIds());
+        }
+        return array_unique($ids);
+    }
 }
