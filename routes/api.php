@@ -35,7 +35,7 @@ Route::get('/reviews', [ReviewController::class, 'index']);
 Route::post('/contacts', [ContactController::class, 'store']);
 
 // Protected routes - require authentication
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
     // Listings routes (subscription-based access)
     Route::get('/listings', [ListingController::class, 'index']);
     Route::get('/listings/{id}', [ListingController::class, 'show']);
@@ -48,4 +48,4 @@ Route::middleware('auth:sanctum')->group(function () {
     //     Route::post('/{subscription}/cancel', [SubscriptionsController::class, 'cancel']);
     // });
 
-});
+// });

@@ -13,7 +13,22 @@ class CategoryController extends ApiController
     {
         $this->model = Category::class;
         $this->resource = CategoryResource::class;
-        $this->with = ['children'];
+        $this->with = ['children', 'listings'];
+    }
 
+    public function index(Request $request)
+    {
+        // Filter categories to only those that have at least one listing
+        $query = $this->model::with($this->with)->has('listings');
+
+        if ($this->paginate) {
+            $items = $query->latest()->paginate(
+                $request->get('limit', $this->perPage)
+            );
+        } else {
+            $items = $query->latest()->get();
+        }
+
+        return $this->resource::collection($items);
     }
 }
