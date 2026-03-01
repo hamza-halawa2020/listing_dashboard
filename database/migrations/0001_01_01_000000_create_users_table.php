@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('national_id')->nullable()->unique();
             $table->date('birth_date')->nullable();
             $table->enum('gender', ['male', 'female'])->nullable();
+            $table->string('membership_card_number')->nullable()->unique();
             $table->text('address')->nullable();       
             $table->foreignId('location_id')->nullable()->constrained('locations')->nullOnDelete();
             $table->timestamp('email_verified_at')->nullable();

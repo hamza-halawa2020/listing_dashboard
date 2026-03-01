@@ -29,6 +29,7 @@ class UserForm
                     ->default('member')
                     ->required(),
                 TextInput::make('national_id'),
+                TextInput::make('membership_card_number'),
                 Select::make('location_id')
                     ->relationship('location', 'name')
                     ->searchable()

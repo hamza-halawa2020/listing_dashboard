@@ -9,9 +9,11 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ListingsController;
 use App\Http\Controllers\Api\SubscriptionsController;
-
+use App\Http\Controllers\Api\AuthController;
 
 // Public routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 Route::get('/settings', [SettingController::class, 'index']);
 
 Route::get('/posts', [PostController::class, 'index']);
