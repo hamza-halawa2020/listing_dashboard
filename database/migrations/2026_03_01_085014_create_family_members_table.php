@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('family_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subscription_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('national_id')->unique();
             $table->enum('relation', ['spouse', 'son', 'daughter', 'father', 'mother', 'brother', 'sister']);

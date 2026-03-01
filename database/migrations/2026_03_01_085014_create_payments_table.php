@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum('payment_method', ['cash', 'credit_card', 'bank_transfer', 'fawry', 'vodafone_cash', 'online']);
             $table->string('transaction_reference')->nullable()->unique();
             $table->enum('status', ['pending', 'completed', 'failed', 'refunded'])->default('pending');
+            $table->string('attachment')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();

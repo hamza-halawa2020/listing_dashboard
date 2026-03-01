@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class FamilyMember extends Model
 {
     protected $fillable = [
-        'subscription_id',
+        'user_id',
         'name',
         'national_id',
         'relation',
@@ -19,8 +19,8 @@ class FamilyMember extends Model
         'birth_date' => 'date',
     ];
 
-    public function subscription()
+    public function user()
     {
-        return $this->belongsTo(Subscription::class);
+        return $this->belongsTo(User::class);
     }
 }

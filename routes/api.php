@@ -9,7 +9,6 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ListingsController;
 use App\Http\Controllers\Api\SubscriptionsController;
-use App\Http\Controllers\Api\DiscountsController;
 
 
 // Public routes
@@ -37,7 +36,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{subscription}/cancel', [SubscriptionsController::class, 'cancel']);
     });
 
-    // Discounts routes
-    Route::get('/discounts', [DiscountsController::class, 'index']);
-    Route::get('/listings/{listing}/discounts', [DiscountsController::class, 'listingDiscounts']);
+
 });

@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             ComprehensiveSeeder::class,
             LocationSeeder::class,
             CategorySeeder::class,
+            SubscriptionPlanSeeder::class,
             ListingSeeder::class,
         ]);
     }

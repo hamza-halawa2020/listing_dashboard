@@ -11,7 +11,7 @@ class LocationSeeder extends Seeder
     public function run(): void
     {
         // إنشاء مصر كموقع رئيسي
-        $egypt = Location::create([
+        $egypt = Location::firstOrCreate([
             'name' => 'مصر',
             'parent_id' => null,
         ]);
@@ -167,13 +167,13 @@ class LocationSeeder extends Seeder
         ];
 
         foreach ($governoratesWithAreas as $governorateName => $areas) {
-            $governorate = Location::create([
+            $governorate = Location::firstOrCreate([
                 'name' => $governorateName,
                 'parent_id' => $egypt->id,
             ]);
 
             foreach ($areas as $area) {
-                Location::create([
+                Location::firstOrCreate([
                     'name' => $area,
                     'parent_id' => $governorate->id,
                 ]);
@@ -181,7 +181,7 @@ class LocationSeeder extends Seeder
         }
         
         // Add special locations (منزلية and فروع for services that operate everywhere)
-        Location::create(['name' => 'منزلية', 'parent_id' => $egypt->id]);
-        Location::create(['name' => 'فروع', 'parent_id' => $egypt->id]);
+        Location::firstOrCreate(['name' => 'منزلية', 'parent_id' => $egypt->id]);
+        Location::firstOrCreate(['name' => 'فروع', 'parent_id' => $egypt->id]);
     }
 }

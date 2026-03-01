@@ -32,11 +32,6 @@ class Subscription extends Model
         return $this->belongsTo(SubscriptionPlan::class);
     }
 
-    public function familyMembers()
-    {
-        return $this->hasMany(FamilyMember::class);
-    }
-
     public function payments()
     {
         return $this->hasMany(Payment::class);

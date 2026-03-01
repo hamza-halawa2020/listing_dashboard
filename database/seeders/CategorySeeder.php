@@ -44,20 +44,33 @@ class CategorySeeder extends Seeder
             'بصريات' => [],
         ];
 
+        $admin = \App\Models\User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Admin User',
+                'password' => bcrypt('password'),
+                'role' => 'admin',
+            ]
+        );
+
         foreach ($categories as $categoryName => $subCategories) {
-            $category = Category::create([
-                'name' => $categoryName,
-                'slug' => Str::slug($categoryName),
-                'created_by' => 1, // assuming admin user has id 1
-            ]);
+            $category = Category::firstOrCreate(
+                ['name' => $categoryName],
+                [
+                    'slug' => Str::slug($categoryName) ?: Str::random(10),
+                    'created_by' => $admin->id,
+                ]
+            );
 
             foreach ($subCategories as $subCategoryName) {
-                Category::create([
-                    'name' => $subCategoryName,
-                    'slug' => Str::slug($subCategoryName),
-                    'parent_id' => $category->id,
-                    'created_by' => 1,
-                ]);
+                Category::firstOrCreate(
+                    ['name' => $subCategoryName],
+                    [
+                        'slug' => Str::slug($subCategoryName) ?: Str::random(10),
+                        'parent_id' => $category->id,
+                        'created_by' => $admin->id,
+                    ]
+                );
             }
         }
     }

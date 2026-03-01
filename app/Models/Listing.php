@@ -52,8 +52,4 @@ class Listing extends Model
         return $this->hasMany(ListingWorkingHour::class);
     }
 
-    public function discounts()
-    {
-        return $this->hasMany(Discount::class);
-    }
 }
