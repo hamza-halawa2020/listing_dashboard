@@ -34,15 +34,19 @@ class PaymentController extends ApiController
             'notes' => $request->notes,
         ]);
 
-        // 2. Create the payment record linked to the subscription
+        // 2. Prepare data for the payment record
         $data = $request->validated();
         $data['user_id'] = auth()->id();
         $data['subscription_id'] = $subscription->id;
         $data['amount'] = $plan->price;
         $data['status'] = 'pending';
 
+        // 3. Handle attachment storage
         if ($request->hasFile('attachment')) {
-            $data['attachment'] = $request->file('attachment')->store('payments', 'public');
+            $path = $request->file('attachment')->store('payments', 'public');
+            $data['attachment'] = $path;
+        } else {
+            unset($data['attachment']);
         }
 
         $payment = Payment::create($data);

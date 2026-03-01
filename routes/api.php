@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\SubscriptionsController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\SubscriptionCheckController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -33,6 +34,7 @@ Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::get('/reviews', [ReviewController::class, 'index']);
 
 Route::post('/contacts', [ContactController::class, 'store']);
+Route::post('/check-subscription', [SubscriptionCheckController::class, 'check']);
 
 // Protected routes - require authentication
 Route::middleware('auth:sanctum')->group(function () {
