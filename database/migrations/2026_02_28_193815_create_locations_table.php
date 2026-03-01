@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('parent_id')->nullable()->constrained('locations')->cascadeOnDelete();
+            $table->enum('type', ['zone', 'governorate'])->default('zone');
             $table->timestamps();
         });
     }

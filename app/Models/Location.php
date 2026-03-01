@@ -9,7 +9,8 @@ class Location extends Model
     protected $fillable = 
     [
         'name',
-        'parent_id'
+        'parent_id',
+        'type'
     ];
 
     public function listings()

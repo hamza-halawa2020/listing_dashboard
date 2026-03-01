@@ -14,8 +14,13 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'role', //admin, member, service_provider
+        'national_id',
+        'birth_date',
+        'gender',
+        'address',
         'password',
-        'role', //admin,user
     ];
 
     protected $hidden = [
@@ -31,4 +36,13 @@ class User extends Authenticatable
         ];
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
