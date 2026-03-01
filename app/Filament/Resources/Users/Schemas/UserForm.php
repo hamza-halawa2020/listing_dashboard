@@ -29,6 +29,10 @@ class UserForm
                     ->default('member')
                     ->required(),
                 TextInput::make('national_id'),
+                Select::make('location_id')
+                    ->relationship('location', 'name')
+                    ->searchable()
+                    ->preload(),
                 DatePicker::make('birth_date'),
                 Select::make('gender')
                     ->options(['male' => 'Male', 'female' => 'Female']),

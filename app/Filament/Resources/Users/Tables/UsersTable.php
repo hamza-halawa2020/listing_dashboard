@@ -25,6 +25,10 @@ class UsersTable
                     ->badge(),
                 TextColumn::make('national_id')
                     ->searchable(),
+                TextColumn::make('location.name')
+                    ->label('Location')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('birth_date')
                     ->date()
                     ->sortable(),

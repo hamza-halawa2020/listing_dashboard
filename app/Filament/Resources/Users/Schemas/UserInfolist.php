@@ -20,6 +20,9 @@ class UserInfolist
                     ->badge(),
                 TextEntry::make('national_id')
                     ->placeholder('-'),
+                TextEntry::make('location.name')
+                    ->label('Location')
+                    ->placeholder('-'),
                 TextEntry::make('birth_date')
                     ->date()
                     ->placeholder('-'),

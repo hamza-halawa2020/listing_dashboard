@@ -17,6 +17,7 @@ class User extends Authenticatable
         'phone',
         'role', //admin, member, service_provider
         'national_id',
+        'location_id',
         'birth_date',
         'gender',
         'address',
@@ -49,5 +50,10 @@ class User extends Authenticatable
     public function familyMembers()
     {
         return $this->hasMany(FamilyMember::class);
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 }
