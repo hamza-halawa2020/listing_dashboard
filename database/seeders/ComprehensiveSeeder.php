@@ -24,6 +24,18 @@ class ComprehensiveSeeder extends Seeder
                 'name' => 'Admin',
                 'role' => 'admin',
                 'password' => Hash::make('12345678'),
+                'national_id' => '234324324',
+                'membership_card_number' => '3224324',
+            ]
+        );
+        $user = User::updateOrCreate(
+            ['email' => 'user@example.com'],
+            [
+                'name' => 'user',
+                'role' => 'member',
+                'password' => Hash::make('12345678'),
+                'national_id' => '12456',
+                'membership_card_number' => '12345',
             ]
         );
 

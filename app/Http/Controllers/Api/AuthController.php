@@ -38,6 +38,7 @@ class AuthController extends Controller
 
         $user = User::where('national_id', $request->national_id)
                     // ->where('membership_card_number', $request->membership_card_number)
+                    ->where('role', '!=', 'admin')
                     ->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
