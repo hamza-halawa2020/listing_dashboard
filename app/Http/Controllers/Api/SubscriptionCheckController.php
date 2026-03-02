@@ -25,19 +25,31 @@ class SubscriptionCheckController extends Controller
 
         if ($user) {
             $memberName = $user->name;
-            $subscriptions = $user->subscriptions()->with('subscriptionPlan')->latest()->get();
+            $subscriptions = $user->subscriptions()
+                ->whereHas('payments', function ($query) {
+                    $query->where('status', 'completed');
+                })
+                ->with('subscriptionPlan')
+                ->latest()
+                ->get();
         } else {
             // 2. Try finding a FamilyMember with this National ID whose parent User has this Membership Number
             $familyMember = FamilyMember::where('national_id', $nationalId)
                 ->whereHas('user', function ($query) use ($membershipNumber) {
                     $query->where('membership_card_number', $membershipNumber);
                 })
-                ->with('user.subscriptions.subscriptionPlan')
+                ->with('user')
                 ->first();
 
             if ($familyMember) {
                 $memberName = $familyMember->name . ' (Family Member of ' . $familyMember->user->name . ')';
-                $subscriptions = $familyMember->user->subscriptions;
+                $subscriptions = $familyMember->user->subscriptions()
+                    ->whereHas('payments', function ($query) {
+                        $query->where('status', 'completed');
+                    })
+                    ->with('subscriptionPlan')
+                    ->latest()
+                    ->get();
             }
         }
 
