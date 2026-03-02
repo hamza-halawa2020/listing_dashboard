@@ -17,9 +17,22 @@ class LocationsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('type')
+                    ->label('Type')
+                    ->formatStateUsing(fn (?string $state) => match($state) {
+                        'governorate' => 'Governorate',
+                        'zone' => 'zone/area',
+                        default => $state,
+                    })
+                    ->sortable(),
                 TextColumn::make('parent.name')
                     ->label('Parent Location')
                     ->sortable(),
+                TextColumn::make('shipping_cost')
+                    ->label('Shipping Cost')
+                    ->money('egp')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -39,6 +52,12 @@ class LocationsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                \Filament\Actions\DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->disabled(fn ($record) => $record->listings()->exists() || $record->children()->exists())
+                    ->tooltip(fn ($record) => $record->listings()->exists()
+                            ? 'This location has related listings and cannot be deleted'
+                            : ($record->children()->exists() ? 'This location has child locations and cannot be deleted' : null)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

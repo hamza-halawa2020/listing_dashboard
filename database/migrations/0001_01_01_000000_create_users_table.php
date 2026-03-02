@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('parent_id')->nullable()->constrained('locations')->cascadeOnDelete();
             $table->enum('type', ['zone', 'governorate'])->default('zone');
+            $table->decimal('shipping_cost', 8, 2)->nullable()->default(null);
             $table->timestamps();
         });
 

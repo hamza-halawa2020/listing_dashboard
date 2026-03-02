@@ -10,13 +10,7 @@ class LocationSeeder extends Seeder
 {
     public function run(): void
     {
-        // إنشاء مصر كموقع رئيسي
-        $egypt = Location::firstOrCreate([
-            'name' => 'مصر',
-            'parent_id' => null,
-        ]);
 
-        // المحافظات والمناطق التابعة لها
         $governoratesWithAreas = [
             'القاهرة' => [
                 'المعادى', 'مصر الجديدة', 'مدينة نصر', 'الزيتون', 'حلوان', 'المطرية',
@@ -169,19 +163,28 @@ class LocationSeeder extends Seeder
         foreach ($governoratesWithAreas as $governorateName => $areas) {
             $governorate = Location::firstOrCreate([
                 'name' => $governorateName,
-                'parent_id' => $egypt->id,
+                'parent_id' => null,
+            ], [
+                'type' => 'governorate',
+                'shipping_cost' => 90, // default cost for all governorates
             ]);
+
+            // if the record already existed but didn't have a shipping cost, update it
+            if (is_null($governorate->shipping_cost)) {
+                $governorate->update(['shipping_cost' => 90]);
+            }
 
             foreach ($areas as $area) {
                 Location::firstOrCreate([
                     'name' => $area,
                     'parent_id' => $governorate->id,
+                ], [
+                    'type' => 'zone',
                 ]);
             }
         }
         
-        // Add special locations (منزلية and فروع for services that operate everywhere)
-        Location::firstOrCreate(['name' => 'منزلية', 'parent_id' => $egypt->id]);
-        Location::firstOrCreate(['name' => 'فروع', 'parent_id' => $egypt->id]);
+        Location::firstOrCreate(['name' => 'منزلية', 'parent_id' =>null], ['type' => 'zone']);
+        Location::firstOrCreate(['name' => 'فروع', 'parent_id' =>null], ['type' => 'zone']);
     }
 }

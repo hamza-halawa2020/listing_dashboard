@@ -10,7 +10,8 @@ class Location extends Model
     [
         'name',
         'parent_id',
-        'type'
+        'type',
+        'shipping_cost', // cost when this record is a governorate
     ];
 
     public function listings()
@@ -35,5 +36,23 @@ class Location extends Model
             $ids = array_merge($ids, $child->getDescendantIds());
         }
         return array_unique($ids);
+    }
+
+    protected static function booted()
+    {
+        static::saving(function (Location $location) {
+            if ($location->type === 'governorate') {
+                $location->parent_id = null;
+            }
+        });
+
+        static::deleting(function (Location $location) {
+            if ($location->listings()->exists()) {
+                throw new \Exception('this location has related listings and cannot be deleted');
+            }
+            if ($location->children()->exists()) {
+                throw new \Exception('this location has child locations and cannot be deleted');
+            }
+        });
     }
 }
