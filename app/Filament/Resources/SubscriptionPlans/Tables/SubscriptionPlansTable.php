@@ -16,15 +16,27 @@ class SubscriptionPlansTable
             ->columns([
                 TextColumn::make('name')
                     ->label(__('Name'))
+                    ->formatStateUsing(fn (?string $state): ?string => filled($state) ? __($state) : $state)
                     ->searchable(),
                 TextColumn::make('code')
                     ->label(__('Code'))
                     ->searchable(),
                 TextColumn::make('type')
                     ->label(__('Type'))
+                    ->formatStateUsing(fn (?string $state): ?string => match ($state) {
+                        'individual' => __('Individual'),
+                        'family' => __('Family'),
+                        default => $state,
+                    })
                     ->badge(),
                 TextColumn::make('coverage_type')
                     ->label(__('Coverage Type'))
+                    ->formatStateUsing(fn (?string $state): ?string => match ($state) {
+                        'zone' => __('Zone'),
+                        'governorate' => __('Governorate'),
+                        'national' => __('National'),
+                        default => $state,
+                    })
                     ->badge(),
                 TextColumn::make('price')
                     ->label(__('Price'))

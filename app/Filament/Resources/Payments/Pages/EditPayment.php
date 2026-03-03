@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Payments\Pages;
 
 use App\Filament\Resources\Payments\PaymentResource;
-use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditPayment extends EditRecord
@@ -12,8 +11,13 @@ class EditPayment extends EditRecord
 
     protected function getHeaderActions(): array
     {
+        return [];
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
         return [
-            DeleteAction::make(),
+            'status' => $data['status'],
         ];
     }
 }

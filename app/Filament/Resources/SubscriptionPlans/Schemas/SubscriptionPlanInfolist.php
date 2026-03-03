@@ -12,14 +12,26 @@ class SubscriptionPlanInfolist
         return $schema
             ->components([
                 TextEntry::make('name')
-                    ->label(__('Name')),
+                    ->label(__('Name'))
+                    ->formatStateUsing(fn (?string $state): ?string => filled($state) ? __($state) : $state),
                 TextEntry::make('code')
                     ->label(__('Code')),
                 TextEntry::make('type')
                     ->label(__('Type'))
+                    ->formatStateUsing(fn (?string $state): ?string => match ($state) {
+                        'individual' => __('Individual'),
+                        'family' => __('Family'),
+                        default => $state,
+                    })
                     ->badge(),
                 TextEntry::make('coverage_type')
                     ->label(__('Coverage Type'))
+                    ->formatStateUsing(fn (?string $state): ?string => match ($state) {
+                        'zone' => __('Zone'),
+                        'governorate' => __('Governorate'),
+                        'national' => __('National'),
+                        default => $state,
+                    })
                     ->badge(),
                 TextEntry::make('price')
                     ->label(__('Price'))

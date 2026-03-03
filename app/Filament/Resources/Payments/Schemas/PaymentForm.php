@@ -20,15 +20,18 @@ class PaymentForm
                     ->relationship('user', 'name')
                     ->searchable()
                     ->preload()
+                    ->disabledOn('edit')
                     ->required(),
                 Select::make('subscription_id')
                     ->label(__('Subscription'))
                     ->relationship('subscription', 'id')
+                    ->disabledOn('edit')
                     ->searchable(),
                 TextInput::make('amount')
                     ->label(__('Amount'))
                     ->required()
                     ->numeric()
+                    ->disabledOn('edit')
                     ->prefix(__('EGP')),
                 Select::make('payment_method')
                     ->label(__('Payment Method'))
@@ -40,9 +43,11 @@ class PaymentForm
                         'instapay' => __('Instapay'),
                         'vodafone_cash' => __('Vodafone cash'),
                     ])
+                    ->disabledOn('edit')
                     ->required(),
                 TextInput::make('transaction_reference')
-                    ->label(__('Transaction Reference')),
+                    ->label(__('Transaction Reference'))
+                    ->disabledOn('edit'),
                 Select::make('status')
                     ->label(__('Status'))
                     ->options([
@@ -55,14 +60,17 @@ class PaymentForm
                     ->required(),
                 FileUpload::make('attachment')
                     ->label(__('Image'))
+                    ->disabledOn('edit')
                     ->image(),
                 Textarea::make('notes')
                     ->label(__('Notes'))
+                    ->disabledOn('edit')
                     ->columnSpanFull(),
                 Select::make('location_id')
                     ->label(__('Location'))
                     ->relationship('location', 'name', fn ($query) => $query->orderedForDisplay())
                     ->searchable()
+                    ->disabledOn('edit')
                     ->preload(),
                 Select::make('delivery_required')
                     ->label(__('Delivery Required'))
@@ -70,21 +78,27 @@ class PaymentForm
                         0 => __('No'),
                         1 => __('Yes'),
                     ])
+                    ->disabledOn('edit')
                     ->default(0)
                     ->required(),
                 TextInput::make('delivery_name')
-                    ->label(__('Delivery Name')),
+                    ->label(__('Delivery Name'))
+                    ->disabledOn('edit'),
                 TextInput::make('delivery_phone')
-                    ->label(__('Delivery Phone')),
+                    ->label(__('Delivery Phone'))
+                    ->disabledOn('edit'),
                 Textarea::make('delivery_address')
                     ->label(__('Delivery Address'))
+                    ->disabledOn('edit')
                     ->columnSpanFull(),
                 TextInput::make('shipping_cost')
                     ->label(__('Shipping Cost'))
                     ->numeric()
+                    ->disabledOn('edit')
                     ->prefix(__('EGP')),
                 DateTimePicker::make('paid_at')
-                    ->label(__('Paid At')),
+                    ->label(__('Paid At'))
+                    ->disabledOn('edit'),
             ]);
     }
 }

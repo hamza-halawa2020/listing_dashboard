@@ -50,7 +50,7 @@ class FamilyMemberResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListFamilyMembers::route('/'),
+            // 'index' => ListFamilyMembers::route('/'),
             'create' => CreateFamilyMember::route('/create'),
             'edit' => EditFamilyMember::route('/{record}/edit'),
         ];

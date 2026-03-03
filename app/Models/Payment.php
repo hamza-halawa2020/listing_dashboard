@@ -33,15 +33,19 @@ class Payment extends Model
 
     protected static function booted(): void
     {
-        static::saved(function (Payment $payment) {
-            if ($payment->status !== 'completed' || ! $payment->subscription_id) {
+        static::saving(function (Payment $payment) {
+            if ($payment->status !== 'completed') {
                 return;
             }
 
-            if (blank($payment->paid_at)) {
-                $payment->forceFill([
-                    'paid_at' => now(),
-                ])->saveQuietly();
+            if ($payment->isDirty('status') || blank($payment->paid_at)) {
+                $payment->paid_at = now();
+            }
+        });
+
+        static::saved(function (Payment $payment) {
+            if ($payment->status !== 'completed' || ! $payment->subscription_id) {
+                return;
             }
 
             $payment->loadMissing('subscription.subscriptionPlan', 'subscription.user');

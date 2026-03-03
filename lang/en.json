@@ -253,5 +253,15 @@
     "Import completed": "Import completed",
     "Import failed": "Import failed",
     "Created: :created, Updated: :updated, Skipped: :skipped": "Created: :created, Updated: :updated, Skipped: :skipped",
-    "Errors: :count": "Errors: :count"
+    "Errors: :count": "Errors: :count",
+    "Parent Category": "Parent Category",
+    "Slug": "Slug",
+    "Created By": "Created By",
+    "Parent": "Parent",
+    "Individual Zone": "Individual Zone",
+    "Individual Governorate": "Individual Governorate",
+    "Family Zone": "Family Zone",
+    "Family Governorate": "Family Governorate",
+    "Individual National": "Individual National",
+    "Family National": "Family National"
 }
