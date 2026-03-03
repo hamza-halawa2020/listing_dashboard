@@ -12,14 +12,15 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = Session::get('locale', config('app.locale', 'en'));
-        
-        if (!in_array($locale, ['en', 'ar'])) {
-            $locale = 'en';
+        $defaultLocale = config('app.locale', 'ar');
+        $locale = Session::get('locale', $defaultLocale);
+
+        if (! in_array($locale, ['ar', 'en'], true)) {
+            $locale = $defaultLocale;
         }
-        
+
         App::setLocale($locale);
-        
+
         return $next($request);
     }
 }

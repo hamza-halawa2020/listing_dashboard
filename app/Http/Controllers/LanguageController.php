@@ -11,8 +11,10 @@ class LanguageController extends Controller
 {
     public function switchLanguage($locale)
     {
-        if (!in_array($locale, ['en', 'ar'])) {
-            $locale = 'en';
+        $defaultLocale = config('app.locale', 'ar');
+
+        if (! in_array($locale, ['ar', 'en'], true)) {
+            $locale = $defaultLocale;
         }
 
         Session::put('locale', $locale);
@@ -22,4 +24,3 @@ class LanguageController extends Controller
         return Redirect::back();
     }
 }
-

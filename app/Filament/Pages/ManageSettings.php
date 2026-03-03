@@ -29,6 +29,11 @@ class ManageSettings extends Page
 
     public ?array $data = [];
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public function mount(): void
     {
         $this->form->fill(Setting::getAllSettings());
