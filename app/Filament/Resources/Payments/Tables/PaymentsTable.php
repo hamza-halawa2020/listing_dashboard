@@ -30,7 +30,7 @@ class PaymentsTable
                     ->placeholder('-'),
                 TextColumn::make('amount')
                     ->label(__('Amount'))
-                    ->numeric()
+                    ->money('egp')
                     ->sortable(),
                 TextColumn::make('payment_method')
                     ->label(__('Payment Method'))

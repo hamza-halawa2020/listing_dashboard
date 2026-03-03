@@ -36,6 +36,7 @@ class LocationForm
                 TextInput::make('shipping_cost')
                     ->label(__('Shipping Cost'))
                     ->numeric()
+                    ->prefix(__('EGP'))
                     ->helperText(__('Only needed for governorate records; e.g. 90'))
                     ->visible(fn (Get $get) => $get('type') === 'governorate'),
             ]);

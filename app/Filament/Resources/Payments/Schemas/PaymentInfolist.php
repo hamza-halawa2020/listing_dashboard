@@ -25,7 +25,7 @@ class PaymentInfolist
                     ->placeholder('-'),
                 TextEntry::make('amount')
                     ->label(__('Amount'))
-                    ->numeric(),
+                    ->money('egp'),
                 TextEntry::make('payment_method')
                     ->label(__('Payment Method'))
                     ->badge(),

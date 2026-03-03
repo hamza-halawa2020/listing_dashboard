@@ -28,7 +28,8 @@ class PaymentForm
                 TextInput::make('amount')
                     ->label(__('Amount'))
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->prefix(__('EGP')),
                 Select::make('payment_method')
                     ->label(__('Payment Method'))
                     ->options([
@@ -80,7 +81,8 @@ class PaymentForm
                     ->columnSpanFull(),
                 TextInput::make('shipping_cost')
                     ->label(__('Shipping Cost'))
-                    ->numeric(),
+                    ->numeric()
+                    ->prefix(__('EGP')),
                 DateTimePicker::make('paid_at')
                     ->label(__('Paid At')),
             ]);

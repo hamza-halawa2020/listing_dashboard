@@ -37,7 +37,7 @@ class SubscriptionPlanForm
                     ->label(__('Price'))
                     ->required()
                     ->numeric()
-                    ->prefix('$'),
+                    ->prefix(__('EGP')),
                 TextInput::make('duration_days')
                     ->label(__('Duration Days'))
                     ->required()

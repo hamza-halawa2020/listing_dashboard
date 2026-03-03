@@ -65,7 +65,7 @@ class SystemOverviewStats extends StatsOverviewWidget
                 ->color('success'),
             Stat::make(
                 __('dashboard.overview.completed_revenue'),
-                number_format((float) ((clone $completedPaymentsQuery)->sum('amount')), 2) . ' EGP',
+                number_format((float) ((clone $completedPaymentsQuery)->sum('amount')), 2) . ' ' . __('EGP'),
             )->color('success'),
             Stat::make(__('dashboard.overview.contact_messages'), DashboardDateRange::apply(Contact::query(), $filters)->count())
                 ->color('gray'),

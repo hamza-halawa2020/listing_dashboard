@@ -23,7 +23,7 @@ class SubscriptionPlanInfolist
                     ->badge(),
                 TextEntry::make('price')
                     ->label(__('Price'))
-                    ->money(),
+                    ->money('egp'),
                 TextEntry::make('duration_days')
                     ->label(__('Duration Days'))
                     ->numeric(),

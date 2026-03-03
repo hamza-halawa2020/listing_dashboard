@@ -28,7 +28,7 @@ class SubscriptionPlansTable
                     ->badge(),
                 TextColumn::make('price')
                     ->label(__('Price'))
-                    ->money()
+                    ->money('egp')
                     ->sortable(),
                 TextColumn::make('duration_days')
                     ->label(__('Duration Days'))
