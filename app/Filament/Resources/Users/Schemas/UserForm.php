@@ -39,7 +39,7 @@ class UserForm
                     ->label(__('National ID')),
                 Select::make('location_id')
                     ->label(__('Location'))
-                    ->relationship('location', 'name')
+                    ->relationship('location', 'name', fn ($query) => $query->orderedForDisplay())
                     ->searchable()
                     ->preload(),
                 DatePicker::make('birth_date')

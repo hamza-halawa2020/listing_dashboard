@@ -2,10 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Location extends Model
 {
+    private const PRIORITY_NAME_GROUPS = [
+        ['القاهرة', 'القاهره'],
+        ['الجيزة', 'الجيزه'],
+        ['القليوبية', 'القليوبيه'],
+        ['الإسكندرية', 'الإسكندريه', 'الاسكندرية', 'الاسكندريه', 'اسكندرية', 'اسكندريه'],
+        ['الشرقية', 'الشرقيه'],
+    ];
+
     protected $fillable = 
     [
         'name',
@@ -26,7 +35,25 @@ class Location extends Model
 
     public function children()
     {
-        return $this->hasMany(Location::class, 'parent_id');
+        return $this->hasMany(Location::class, 'parent_id')->orderedForDisplay();
+    }
+
+    public function scopeOrderedForDisplay(Builder $query): Builder
+    {
+        $cases = [];
+        $bindings = [];
+
+        foreach (self::PRIORITY_NAME_GROUPS as $index => $names) {
+            $cases[] = 'WHEN TRIM(name) IN (' . implode(', ', array_fill(0, count($names), '?')) . ") THEN {$index}";
+            array_push($bindings, ...$names);
+        }
+
+        return $query
+            ->orderByRaw(
+                'CASE ' . implode(' ', $cases) . ' ELSE ' . count(self::PRIORITY_NAME_GROUPS) . ' END',
+                $bindings,
+            )
+            ->orderBy('name');
     }
 
     public function getDescendantIds()

@@ -31,6 +31,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
+            ->favicon(asset('logo.svg'))
+            ->brandLogo(asset('logo.svg'))
+            ->darkModeBrandLogo(asset('logo.svg'))
+            ->brandLogoHeight('3rem')
             ->brandName('Care & Share')
             ->colors([
                 'primary' => Color::Blue,

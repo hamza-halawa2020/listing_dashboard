@@ -61,7 +61,7 @@ class PaymentForm
                     ->columnSpanFull(),
                 Select::make('location_id')
                     ->label(__('Location'))
-                    ->relationship('location', 'name')
+                    ->relationship('location', 'name', fn ($query) => $query->orderedForDisplay())
                     ->searchable()
                     ->preload(),
                 Select::make('delivery_required')

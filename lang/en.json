@@ -244,5 +244,14 @@
     "Offers": "Offers",
     "Male": "Male",
     "Female": "Female",
-    "EGP": "E£"
+    "EGP": "EGP",
+    "Download Import Template": "Download Import Template",
+    "Import Listings": "Import Listings",
+    "Spreadsheet File": "Spreadsheet File",
+    "Upload a CSV or XLSX file. Existing rows are matched by ID first, then by name.": "Upload a CSV or XLSX file. Existing rows are matched by ID first, then by name.",
+    "Upload a CSV or XLSX file. Listings are matched by name, category by category name, and location by governorate + area. is_active is set automatically.": "Upload a CSV or XLSX file. Listings are matched by name, category by category name, and location by governorate + area. is_active is set automatically.",
+    "Import completed": "Import completed",
+    "Import failed": "Import failed",
+    "Created: :created, Updated: :updated, Skipped: :skipped": "Created: :created, Updated: :updated, Skipped: :skipped",
+    "Errors: :count": "Errors: :count"
 }

@@ -28,7 +28,7 @@ class LocationForm
                     ->reactive(),
                 Select::make('parent_id')
                     ->label(__('Parent Location (e.g., Country or City)'))
-                    ->relationship('parent', 'name', fn ($query) => $query->where('type', 'governorate'))
+                    ->relationship('parent', 'name', fn ($query) => $query->where('type', 'governorate')->orderedForDisplay())
                     ->searchable()
                     ->preload()
                     ->visible(fn (Get $get) => $get('type') === 'zone')

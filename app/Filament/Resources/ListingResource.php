@@ -70,7 +70,7 @@ class ListingResource extends Resource
                         // Level 1 - Root
                         Select::make('location_level_1')
                             ->label(__('Country'))
-                            ->options(Location::whereNull('parent_id')->pluck('name', 'id'))
+                            ->options(Location::query()->whereNull('parent_id')->orderedForDisplay()->pluck('name', 'id'))
                             ->required()
                             ->live()
                             ->afterStateUpdated(function (callable $set, $state) {
@@ -93,7 +93,7 @@ class ListingResource extends Resource
                             ->label(__('Governorate'))
                             ->options(fn (Get $get): array => 
                                 $get('location_level_1') 
-                                    ? Location::where('parent_id', $get('location_level_1'))->pluck('name', 'id')->toArray()
+                                    ? Location::query()->where('parent_id', $get('location_level_1'))->orderedForDisplay()->pluck('name', 'id')->toArray()
                                     : []
                             )
                             ->searchable()
@@ -119,7 +119,7 @@ class ListingResource extends Resource
                             ->label(__('Area'))
                             ->options(fn (Get $get): array => 
                                 $get('location_level_2') 
-                                    ? Location::where('parent_id', $get('location_level_2'))->pluck('name', 'id')->toArray()
+                                    ? Location::query()->where('parent_id', $get('location_level_2'))->orderedForDisplay()->pluck('name', 'id')->toArray()
                                     : []
                             )
                             ->searchable()
@@ -143,7 +143,7 @@ class ListingResource extends Resource
                             ->label(__('Sub Area'))
                             ->options(fn (Get $get): array => 
                                 $get('location_level_3') 
-                                    ? Location::where('parent_id', $get('location_level_3'))->pluck('name', 'id')->toArray()
+                                    ? Location::query()->where('parent_id', $get('location_level_3'))->orderedForDisplay()->pluck('name', 'id')->toArray()
                                     : []
                             )
                             ->searchable()
@@ -177,7 +177,7 @@ class ListingResource extends Resource
                             ->label(__('Sub Sub Area'))
                             ->options(fn (Get $get): array => 
                                 $get('location_level_4') 
-                                    ? Location::where('parent_id', $get('location_level_4'))->pluck('name', 'id')->toArray()
+                                    ? Location::query()->where('parent_id', $get('location_level_4'))->orderedForDisplay()->pluck('name', 'id')->toArray()
                                     : []
                             )
                             ->searchable()

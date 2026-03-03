@@ -1,0 +1,3 @@
+name,category_name,governorate_name,area_name,address,description,latitude,longitude
+Sample Listing,Main Category,القاهرة,المعادي,12 Example Street,Sample description,30.0444,31.2357
+Existing Listing,,,,Updated address only,,,

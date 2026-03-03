@@ -49,7 +49,7 @@ class LocationsTable
             ])
             ->filters([
                 SelectFilter::make('parent_id')
-                    ->relationship('parent', 'name')
+                    ->relationship('parent', 'name', fn ($query) => $query->orderedForDisplay())
                     ->label(__('Filter by Parent Location'))
                     ->searchable()
                     ->preload(),
