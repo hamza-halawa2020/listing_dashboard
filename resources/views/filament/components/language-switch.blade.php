@@ -1,12 +1,10 @@
-<div class="flex items-center gap-x-3 px-3">
+<div class="px-3" style="margin-bottom: 0.75rem; text-align: end;">
     @if (app()->getLocale() === 'ar')
-        <a href="{{ route('language.switch', 'en') }}" class="flex items-center gap-x-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-            <x-heroicon-m-globe-alt class="h-5 w-5 text-gray-500" />
+        <a href="{{ route('language.switch', 'en') }}" class="text-sm font-medium text-gray-700 dark:text-gray-200">
             <span>{{ __('dashboard.languages.english') }}</span>
         </a>
     @else
-        <a href="{{ route('language.switch', 'ar') }}" class="flex items-center gap-x-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-            <x-heroicon-m-globe-alt class="h-5 w-5 text-gray-500" />
+        <a href="{{ route('language.switch', 'ar') }}" class="text-sm font-medium text-gray-700 dark:text-gray-200">
             <span>{{ __('dashboard.languages.arabic') }}</span>
         </a>
     @endif
