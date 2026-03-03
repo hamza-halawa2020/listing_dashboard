@@ -17,8 +17,8 @@ class PaymentStoreRequest extends FormRequest
     {
         return [
             'plan_id' => 'required|exists:subscription_plans,id',
-            'payment_method' => 'required|in:cash,credit_card,bank_transfer,fawry,vodafone_cash,online',
-            'transaction_reference' => 'nullable|string|unique:payments,transaction_reference',
+            'location_id' => 'required|exists:locations,id',
+            'payment_method' => 'required|in:cash,credit_card,bank_transfer,fawry,vodafone_cash,instapay',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'notes' => 'nullable|string',
         ];

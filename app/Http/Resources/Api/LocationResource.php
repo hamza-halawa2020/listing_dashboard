@@ -19,6 +19,7 @@ class LocationResource extends JsonResource
             'name' => $this->name,
             'type' => $this->type,
             'parent_id' => $this->parent_id,
+            'shipping_cost' => $this->shipping_cost,
             'children' => LocationResource::collection($this->whenLoaded('children')),
         ];
     }
