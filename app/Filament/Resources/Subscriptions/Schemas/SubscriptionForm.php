@@ -24,6 +24,9 @@ class SubscriptionForm
                     ->searchable()
                     ->preload()
                     ->required(),
+                TextInput::make('membership_card_number')
+                    ->disabled()
+                    ->dehydrated(false),
                 DatePicker::make('starts_at')
                     ->required(),
                 DatePicker::make('ends_at')

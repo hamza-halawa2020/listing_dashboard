@@ -31,6 +31,33 @@ class Payment extends Model
         'delivery_required' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::saved(function (Payment $payment) {
+            if ($payment->status !== 'completed' || ! $payment->subscription_id) {
+                return;
+            }
+
+            if (blank($payment->paid_at)) {
+                $payment->forceFill([
+                    'paid_at' => now(),
+                ])->saveQuietly();
+            }
+
+            $payment->loadMissing('subscription.subscriptionPlan', 'subscription.user');
+
+            $subscription = $payment->subscription;
+
+            if (! $subscription || filled($subscription->membership_card_number)) {
+                return;
+            }
+
+            $subscription->forceFill([
+                'membership_card_number' => $subscription->generateMembershipCardNumber(),
+            ])->saveQuietly();
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

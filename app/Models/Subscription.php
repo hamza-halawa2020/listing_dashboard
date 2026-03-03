@@ -9,6 +9,7 @@ class Subscription extends Model
     protected $fillable = [
         'user_id',
         'subscription_plan_id',
+        'membership_card_number',
         'starts_at',
         'ends_at',
         'status',
@@ -35,5 +36,15 @@ class Subscription extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function generateMembershipCardNumber(): string
+    {
+        $planCode = strtoupper($this->subscriptionPlan?->code ?: 'SUB');
+        $userIdPart = str_pad((string) $this->user_id, 2, '0', STR_PAD_LEFT);
+        $nationalIdDigits = preg_replace('/\D+/', '', (string) ($this->user?->national_id ?? ''));
+        $lastFourDigits = str_pad(substr($nationalIdDigits, -4), 4, '0', STR_PAD_LEFT);
+
+        return "{$planCode}00{$userIdPart}{$lastFourDigits}";
     }
 }

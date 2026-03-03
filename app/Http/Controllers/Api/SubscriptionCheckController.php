@@ -12,13 +12,13 @@ class SubscriptionCheckController extends Controller
 {
     public function check(SubscriptionCheckRequest $request)
     {
-        $nationalId = $request->national_id;
-        $membershipNumber = $request->membership_card_number;
+        $nationalId = (int)$request->national_id;
+        $membershipNumber = (int)$request->membership_card_number;
+
+        // dd($nationalId, $membershipNumber);
 
         // 1. Try finding a primary User
-        $user = User::where('national_id', $nationalId)
-            ->where('membership_card_number', $membershipNumber)
-            ->first();
+        $user = User::where('national_id', $nationalId)->first();
 
         $subscriptions = collect();
         $memberName = '';
@@ -26,6 +26,7 @@ class SubscriptionCheckController extends Controller
         if ($user) {
             $memberName = $user->name;
             $subscriptions = $user->subscriptions()
+                ->where('membership_card_number', $membershipNumber)
                 ->whereHas('payments', function ($query) {
                     $query->where('status', 'completed');
                 })
@@ -36,7 +37,9 @@ class SubscriptionCheckController extends Controller
             // 2. Try finding a FamilyMember with this National ID whose parent User has this Membership Number
             $familyMember = FamilyMember::where('national_id', $nationalId)
                 ->whereHas('user', function ($query) use ($membershipNumber) {
-                    $query->where('membership_card_number', $membershipNumber);
+                    $query->whereHas('subscriptions', function ($subscriptionQuery) use ($membershipNumber) {
+                        $subscriptionQuery->where('membership_card_number', $membershipNumber);
+                    });
                 })
                 ->with('user')
                 ->first();
@@ -44,6 +47,7 @@ class SubscriptionCheckController extends Controller
             if ($familyMember) {
                 $memberName = $familyMember->name . ' (Family Member of ' . $familyMember->user->name . ')';
                 $subscriptions = $familyMember->user->subscriptions()
+                    ->where('membership_card_number', $membershipNumber)
                     ->whereHas('payments', function ($query) {
                         $query->where('status', 'completed');
                     })
@@ -53,9 +57,9 @@ class SubscriptionCheckController extends Controller
             }
         }
 
-        if ($subscriptions->isEmpty() && empty($memberName)) {
+        if ($subscriptions->isEmpty()) {
             return response()->json([
-                'message' => 'Member not found with these credentials',
+                // 'message' => 'No matching paid subscription found with these credentials',
             ], 404);
         }
 

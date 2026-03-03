@@ -18,6 +18,9 @@ class PaymentInfolist
                 TextEntry::make('subscription.id')
                     ->label('Subscription #')
                     ->placeholder('-'),
+                TextEntry::make('subscription.membership_card_number')
+                    ->label('Membership Number')
+                    ->placeholder('-'),
                 TextEntry::make('amount')
                     ->numeric(),
                 TextEntry::make('payment_method')

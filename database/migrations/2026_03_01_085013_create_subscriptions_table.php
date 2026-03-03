@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('subscription_plan_id')->constrained()->onDelete('restrict');
+            $table->string('membership_card_number')->nullable()->unique();
             $table->date('starts_at');
             $table->date('ends_at');
             $table->enum('status', ['active', 'expired', 'cancelled'])->default('active');

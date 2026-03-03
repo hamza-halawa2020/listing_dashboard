@@ -20,6 +20,9 @@ class SubscriptionsTable
                 TextColumn::make('subscriptionPlan.name')
                     ->label('Plan')
                     ->sortable(),
+                TextColumn::make('membership_card_number')
+                    ->label('Membership Number')
+                    ->searchable(),
                 TextColumn::make('starts_at')
                     ->date()
                     ->sortable(),

@@ -15,6 +15,9 @@ class SubscriptionInfolist
                     ->label('User'),
                 TextEntry::make('subscriptionPlan.name')
                     ->label('Plan'),
+                TextEntry::make('membership_card_number')
+                    ->label('Membership Number')
+                    ->placeholder('-'),
                 TextEntry::make('starts_at')
                     ->date(),
                 TextEntry::make('ends_at')

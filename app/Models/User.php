@@ -18,7 +18,6 @@ class User extends Authenticatable
         'phone',
         'role', //admin, member, service_provider
         'national_id',
-        'membership_card_number',
         'location_id',
         'birth_date',
         'gender',

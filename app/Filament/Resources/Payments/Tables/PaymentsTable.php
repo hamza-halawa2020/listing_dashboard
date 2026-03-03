@@ -22,6 +22,10 @@ class PaymentsTable
                 TextColumn::make('subscription.id')
                     ->label('Subscription #')
                     ->sortable(),
+                TextColumn::make('subscription.membership_card_number')
+                    ->label('Membership Number')
+                    ->searchable()
+                    ->placeholder('-'),
                 TextColumn::make('amount')
                     ->numeric()
                     ->sortable(),
