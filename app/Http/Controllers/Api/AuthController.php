@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\Api\LoginRequest;
+use App\Http\Resources\Api\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -27,8 +28,17 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $user->load([
+            'location',
+            'familyMembers',
+            'payments',
+            'subscriptions' => fn ($query) => $query
+                ->with(['subscriptionPlan', 'payments'])
+                ->latest(),
+        ]);
+
         return response()->json([
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token,
         ], 201);
     }
@@ -49,8 +59,17 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $user->load([
+            'location',
+            'familyMembers',
+            'payments',
+            'subscriptions' => fn ($query) => $query
+                ->with(['subscriptionPlan', 'payments'])
+                ->latest(),
+        ]);
+
         return response()->json([
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token,
         ]);
     }

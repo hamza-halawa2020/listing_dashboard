@@ -19,6 +19,7 @@ class SubscriptionResource extends JsonResource
             'payment_method' => $this->payment_method,
             'payment_reference' => $this->payment_reference,
             'notes' => $this->notes,
+            'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
         ];
     }
