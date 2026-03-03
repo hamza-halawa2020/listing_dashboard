@@ -79,8 +79,7 @@ class PaymentForm
                         1 => __('Yes'),
                     ])
                     ->disabledOn('edit')
-                    ->default(0)
-                    ->required(),
+                    ->default(0),
                 TextInput::make('delivery_name')
                     ->label(__('Delivery Name'))
                     ->disabledOn('edit'),

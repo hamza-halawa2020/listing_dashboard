@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\SubscriptionsController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SubscriptionCheckController;
 
 // Public routes
@@ -38,6 +39,10 @@ Route::post('/check-subscription', [SubscriptionCheckController::class, 'check']
 
 // Protected routes - require authentication
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::match(['put', 'patch'], '/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/family-members', [ProfileController::class, 'storeFamilyMember']);
+
     // Listings routes (subscription-based access)
     Route::get('/listings', [ListingController::class, 'index']);
     Route::get('/listings/{id}', [ListingController::class, 'show']);
