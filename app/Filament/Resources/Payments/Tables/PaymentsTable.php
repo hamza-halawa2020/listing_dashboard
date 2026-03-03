@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Payments\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -14,35 +15,43 @@ class PaymentsTable
     {
         return $table
             ->columns([
-                \Filament\Tables\Columns\ImageColumn::make('attachment')
+                ImageColumn::make('attachment')
+                    ->label(__('Image'))
                     ->square(),
                 TextColumn::make('user.name')
-                    ->label('User')
+                    ->label(__('User'))
                     ->sortable(),
                 TextColumn::make('subscription.id')
-                    ->label('Subscription #')
+                    ->label(__('Subscription #'))
                     ->sortable(),
                 TextColumn::make('subscription.membership_card_number')
-                    ->label('Membership Number')
+                    ->label(__('Membership Number'))
                     ->searchable()
                     ->placeholder('-'),
                 TextColumn::make('amount')
+                    ->label(__('Amount'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('payment_method')
+                    ->label(__('Payment Method'))
                     ->badge(),
                 TextColumn::make('transaction_reference')
+                    ->label(__('Transaction Reference'))
                     ->searchable(),
                 TextColumn::make('status')
+                    ->label(__('Status'))
                     ->badge(),
                 TextColumn::make('paid_at')
+                    ->label(__('Paid At'))
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -55,7 +64,7 @@ class PaymentsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    // DeleteBulkAction::make(),
                 ]),
             ]);
     }

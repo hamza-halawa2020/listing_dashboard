@@ -15,37 +15,50 @@ class SubscriptionForm
         return $schema
             ->components([
                 Select::make('user_id')
+                    ->label(__('User'))
                     ->relationship('user', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
                 Select::make('subscription_plan_id')
+                    ->label(__('Subscription Plan'))
                     ->relationship('subscriptionPlan', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
                 TextInput::make('membership_card_number')
+                    ->label(__('Membership Number'))
                     ->disabled()
                     ->dehydrated(false),
                 DatePicker::make('starts_at')
+                    ->label(__('Starts At'))
                     ->required(),
                 DatePicker::make('ends_at')
+                    ->label(__('Ends At'))
                     ->required(),
                 Select::make('status')
-                    ->options(['active' => 'Active', 'expired' => 'Expired', 'cancelled' => 'Cancelled'])
+                    ->label(__('Status'))
+                    ->options([
+                        'active' => __('Active'),
+                        'expired' => __('Expired'),
+                        'cancelled' => __('Cancelled'),
+                    ])
                     ->default('active')
                     ->required(),
-                TextInput::make('payment_reference'),
+                TextInput::make('payment_reference')
+                    ->label(__('Payment Reference')),
                 Select::make('payment_method')
+                    ->label(__('Payment Method'))
                     ->options([
-            'cash' => 'Cash',
-            'credit_card' => 'Credit card',
-            'bank_transfer' => 'Bank transfer',
-            'fawry' => 'Fawry',
-            'instapay' => 'Instapay',
-            'vodafone_cash' => 'Vodafone cash',
-        ]),
+                        'cash' => __('Cash'),
+                        'credit_card' => __('Credit card'),
+                        'bank_transfer' => __('Bank transfer'),
+                        'fawry' => __('Fawry'),
+                        'instapay' => __('Instapay'),
+                        'vodafone_cash' => __('Vodafone cash'),
+                    ]),
                 Textarea::make('notes')
+                    ->label(__('Notes'))
                     ->columnSpanFull(),
             ]);
     }

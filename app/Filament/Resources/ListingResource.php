@@ -39,17 +39,29 @@ class ListingResource extends Resource
 
     protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedBuildingStorefront;
 
+    public static function getModelLabel(): string
+    {
+        return __('Listing');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Listings');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make('Basic Information')
+                Section::make(__('Basic Information'))
                     ->schema([
                         TextInput::make('name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
                         Select::make('category_id')
+                            ->label(__('Category'))
                             ->relationship('category', 'name')
                             ->required()
                             ->searchable()
@@ -57,7 +69,7 @@ class ListingResource extends Resource
                         
                         // Level 1 - Root
                         Select::make('location_level_1')
-                            ->label('Country')
+                            ->label(__('Country'))
                             ->options(Location::whereNull('parent_id')->pluck('name', 'id'))
                             ->required()
                             ->live()
@@ -78,7 +90,7 @@ class ListingResource extends Resource
                         
                         // Level 2 - Governorate
                         Select::make('location_level_2')
-                            ->label('Governorate')
+                            ->label(__('Governorate'))
                             ->options(fn (Get $get): array => 
                                 $get('location_level_1') 
                                     ? Location::where('parent_id', $get('location_level_1'))->pluck('name', 'id')->toArray()
@@ -104,7 +116,7 @@ class ListingResource extends Resource
                             ),
                         
                         Select::make('location_level_3')
-                            ->label('Area')
+                            ->label(__('Area'))
                             ->options(fn (Get $get): array => 
                                 $get('location_level_2') 
                                     ? Location::where('parent_id', $get('location_level_2'))->pluck('name', 'id')->toArray()
@@ -128,7 +140,7 @@ class ListingResource extends Resource
                         
                         // Level 4 - Sub Area
                         Select::make('location_level_4')
-                            ->label('Sub Area')
+                            ->label(__('Sub Area'))
                             ->options(fn (Get $get): array => 
                                 $get('location_level_3') 
                                     ? Location::where('parent_id', $get('location_level_3'))->pluck('name', 'id')->toArray()
@@ -162,7 +174,7 @@ class ListingResource extends Resource
                         
                         // Level 5 - Sub Sub Area
                         Select::make('location_level_5')
-                            ->label('Sub Sub Area')
+                            ->label(__('Sub Sub Area'))
                             ->options(fn (Get $get): array => 
                                 $get('location_level_4') 
                                     ? Location::where('parent_id', $get('location_level_4'))->pluck('name', 'id')->toArray()
@@ -187,76 +199,79 @@ class ListingResource extends Resource
                         
                         // Hidden field to store the final location_id
                         TextInput::make('location_id')
-                            ->label('Selected Location')
+                            ->label(__('Selected Location'))
                             ->disabled()
                             ->dehydrated()
                             ->required()
                             ->formatStateUsing(fn ($state) => $state ? Location::find($state)?->name . ' (ID: ' . $state . ')' : null)
-                            ->helperText('This will be auto-filled based on your location selection'),
+                            ->helperText(__('This will be auto-filled based on your location selection')),
                         
                         TextInput::make('address')
+                            ->label(__('Address'))
                             ->maxLength(255)
                             ->columnSpanFull(),
                         Textarea::make('description')
+                            ->label(__('Description'))
                             ->rows(4)
                             ->columnSpanFull(),
                         Toggle::make('is_active')
+                            ->label(__('Active'))
                             ->default(true),
                     ])
                     ->columns(2),
                 
-                Section::make('Location on Map')
+                Section::make(__('Location on Map'))
                     ->schema([
                         MapPicker::make('map_location')
-                            ->label('Select Location on Map')
+                            ->label(__('Select Location on Map'))
                             ->defaultLocation(30.0444, 31.2357)
                             ->defaultZoom(6)
                             ->columnSpanFull()
-                            ->helperText('Click on the map or drag the marker to select the exact location'),
+                            ->helperText(__('Click on the map or drag the marker to select the exact location')),
                         TextInput::make('latitude')
-                            ->label('Latitude')
+                            ->label(__('Latitude'))
                             ->numeric()
                             ->step(0.00000001)
                             ->placeholder('30.0444')
-                            ->helperText('Auto-filled from map or enter manually'),
+                            ->helperText(__('Auto-filled from map or enter manually')),
                         TextInput::make('longitude')
-                            ->label('Longitude')
+                            ->label(__('Longitude'))
                             ->numeric()
                             ->step(0.00000001)
                             ->placeholder('31.2357')
-                            ->helperText('Auto-filled from map or enter manually'),
+                            ->helperText(__('Auto-filled from map or enter manually')),
                     ])
                     ->columns(2)
                     ->collapsible(),
                 
-                Section::make('Phone Numbers')
+                Section::make(__('Phone Numbers'))
                     ->schema([
                         Repeater::make('phones')
                             ->relationship()
                             ->schema([
                                 TextInput::make('phone_number')
-                                    ->label('Phone Number')
+                                    ->label(__('Phone Number'))
                                     ->required()
                                     ->tel()
                                     ->maxLength(255),
                                 Select::make('type')
-                                    ->label('Type')
+                                    ->label(__('Type'))
                                     ->options([
-                                        'landline' => 'Landline',
-                                        'mobile' => 'Mobile',
-                                        'whatsapp' => 'WhatsApp',
+                                        'landline' => __('Landline'),
+                                        'mobile' => __('Mobile'),
+                                        'whatsapp' => __('WhatsApp'),
                                     ])
                                     ->required()
                                     ->default('mobile'),
                                 TextInput::make('contact_person')
-                                    ->label('Contact Person')
+                                    ->label(__('Contact Person'))
                                     ->maxLength(255)
-                                    ->placeholder('Optional - e.g., Dr. Ahmed, Reception')
-                                    ->helperText('Optional: Name of the person responsible for this number'),
+                                    ->placeholder(__('Optional - e.g., Dr. Ahmed, Reception'))
+                                    ->helperText(__('Optional: Name of the person responsible for this number')),
                             ])
                             ->columns(3)
                             ->defaultItems(1)
-                            ->addActionLabel('Add Phone Number')
+                            ->addActionLabel(__('Add Phone Number'))
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => 
                                 isset($state['phone_number']) 
@@ -266,107 +281,107 @@ class ListingResource extends Resource
                     ])
                     ->collapsible(),
 
-                Section::make('Images')
+                Section::make(__('Images'))
                     ->schema([
                         Repeater::make('images')
                             ->relationship()
                             ->schema([
                                 FileUpload::make('image_path')
-                                    ->label('Image')
+                                    ->label(__('Image'))
                                     ->image()
                                     // ->directory('listings')
                                     ->required()
                                     ->columnSpanFull(),
                                 Toggle::make('is_cover')
-                                    ->label('Set as Cover Image')
+                                    ->label(__('Set as Cover Image'))
                                     ->default(false),
                             ])
                             ->defaultItems(0)
-                            ->addActionLabel('Add Image')
+                            ->addActionLabel(__('Add Image'))
                             ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['is_cover'] ? '⭐ Cover Image' : 'Image'),
+                            ->itemLabel(fn (array $state): ?string => $state['is_cover'] ? __('Cover Image') : __('Image')),
                     ])
                     ->collapsible(),
                     
-                Section::make('Offers')
+                Section::make(__('Offers'))
                     ->schema([
                         Repeater::make('offers')
                             ->relationship()
                             ->schema([
                                 TextInput::make('title')
-                                    ->label('Offer Title')
+                                    ->label(__('Offer Title'))
                                     ->required()
                                     ->maxLength(255)
                                     ->columnSpanFull(),
                                 Textarea::make('description')
-                                    ->label('Description')
+                                    ->label(__('Description'))
                                     ->rows(3)
                                     ->columnSpanFull(),
                                 TextInput::make('discount_percentage')
-                                    ->label('Discount %')
+                                    ->label(__('Discount %'))
                                     ->numeric()
                                     ->suffix('%')
                                     ->minValue(0)
                                     ->maxValue(100),
                                 Toggle::make('is_active')
-                                    ->label('Active')
+                                    ->label(__('Active'))
                                     ->default(true),
                             ])
                             ->columns(2)
                             ->defaultItems(0)
-                            ->addActionLabel('Add Offer')
+                            ->addActionLabel(__('Add Offer'))
                             ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Offer'),
+                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? __('Offer')),
                     ])
                     ->collapsible(),
 
                 
-                Section::make('Working Hours')
+                Section::make(__('Working Hours'))
                     ->schema([
                         Repeater::make('workingHours')
                             ->relationship()
                             ->schema([
                                 Select::make('day')
-                                    ->label('Day')
+                                    ->label(__('Day'))
                                     ->options([
-                                        'saturday' => 'Saturday',
-                                        'sunday' => 'Sunday',
-                                        'monday' => 'Monday',
-                                        'tuesday' => 'Tuesday',
-                                        'wednesday' => 'Wednesday',
-                                        'thursday' => 'Thursday',
-                                        'friday' => 'Friday',
+                                        'saturday' => __('Saturday'),
+                                        'sunday' => __('Sunday'),
+                                        'monday' => __('Monday'),
+                                        'tuesday' => __('Tuesday'),
+                                        'wednesday' => __('Wednesday'),
+                                        'thursday' => __('Thursday'),
+                                        'friday' => __('Friday'),
                                     ])
                                     ->required()
                                     ->searchable()
                                     ->distinct()
                                     ->columnSpanFull(),
                                 Toggle::make('is_closed')
-                                    ->label('Closed')
+                                    ->label(__('Closed'))
                                     ->default(false)
                                     ->live()
                                     ->columnSpanFull(),
                                 TextInput::make('open_time')
-                                    ->label('Opening Time')
+                                    ->label(__('Opening Time'))
                                     ->type('time')
                                     ->required(fn (Get $get): bool => !$get('is_closed'))
                                     ->hidden(fn (Get $get): bool => $get('is_closed')),
                                 TextInput::make('close_time')
-                                    ->label('Closing Time')
+                                    ->label(__('Closing Time'))
                                     ->type('time')
                                     ->required(fn (Get $get): bool => !$get('is_closed'))
                                     ->hidden(fn (Get $get): bool => $get('is_closed')),
                             ])
                             ->columns(2)
                             ->defaultItems(0)
-                            ->addActionLabel('Add Working Day')
+                            ->addActionLabel(__('Add Working Day'))
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => 
                                 isset($state['day']) 
-                                    ? ($state['day'] ?? '') . ($state['is_closed'] ?? false ? ' - Closed' : ' (' . ($state['open_time'] ?? '') . ' - ' . ($state['close_time'] ?? '') . ')')
-                                    : 'Working Day'
+                                    ? ($state['day'] ?? '') . ($state['is_closed'] ?? false ? ' - ' . __('Closed') : ' (' . ($state['open_time'] ?? '') . ' - ' . ($state['close_time'] ?? '') . ')')
+                                    : __('Working Day')
                             )
-                            ->helperText('Add working hours for each day. Leave empty for days you are closed.'),
+                            ->helperText(__('Add working hours for each day. Leave empty for days you are closed.')),
                     ])
                     ->collapsible(),
             ]);
@@ -376,15 +391,15 @@ class ListingResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('category.name')->sortable(),
-                TextColumn::make('location.name')->sortable(),
-                IconColumn::make('is_active')->boolean(),
-                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('id')->label(__('ID'))->sortable(),
+                TextColumn::make('name')->label(__('Name'))->searchable()->sortable(),
+                TextColumn::make('category.name')->label(__('Category'))->sortable(),
+                TextColumn::make('location.name')->label(__('Location'))->sortable(),
+                IconColumn::make('is_active')->label(__('Active'))->boolean(),
+                TextColumn::make('created_at')->label(__('Created At'))->dateTime()->sortable(),
             ])
             ->filters([
-                TernaryFilter::make('is_active'),
+                TernaryFilter::make('is_active')->label(__('Active')),
             ])
             ->recordActions([
                 EditAction::make(),

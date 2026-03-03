@@ -15,27 +15,36 @@ class SubscriptionPlansTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 TextColumn::make('code')
+                    ->label(__('Code'))
                     ->searchable(),
                 TextColumn::make('type')
+                    ->label(__('Type'))
                     ->badge(),
                 TextColumn::make('coverage_type')
+                    ->label(__('Coverage Type'))
                     ->badge(),
                 TextColumn::make('price')
+                    ->label(__('Price'))
                     ->money()
                     ->sortable(),
                 TextColumn::make('duration_days')
+                    ->label(__('Duration Days'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('max_family_members')
+                    ->label(__('Max Family Members'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

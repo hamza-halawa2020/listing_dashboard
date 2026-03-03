@@ -15,24 +15,31 @@ class FamilyMembersTable
         return $table
             ->columns([
                 TextColumn::make('user.name')
-                    ->label('User')
+                    ->label(__('User'))
                     ->sortable(),
                 TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 TextColumn::make('national_id')
+                    ->label(__('National ID'))
                     ->searchable(),
                 TextColumn::make('relation')
+                    ->label(__('Relation'))
                     ->badge(),
                 TextColumn::make('birth_date')
+                    ->label(__('Birth Date'))
                     ->date()
                     ->sortable(),
                 TextColumn::make('gender')
+                    ->label(__('Gender'))
                     ->badge(),
                 TextColumn::make('created_at')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

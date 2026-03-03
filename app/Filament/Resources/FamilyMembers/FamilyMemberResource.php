@@ -18,7 +18,17 @@ class FamilyMemberResource extends Resource
 {
     protected static ?string $model = FamilyMember::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
+
+    public static function getModelLabel(): string
+    {
+        return __('Family Member');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Family Members');
+    }
 
     public static function form(Schema $schema): Schema
     {

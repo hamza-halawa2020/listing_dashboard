@@ -13,24 +13,38 @@ class SubscriptionPlanForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(__('Name'))
                     ->required(),
                 TextInput::make('code')
+                    ->label(__('Code'))
                     ->required(),
                 Select::make('type')
-                    ->options(['individual' => 'Individual', 'family' => 'Family'])
+                    ->label(__('Type'))
+                    ->options([
+                        'individual' => __('Individual'),
+                        'family' => __('Family'),
+                    ])
                     ->required(),
                 Select::make('coverage_type')
-                    ->options(['zone' => 'Zone', 'governorate' => 'Governorate', 'national' => 'National'])
+                    ->label(__('Coverage Type'))
+                    ->options([
+                        'zone' => __('Zone'),
+                        'governorate' => __('Governorate'),
+                        'national' => __('National'),
+                    ])
                     ->required(),
                 TextInput::make('price')
+                    ->label(__('Price'))
                     ->required()
                     ->numeric()
                     ->prefix('$'),
                 TextInput::make('duration_days')
+                    ->label(__('Duration Days'))
                     ->required()
                     ->numeric()
                     ->default(365),
                 TextInput::make('max_family_members')
+                    ->label(__('Max Family Members'))
                     ->numeric(),
             ]);
     }

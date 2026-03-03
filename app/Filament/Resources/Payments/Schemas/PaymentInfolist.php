@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Payments\Schemas;
 
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -11,34 +12,43 @@ class PaymentInfolist
     {
         return $schema
             ->components([
-                \Filament\Infolists\Components\ImageEntry::make('attachment')
+                ImageEntry::make('attachment')
+                    ->label(__('Image'))
                     ->square(),
                 TextEntry::make('user.name')
-                    ->label('User'),
+                    ->label(__('User')),
                 TextEntry::make('subscription.id')
-                    ->label('Subscription #')
+                    ->label(__('Subscription #'))
                     ->placeholder('-'),
                 TextEntry::make('subscription.membership_card_number')
-                    ->label('Membership Number')
+                    ->label(__('Membership Number'))
                     ->placeholder('-'),
                 TextEntry::make('amount')
+                    ->label(__('Amount'))
                     ->numeric(),
                 TextEntry::make('payment_method')
+                    ->label(__('Payment Method'))
                     ->badge(),
                 TextEntry::make('transaction_reference')
+                    ->label(__('Transaction Reference'))
                     ->placeholder('-'),
                 TextEntry::make('status')
+                    ->label(__('Status'))
                     ->badge(),
                 TextEntry::make('notes')
+                    ->label(__('Notes'))
                     ->placeholder('-')
                     ->columnSpanFull(),
                 TextEntry::make('paid_at')
+                    ->label(__('Paid At'))
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('created_at')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->placeholder('-'),
             ]);

@@ -8,11 +8,12 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Contracts\Support\Htmlable;
 use UnitEnum;
 
 class ManageSettings extends Page
@@ -21,17 +22,32 @@ class ManageSettings extends Page
 
     protected string $view = 'filament.pages.manage-settings';
 
-    protected static ?string $navigationLabel = 'Settings';
+    protected static ?string $navigationLabel = null;
 
-    protected static ?string $title = 'Settings';
+    protected static ?string $title = null;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Settings';
+    protected static string | UnitEnum | null $navigationGroup = null;
 
     public ?array $data = [];
 
     public static function shouldRegisterNavigation(): bool
     {
         return false;
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Settings');
+    }
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return __('Settings');
+    }
+
+    public function getTitle(): string | Htmlable
+    {
+        return __('Settings');
     }
 
     public function mount(): void
@@ -43,51 +59,48 @@ class ManageSettings extends Page
     {
         return $schema
             ->components([
-                Section::make('Contact Information')
+                Section::make(__('Contact Information'))
                     ->schema([
                         TextInput::make('phone')
-                            ->label('Phone')
+                            ->label(__('Phone'))
                             ->tel(),
                         TextInput::make('whatsapp')
-                            ->label('WhatsApp')
+                            ->label(__('WhatsApp'))
                             ->tel(),
                         TextInput::make('facebook')
-                            ->label('Facebook')
+                            ->label(__('Facebook'))
                             ->url(),
                         TextInput::make('instagram')
-                            ->label('Instagram')
+                            ->label(__('Instagram'))
                             ->url(),
                         TextInput::make('email')
-                            ->label('Email')
+                            ->label(__('Email'))
                             ->email(),
                     ])->columns(2),
-
-                Section::make('About Us')
+                Section::make(__('About Us'))
                     ->schema([
                         Textarea::make('about_us')
-                            ->label('About Us')
+                            ->label(__('About Us'))
                             ->rows(5),
                         Textarea::make('about_us_footer')
-                            ->label('About Us (Footer)')
+                            ->label(__('About Us (Footer)'))
                             ->rows(3),
                         TextInput::make('address')
-                            ->label('Address'),
+                            ->label(__('Address')),
                     ]),
-
-                Section::make('Policies')
+                Section::make(__('Policies'))
                     ->schema([
                         RichEditor::make('privacy_policy')
-                            ->label('Privacy Policy')
+                            ->label(__('Privacy Policy'))
                             ->columnSpanFull(),
                         RichEditor::make('terms_conditions')
-                            ->label('Terms & Conditions')
+                            ->label(__('Terms & Conditions'))
                             ->columnSpanFull(),
                     ]),
-
-                Section::make('Media')
+                Section::make(__('Media'))
                     ->schema([
                         FileUpload::make('logo')
-                            ->label('Logo')
+                            ->label(__('Logo'))
                             ->directory('settings')
                             ->image(),
                     ]),
@@ -99,18 +112,18 @@ class ManageSettings extends Page
     {
         try {
             $data = $this->form->getState();
-            
+
             foreach ($data as $key => $value) {
                 Setting::setValue($key, $value);
             }
 
             Notification::make()
-                ->title('Settings saved successfully')
+                ->title(__('Settings saved successfully'))
                 ->success()
                 ->send();
         } catch (\Exception $exception) {
             Notification::make()
-                ->title('Error saving settings')
+                ->title(__('Error saving settings'))
                 ->danger()
                 ->send();
         }

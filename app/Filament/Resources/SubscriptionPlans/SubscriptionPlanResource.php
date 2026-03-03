@@ -18,7 +18,17 @@ class SubscriptionPlanResource extends Resource
 {
     protected static ?string $model = SubscriptionPlan::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
+
+    public static function getModelLabel(): string
+    {
+        return __('Subscription Plan');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Subscription Plans');
+    }
 
     public static function form(Schema $schema): Schema
     {
