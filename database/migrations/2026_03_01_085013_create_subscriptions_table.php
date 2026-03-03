@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('ends_at');
             $table->enum('status', ['active', 'expired', 'cancelled'])->default('active');
             $table->string('payment_reference')->nullable();
-            $table->enum('payment_method', ['cash', 'credit_card', 'bank_transfer', 'fawry', 'vodafone_cash', 'online'])->nullable();
+            $table->enum('payment_method', ['cash', 'credit_card', 'bank_transfer', 'fawry', 'vodafone_cash', 'online','instapay'])->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

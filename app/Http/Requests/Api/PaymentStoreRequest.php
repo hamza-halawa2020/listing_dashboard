@@ -17,10 +17,17 @@ class PaymentStoreRequest extends FormRequest
     {
         return [
             'plan_id' => 'required|exists:subscription_plans,id',
-            'location_id' => 'required|exists:locations,id',
+            'amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:cash,credit_card,bank_transfer,fawry,vodafone_cash,instapay',
+            'transaction_reference' => 'nullable|string|max:255',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'notes' => 'nullable|string',
+            'delivery_required' => 'nullable|boolean',
+            'location_id' => 'nullable|required_if:delivery_required,1|exists:locations,id',
+            'delivery_name' => 'nullable|required_if:delivery_required,1|string|max:255',
+            'delivery_phone' => 'nullable|required_if:delivery_required,1|string|max:255',
+            'delivery_address' => 'nullable|required_if:delivery_required,1|string',
+            'shipping_cost' => 'nullable|numeric|min:0',
         ];
     }
 

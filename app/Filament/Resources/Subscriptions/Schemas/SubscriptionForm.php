@@ -39,8 +39,8 @@ class SubscriptionForm
             'credit_card' => 'Credit card',
             'bank_transfer' => 'Bank transfer',
             'fawry' => 'Fawry',
+            'instapay' => 'Instapay',
             'vodafone_cash' => 'Vodafone cash',
-            'online' => 'Online',
         ]),
                 Textarea::make('notes')
                     ->columnSpanFull(),

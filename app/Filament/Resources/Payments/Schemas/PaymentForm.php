@@ -32,8 +32,8 @@ class PaymentForm
             'credit_card' => 'Credit card',
             'bank_transfer' => 'Bank transfer',
             'fawry' => 'Fawry',
+            'instapay' => 'Instapay',
             'vodafone_cash' => 'Vodafone cash',
-            'online' => 'Online',
         ])
                     ->required(),
                 TextInput::make('transaction_reference'),
@@ -52,6 +52,23 @@ class PaymentForm
                     ,
                 Textarea::make('notes')
                     ->columnSpanFull(),
+                Select::make('location_id')
+                    ->relationship('location', 'name')
+                    ->searchable()
+                    ->preload(),
+                Select::make('delivery_required')
+                    ->options([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->default(0)
+                    ->required(),
+                TextInput::make('delivery_name'),
+                TextInput::make('delivery_phone'),
+                Textarea::make('delivery_address')
+                    ->columnSpanFull(),
+                TextInput::make('shipping_cost')
+                    ->numeric(),
                 DateTimePicker::make('paid_at'),
             ]);
     }
