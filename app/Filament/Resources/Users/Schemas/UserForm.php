@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Models\FamilyMember;
+use App\Models\User;
+use App\Support\FamilyMemberSubscription;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
@@ -9,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Livewire\Component as Livewire;
 
 class UserForm
 {
@@ -63,7 +67,21 @@ class UserForm
                 Repeater::make('familyMembers')
                     ->label(__('Family Members'))
                     ->relationship()
+                    ->hiddenOn('create')
                     ->schema([
+                        Select::make('subscription_id')
+                            ->label(__('Subscription'))
+                            ->options(function (Livewire $livewire, $record): array {
+                                $user = $livewire->record ?? null;
+                                $familyMember = $record instanceof FamilyMember ? $record : null;
+
+                                return $user instanceof User
+                                    ? FamilyMemberSubscription::optionsForUser($user, $familyMember)
+                                    : [];
+                            })
+                            ->placeholder(__('Not assigned'))
+                            ->searchable()
+                            ->preload(),
                         TextInput::make('name')
                             ->label(__('Name'))
                             ->required(),
@@ -94,7 +112,8 @@ class UserForm
                     ])
                     ->columnSpanFull()
                     ->defaultItems(0)
-                    ->addActionLabel(__('Add Family Member')),
+                    ->addActionLabel(__('Add Family Member'))
+                    ->helperText(__('You can add all family members. Only the linked members count against the subscription limit.')),
             ]);
     }
 }

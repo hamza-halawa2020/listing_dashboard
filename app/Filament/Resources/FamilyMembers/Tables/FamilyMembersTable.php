@@ -17,6 +17,15 @@ class FamilyMembersTable
                 TextColumn::make('user.name')
                     ->label(__('User'))
                     ->sortable(),
+                TextColumn::make('subscription.membership_card_number')
+                    ->label(__('Subscription #'))
+                    ->placeholder(__('Not assigned'))
+                    ->sortable(),
+                TextColumn::make('subscription.subscriptionPlan.name')
+                    ->label(__('Plan'))
+                    ->formatStateUsing(fn (?string $state): ?string => filled($state) ? __($state) : $state)
+                    ->placeholder(__('Not assigned'))
+                    ->sortable(),
                 TextColumn::make('name')
                     ->label(__('Name'))
                     ->searchable(),

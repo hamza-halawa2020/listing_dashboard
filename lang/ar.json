@@ -298,5 +298,14 @@
     "Family Zone": "عائلي - نطاق",
     "Family Governorate": "عائلي - محافظة",
     "Individual National": "فردي - قومي",
-    "Family National": "عائلي - قومي"
+    "Family National": "عائلي - قومي",
+    "A subscription is required for each family member.": "يجب اختيار اشتراك لكل فرد من أفراد العائلة.",
+    "This subscription is invalid for the selected user.": "هذا الاشتراك غير صالح للمستخدم المحدد.",
+    "This subscription does not allow family members.": "هذا الاشتراك لا يسمح بإضافة أفراد عائلة.",
+    "This subscription has reached the maximum number of family members.": "هذا الاشتراك وصل إلى الحد الأقصى المسموح به لأفراد العائلة.",
+    "Family members must be linked to a subscription, and each subscription has a fixed family member limit.": "يجب ربط كل فرد عائلة باشتراك محدد، ولكل اشتراك حد أقصى ثابت لأفراد العائلة.",
+    "Not assigned": "غير مربوط",
+    "Optional. Only linked family members count toward the subscription limit.": "اختياري. فقط أفراد العائلة المرتبطون باشتراك يتم احتسابهم ضمن حد الاشتراك.",
+    "You can add all family members. Only the linked members count against the subscription limit.": "يمكنك إضافة كل أفراد العائلة. فقط الأفراد المرتبطون باشتراك يتم احتسابهم ضمن حد الاشتراك.",
+    "You must add your national ID before subscribing to any plan.": "يجب إضافة الرقم القومي في الملف الشخصي قبل الاشتراك في أي باقة."
 }

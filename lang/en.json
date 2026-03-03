@@ -263,5 +263,14 @@
     "Family Zone": "Family Zone",
     "Family Governorate": "Family Governorate",
     "Individual National": "Individual National",
-    "Family National": "Family National"
+    "Family National": "Family National",
+    "A subscription is required for each family member.": "A subscription is required for each family member.",
+    "This subscription is invalid for the selected user.": "This subscription is invalid for the selected user.",
+    "This subscription does not allow family members.": "This subscription does not allow family members.",
+    "This subscription has reached the maximum number of family members.": "This subscription has reached the maximum number of family members.",
+    "Family members must be linked to a subscription, and each subscription has a fixed family member limit.": "Family members must be linked to a subscription, and each subscription has a fixed family member limit.",
+    "Not assigned": "Not assigned",
+    "Optional. Only linked family members count toward the subscription limit.": "Optional. Only linked family members count toward the subscription limit.",
+    "You can add all family members. Only the linked members count against the subscription limit.": "You can add all family members. Only the linked members count against the subscription limit.",
+    "You must add your national ID before subscribing to any plan.": "You must add your national ID before subscribing to any plan."
 }

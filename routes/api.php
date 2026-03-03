@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::match(['put', 'patch'], '/profile', [ProfileController::class, 'update']);
     Route::post('/profile/family-members', [ProfileController::class, 'storeFamilyMember']);
+    Route::match(['put', 'patch'], '/profile/family-members/{id}', [ProfileController::class, 'updateFamilyMember']);
 
     // Listings routes (subscription-based access)
     Route::get('/listings', [ListingController::class, 'index']);

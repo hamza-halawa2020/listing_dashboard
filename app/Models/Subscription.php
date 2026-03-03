@@ -38,6 +38,30 @@ class Subscription extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function familyMembers()
+    {
+        return $this->hasMany(FamilyMember::class);
+    }
+
+    public function maxFamilyMembersLimit(): int
+    {
+        $this->loadMissing('subscriptionPlan');
+
+        return max((int) ($this->subscriptionPlan?->max_family_members ?? 0), 0);
+    }
+
+    public function availableFamilyMemberSlots(?FamilyMember $ignore = null): int
+    {
+        $assignedCount = $this->familyMembers()
+            ->when(
+                $ignore?->exists,
+                fn ($query) => $query->whereKeyNot($ignore->getKey()),
+            )
+            ->count();
+
+        return max($this->maxFamilyMembersLimit() - $assignedCount, 0);
+    }
+
     public function generateMembershipCardNumber(): string
     {
         $planCode = strtoupper($this->subscriptionPlan?->code ?: 'SUB');

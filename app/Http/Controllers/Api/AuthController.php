@@ -30,7 +30,7 @@ class AuthController extends Controller
 
         $user->load([
             'location',
-            'familyMembers',
+            'familyMembers.subscription.subscriptionPlan',
             'payments',
             'subscriptions' => fn ($query) => $query
                 ->with(['subscriptionPlan', 'payments'])
@@ -61,7 +61,7 @@ class AuthController extends Controller
 
         $user->load([
             'location',
-            'familyMembers',
+            'familyMembers.subscription.subscriptionPlan',
             'payments',
             'subscriptions' => fn ($query) => $query
                 ->with(['subscriptionPlan', 'payments'])

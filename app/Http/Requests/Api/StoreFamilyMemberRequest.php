@@ -15,6 +15,7 @@ class StoreFamilyMemberRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'subscription_id' => ['nullable', 'exists:subscriptions,id'],
             'name' => ['required', 'string', 'max:255'],
             'national_id' => [
                 'required',

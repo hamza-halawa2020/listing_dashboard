@@ -31,6 +31,20 @@ class PaymentStoreRequest extends FormRequest
         ];
     }
 
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator): void {
+            if (filled($this->user()?->national_id)) {
+                return;
+            }
+
+            $validator->errors()->add(
+                'national_id',
+                __('You must add your national ID before subscribing to any plan.'),
+            );
+        });
+    }
+
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
