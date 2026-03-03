@@ -134,7 +134,7 @@ class PostResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManagePosts::route('/'),
+            // 'index' => ManagePosts::route('/'),
         ];
     }
 }

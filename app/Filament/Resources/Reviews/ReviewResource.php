@@ -119,7 +119,7 @@ class ReviewResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManageReviews::route('/'),
+            // 'index' => ManageReviews::route('/'),
         ];
     }
 }
