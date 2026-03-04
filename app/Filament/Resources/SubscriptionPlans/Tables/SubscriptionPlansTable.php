@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SubscriptionPlans\Tables;
 
+use App\Filament\Resources\SubscriptionPlans\SubscriptionPlanResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -65,11 +66,13 @@ class SubscriptionPlansTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn ($record): bool => SubscriptionPlanResource::canEdit($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => SubscriptionPlanResource::canDeleteAny()),
                 ]),
             ]);
     }

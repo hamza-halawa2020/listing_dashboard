@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Categories\Pages\ManageCategories;
 use App\Models\Category;
 use BackedEnum;
@@ -14,14 +15,13 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 
-class CategoryResource extends Resource
+class CategoryResource extends AuthorizedResource
 {
     protected static ?string $model = Category::class;
 
@@ -117,13 +117,17 @@ class CategoryResource extends Resource
             ->headerActions([
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                ViewAction::make()
+                    ->visible(fn ($record): bool => static::canView($record)),
+                EditAction::make()
+                    ->visible(fn ($record): bool => static::canEdit($record)),
+                DeleteAction::make()
+                    ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => static::canDeleteAny()),
                 ]),
             ]);
     }

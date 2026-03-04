@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Subscriptions;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Subscriptions\Pages\CreateSubscription;
 use App\Filament\Resources\Subscriptions\Pages\EditSubscription;
 use App\Filament\Resources\Subscriptions\Pages\ListSubscriptions;
@@ -9,12 +10,11 @@ use App\Filament\Resources\Subscriptions\Schemas\SubscriptionForm;
 use App\Filament\Resources\Subscriptions\Tables\SubscriptionsTable;
 use App\Models\Subscription;
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
-class SubscriptionResource extends Resource
+class SubscriptionResource extends AuthorizedResource
 {
     protected static ?string $model = Subscription::class;
 

@@ -310,5 +310,16 @@
     "You must add your national ID before subscribing to any plan.": "يجب إضافة الرقم القومي في الملف الشخصي قبل الاشتراك في أي باقة."
 ,
     "Links": "الروابط",
-    "Add Link": "إضافة رابط"
+    "Add Link": "إضافة رابط",
+    "Roles": "الأدوار",
+    "Permission": "الصلاحية",
+    "Permissions": "الصلاحيات",
+    "Permission Key": "كود الصلاحية",
+    "Access Control": "التحكم في الصلاحيات",
+    "Guard Name": "اسم الحارس",
+    "View Any": "عرض الكل",
+    "Delete Any": "حذف الكل",
+    "Manage": "إدارة",
+    "Super Admin": "سوبر أدمن",
+    "Moderator": "مشرف"
 }

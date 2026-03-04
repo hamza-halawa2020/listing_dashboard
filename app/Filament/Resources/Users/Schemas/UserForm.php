@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use App\Models\FamilyMember;
 use App\Models\User;
+use App\Support\AdminPermissionRegistry;
 use App\Support\FamilyMemberSubscription;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -39,6 +40,13 @@ class UserForm
                     ])
                     ->default('member')
                     ->required(),
+                Select::make('roles')
+                    ->label(__('Roles'))
+                    ->relationship('roles', 'name')
+                    ->getOptionLabelFromRecordUsing(fn ($record): string => AdminPermissionRegistry::roleLabel($record->name))
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
                 TextInput::make('national_id')
                     ->label(__('National ID')),
                 Select::make('location_id')

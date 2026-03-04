@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Resources\Users\UserResource;
+use App\Support\AdminPermissionRegistry;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -26,6 +28,17 @@ class UsersTable
                 TextColumn::make('role')
                     ->label(__('Role'))
                     ->badge(),
+                TextColumn::make('roles.name')
+                    ->label(__('Roles'))
+                    ->formatStateUsing(function ($state): string {
+                        $roles = is_array($state) ? $state : [$state];
+
+                        return collect($roles)
+                            ->filter()
+                            ->map(fn (string $role): string => AdminPermissionRegistry::roleLabel($role))
+                            ->implode(', ');
+                    })
+                    ->wrap(),
                 TextColumn::make('national_id')
                     ->label(__('National ID'))
                     ->searchable(),
@@ -59,11 +72,13 @@ class UsersTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn ($record): bool => UserResource::canEdit($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => UserResource::canDeleteAny()),
                 ]),
             ]);
     }

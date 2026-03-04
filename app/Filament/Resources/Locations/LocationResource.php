@@ -2,18 +2,18 @@
 
 namespace App\Filament\Resources\Locations;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Locations\Pages\ManageLocations;
 use App\Filament\Resources\Locations\Schemas\LocationForm;
 use App\Filament\Resources\Locations\Tables\LocationsTable;
 use App\Models\Location;
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class LocationResource extends Resource
+class LocationResource extends AuthorizedResource
 {
     protected static ?string $model = Location::class;
 

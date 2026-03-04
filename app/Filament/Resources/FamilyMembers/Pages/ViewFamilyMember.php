@@ -13,7 +13,8 @@ class ViewFamilyMember extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn (): bool => FamilyMemberResource::canEdit($this->getRecord())),
         ];
     }
 }

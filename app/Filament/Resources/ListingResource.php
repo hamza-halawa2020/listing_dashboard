@@ -25,7 +25,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
@@ -34,7 +33,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
-class ListingResource extends Resource
+class ListingResource extends AuthorizedResource
 {
     protected static ?string $model = Listing::class;
 
@@ -428,12 +427,15 @@ class ListingResource extends Resource
                 TernaryFilter::make('is_active')->label(__('Active')),
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->visible(fn ($record): bool => static::canEdit($record)),
+                DeleteAction::make()
+                    ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => static::canDeleteAny()),
                 ]),
             ]);
     }

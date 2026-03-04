@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\AuthorizesPageAccess;
 use App\Models\Setting;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
@@ -18,6 +19,8 @@ use UnitEnum;
 
 class ManageSettings extends Page
 {
+    use AuthorizesPageAccess;
+
     protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected string $view = 'filament.pages.manage-settings';
@@ -43,6 +46,11 @@ class ManageSettings extends Page
     public static function getNavigationGroup(): string | UnitEnum | null
     {
         return __('Settings');
+    }
+
+    protected static function getAccessPermissionName(): ?string
+    {
+        return 'settings.manage';
     }
 
     public function getTitle(): string | Htmlable

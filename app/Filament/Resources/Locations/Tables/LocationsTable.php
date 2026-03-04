@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Locations\Tables;
 
+use App\Filament\Resources\Locations\LocationResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -55,9 +56,12 @@ class LocationsTable
                     ->preload(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ViewAction::make()
+                    ->visible(fn ($record): bool => LocationResource::canView($record)),
+                EditAction::make()
+                    ->visible(fn ($record): bool => LocationResource::canEdit($record)),
                 DeleteAction::make()
+                    ->visible(fn ($record): bool => LocationResource::canDelete($record))
                     ->requiresConfirmation()
                     ->disabled(fn ($record) => $record->listings()->exists() || $record->children()->exists())
                     ->tooltip(fn ($record) => $record->listings()->exists()
@@ -66,7 +70,8 @@ class LocationsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => LocationResource::canDeleteAny()),
                 ]),
             ]);
     }

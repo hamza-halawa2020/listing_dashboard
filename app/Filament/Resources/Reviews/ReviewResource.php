@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Reviews;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Reviews\Pages\ManageReviews;
 use App\Models\Review;
 use BackedEnum;
@@ -16,14 +17,13 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class ReviewResource extends Resource
+class ReviewResource extends AuthorizedResource
 {
     protected static ?string $model = Review::class;
 
@@ -105,13 +105,17 @@ class ReviewResource extends Resource
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                ViewAction::make()
+                    ->visible(fn ($record): bool => static::canView($record)),
+                EditAction::make()
+                    ->visible(fn ($record): bool => static::canEdit($record)),
+                DeleteAction::make()
+                    ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => static::canDeleteAny()),
                 ]),
             ]);
     }

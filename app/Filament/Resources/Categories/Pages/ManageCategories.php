@@ -14,6 +14,7 @@ class ManageCategories extends ManageRecords
     {
         return [
             CreateAction::make()
+            ->visible(fn (): bool => CategoryResource::canCreate())
             ->mutateFormDataUsing(function (array $data) {
                 $data['created_by'] = auth()->id();
                 return $data;

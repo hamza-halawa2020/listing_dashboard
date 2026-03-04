@@ -274,5 +274,16 @@
     "You can add all family members. Only the linked members count against the subscription limit.": "You can add all family members. Only the linked members count against the subscription limit.",
     "You must add your national ID before subscribing to any plan.": "You must add your national ID before subscribing to any plan.",
     "Links": "Links",
-    "Add Link": "Add Link"
+    "Add Link": "Add Link",
+    "Roles": "Roles",
+    "Permission": "Permission",
+    "Permissions": "Permissions",
+    "Permission Key": "Permission Key",
+    "Access Control": "Access Control",
+    "Guard Name": "Guard Name",
+    "View Any": "View Any",
+    "Delete Any": "Delete Any",
+    "Manage": "Manage",
+    "Super Admin": "Super Admin",
+    "Moderator": "Moderator"
 }

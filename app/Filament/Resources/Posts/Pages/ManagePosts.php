@@ -14,6 +14,7 @@ class ManagePosts extends ManageRecords
     {
         return [
             CreateAction::make()
+            ->visible(fn (): bool => PostResource::canCreate())
             ->mutateFormDataUsing(function (array $data) {
                 $data['created_by'] = auth()->id();
                 return $data;

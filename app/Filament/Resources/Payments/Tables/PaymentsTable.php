@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Payments\Tables;
 
+use App\Filament\Resources\Payments\PaymentResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -60,8 +61,10 @@ class PaymentsTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ViewAction::make()
+                    ->visible(fn ($record): bool => PaymentResource::canView($record)),
+                EditAction::make()
+                    ->visible(fn ($record): bool => PaymentResource::canEdit($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

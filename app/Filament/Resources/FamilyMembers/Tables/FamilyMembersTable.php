@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\FamilyMembers\Tables;
 
+use App\Filament\Resources\FamilyMembers\FamilyMemberResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -57,11 +58,13 @@ class FamilyMembersTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn ($record): bool => FamilyMemberResource::canEdit($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => FamilyMemberResource::canDeleteAny()),
                 ]),
             ]);
     }

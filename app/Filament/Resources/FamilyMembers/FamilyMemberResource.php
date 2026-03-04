@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\FamilyMembers;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\FamilyMembers\Pages\CreateFamilyMember;
 use App\Filament\Resources\FamilyMembers\Pages\EditFamilyMember;
 use App\Filament\Resources\FamilyMembers\Pages\ListFamilyMembers;
@@ -9,12 +10,11 @@ use App\Filament\Resources\FamilyMembers\Schemas\FamilyMemberForm;
 use App\Filament\Resources\FamilyMembers\Tables\FamilyMembersTable;
 use App\Models\FamilyMember;
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
-class FamilyMemberResource extends Resource
+class FamilyMemberResource extends AuthorizedResource
 {
     protected static ?string $model = FamilyMember::class;
 

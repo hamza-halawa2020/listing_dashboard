@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SubscriptionPlans;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\SubscriptionPlans\Pages\CreateSubscriptionPlan;
 use App\Filament\Resources\SubscriptionPlans\Pages\EditSubscriptionPlan;
 use App\Filament\Resources\SubscriptionPlans\Pages\ListSubscriptionPlans;
@@ -9,12 +10,11 @@ use App\Filament\Resources\SubscriptionPlans\Schemas\SubscriptionPlanForm;
 use App\Filament\Resources\SubscriptionPlans\Tables\SubscriptionPlansTable;
 use App\Models\SubscriptionPlan;
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
-class SubscriptionPlanResource extends Resource
+class SubscriptionPlanResource extends AuthorizedResource
 {
     protected static ?string $model = SubscriptionPlan::class;
 

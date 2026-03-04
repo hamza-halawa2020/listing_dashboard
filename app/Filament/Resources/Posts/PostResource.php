@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Posts\Pages\ManagePosts;
 use App\Models\Post;
 use BackedEnum;
@@ -17,7 +18,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
@@ -26,7 +26,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Forms\Components\RichEditor;
 
-class PostResource extends Resource
+class PostResource extends AuthorizedResource
 {
     protected static ?string $model = Post::class;
 
@@ -120,13 +120,17 @@ class PostResource extends Resource
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                ViewAction::make()
+                    ->visible(fn ($record): bool => static::canView($record)),
+                EditAction::make()
+                    ->visible(fn ($record): bool => static::canEdit($record)),
+                DeleteAction::make()
+                    ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => static::canDeleteAny()),
                 ]),
             ]);
     }

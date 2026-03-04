@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\AuthorizesPageAccess;
 use App\Filament\Widgets\ContentPulseChart;
 use App\Filament\Widgets\PaymentsStatusChart;
 use App\Filament\Widgets\SystemGrowthChart;
@@ -14,6 +15,7 @@ use Filament\Schemas\Schema;
 
 class Dashboard extends BaseDashboard
 {
+    use AuthorizesPageAccess;
     use HasFiltersForm;
 
     public function mount(): void
@@ -33,6 +35,11 @@ class Dashboard extends BaseDashboard
     public function persistsFiltersInSession(): bool
     {
         return false;
+    }
+
+    protected static function getAccessPermissionName(): ?string
+    {
+        return 'dashboard.view';
     }
 
     public function filtersForm(Schema $schema): Schema

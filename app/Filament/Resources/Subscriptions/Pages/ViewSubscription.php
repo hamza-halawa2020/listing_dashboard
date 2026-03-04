@@ -13,7 +13,8 @@ class ViewSubscription extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn (): bool => SubscriptionResource::canEdit($this->getRecord())),
         ];
     }
 }

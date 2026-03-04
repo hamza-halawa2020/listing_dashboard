@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Contacts;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Contacts\Pages\ManageContacts;
 use App\Models\Contact;
 use BackedEnum;
@@ -13,13 +14,12 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class ContactResource extends Resource
+class ContactResource extends AuthorizedResource
 {
     protected static ?string $model = Contact::class;
 
@@ -95,13 +95,16 @@ class ContactResource extends Resource
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->visible(fn ($record): bool => static::canView($record)),
                 // EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn (): bool => static::canDeleteAny()),
                 ]),
             ]);
     }

@@ -21,10 +21,12 @@ class ListListings extends ListRecords
             Actions\Action::make('downloadImportTemplate')
                 ->label(__('Download Import Template'))
                 ->icon('heroicon-o-arrow-down-tray')
+                ->visible(fn (): bool => ListingResource::canViewAny())
                 ->url(asset('templates/listings-import-template.csv'), shouldOpenInNewTab: true),
             Actions\Action::make('importListings')
                 ->label(__('Import Listings'))
                 ->icon('heroicon-o-arrow-up-tray')
+                ->visible(fn (): bool => ListingResource::canCreate())
                 ->form([
                     FileUpload::make('file')
                         ->label(__('Spreadsheet File'))
@@ -88,7 +90,8 @@ class ListListings extends ListRecords
                             ->send();
                     }
                 }),
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->visible(fn (): bool => ListingResource::canCreate()),
         ];
     }
 }
