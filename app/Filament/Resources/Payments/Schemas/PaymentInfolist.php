@@ -14,6 +14,7 @@ class PaymentInfolist
             ->components([
                 ImageEntry::make('attachment')
                     ->label(__('Image'))
+                    ->disk('public')
                     ->square(),
                 TextEntry::make('user.name')
                     ->label(__('User')),

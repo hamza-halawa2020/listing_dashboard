@@ -18,6 +18,7 @@ class PaymentsTable
             ->columns([
                 ImageColumn::make('attachment')
                     ->label(__('Image'))
+                    ->disk('public')
                     ->square(),
                 TextColumn::make('user.name')
                     ->label(__('User'))

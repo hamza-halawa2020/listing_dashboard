@@ -61,6 +61,9 @@ class PaymentForm
                 FileUpload::make('attachment')
                     ->label(__('Image'))
                     ->disabledOn('edit')
+                    ->disk('public')
+                    ->directory('payments')
+                    ->visibility('public')
                     ->image(),
                 Textarea::make('notes')
                     ->label(__('Notes'))
