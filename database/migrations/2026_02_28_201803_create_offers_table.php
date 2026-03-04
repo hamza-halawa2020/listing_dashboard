@@ -14,6 +14,9 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->decimal('discount_percentage', 5, 2)->nullable();
+            $table->decimal('price_before_discount', 10, 2)->nullable();
+            $table->decimal('price_after_discount', 10, 2)->nullable();
+            $table->decimal('discount_amount', 10, 2)->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
