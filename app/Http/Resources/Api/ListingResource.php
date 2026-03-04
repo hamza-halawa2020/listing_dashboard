@@ -28,6 +28,7 @@ class ListingResource extends JsonResource
             'offers' => $this->whenLoaded('offers'),
             'images' => $this->whenLoaded('images'),
             'phones' => $this->whenLoaded('phones'),
+            'links' => $this->whenLoaded('links'),
         ];
     }
 }

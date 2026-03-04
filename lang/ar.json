@@ -308,4 +308,7 @@
     "Optional. Only linked family members count toward the subscription limit.": "اختياري. فقط أفراد العائلة المرتبطون باشتراك يتم احتسابهم ضمن حد الاشتراك.",
     "You can add all family members. Only the linked members count against the subscription limit.": "يمكنك إضافة كل أفراد العائلة. فقط الأفراد المرتبطون باشتراك يتم احتسابهم ضمن حد الاشتراك.",
     "You must add your national ID before subscribing to any plan.": "يجب إضافة الرقم القومي في الملف الشخصي قبل الاشتراك في أي باقة."
+,
+    "Links": "الروابط",
+    "Add Link": "إضافة رابط"
 }

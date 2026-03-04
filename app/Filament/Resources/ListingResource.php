@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ListingResource\Pages;
 use App\Filament\Resources\ListingResource\RelationManagers\ImagesRelationManager;
+use App\Filament\Resources\ListingResource\RelationManagers\LinksRelationManager;
 use App\Filament\Resources\ListingResource\RelationManagers\OffersRelationManager;
 use App\Filament\Resources\ListingResource\RelationManagers\PhonesRelationManager;
 use App\Forms\Components\MapPicker;
@@ -219,7 +220,7 @@ class ListingResource extends Resource
                             ->default(true),
                     ])
                     ->columns(2),
-                
+
                 Section::make(__('Location on Map'))
                     ->schema([
                         MapPicker::make('map_location')
@@ -277,6 +278,31 @@ class ListingResource extends Resource
                                 isset($state['phone_number']) 
                                     ? $state['phone_number'] . (isset($state['contact_person']) && $state['contact_person'] ? ' - ' . $state['contact_person'] : '')
                                     : null
+                            ),
+                    ])
+                    ->collapsible(),
+
+                Section::make(__('Links'))
+                    ->schema([
+                        Repeater::make('links')
+                            ->relationship()
+                            ->schema([
+                                TextInput::make('title')
+                                    ->label(__('Title'))
+                                    ->required()
+                                    ->maxLength(255),
+                                TextInput::make('url')
+                                    ->label(__('Link'))
+                                    ->url()
+                                    ->required()
+                                    ->maxLength(255),
+                            ])
+                            ->columns(2)
+                            ->defaultItems(0)
+                            ->addActionLabel(__('Add Link'))
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string =>
+                                $state['title'] ?? $state['url'] ?? null
                             ),
                     ])
                     ->collapsible(),
@@ -417,6 +443,7 @@ class ListingResource extends Resource
         return [
             ImagesRelationManager::class,
             PhonesRelationManager::class,
+            LinksRelationManager::class,
             OffersRelationManager::class,
         ];
     }

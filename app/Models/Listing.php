@@ -36,6 +36,11 @@ class Listing extends Model
         return $this->hasMany(ListingPhone::class);
     }
 
+    public function links()
+    {
+        return $this->hasMany(ListingLink::class);
+    }
+
     public function images()
     {
         return $this->hasMany(ListingImage::class);

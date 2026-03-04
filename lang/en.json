@@ -272,5 +272,7 @@
     "Not assigned": "Not assigned",
     "Optional. Only linked family members count toward the subscription limit.": "Optional. Only linked family members count toward the subscription limit.",
     "You can add all family members. Only the linked members count against the subscription limit.": "You can add all family members. Only the linked members count against the subscription limit.",
-    "You must add your national ID before subscribing to any plan.": "You must add your national ID before subscribing to any plan."
+    "You must add your national ID before subscribing to any plan.": "You must add your national ID before subscribing to any plan.",
+    "Links": "Links",
+    "Add Link": "Add Link"
 }

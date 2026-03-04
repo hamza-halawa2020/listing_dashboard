@@ -16,7 +16,7 @@ class ListingController extends ApiController
     {
         $this->model = Listing::class;
         $this->resource = ListingResource::class;
-        $this->with = ['category', 'location','workingHours','offers','images','phones'];
+        $this->with = ['category', 'location','workingHours','offers','images','phones', 'links'];
     }
 
     public function index(Request $request)
