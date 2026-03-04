@@ -284,6 +284,9 @@
     "View Any": "View Any",
     "Delete Any": "Delete Any",
     "Manage": "Manage",
+    "Price Before Discount": "Price Before Discount",
+    "Price After Discount": "Price After Discount",
+    "Discount Amount": "Discount Amount",
     "Super Admin": "Super Admin",
     "Moderator": "Moderator"
 }

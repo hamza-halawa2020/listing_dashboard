@@ -10,6 +10,7 @@ use App\Filament\Resources\ListingResource\RelationManagers\PhonesRelationManage
 use App\Forms\Components\MapPicker;
 use App\Models\Listing;
 use App\Models\Location;
+use App\Models\Offer;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -342,12 +343,33 @@ class ListingResource extends AuthorizedResource
                                     ->label(__('Description'))
                                     ->rows(3)
                                     ->columnSpanFull(),
+                                TextInput::make('price_before_discount')
+                                    ->label(__('Price Before Discount'))
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->step(0.01)
+                                    ->live()
+                                    ->afterStateUpdated(fn (Get $get, callable $set) => static::syncOfferCalculatedPricing($get, $set)),
                                 TextInput::make('discount_percentage')
                                     ->label(__('Discount %'))
                                     ->numeric()
                                     ->suffix('%')
                                     ->minValue(0)
-                                    ->maxValue(100),
+                                    ->maxValue(100)
+                                    ->live()
+                                    ->afterStateUpdated(fn (Get $get, callable $set) => static::syncOfferCalculatedPricing($get, $set)),
+                                TextInput::make('discount_amount')
+                                    ->label(__('Discount Amount'))
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->step(0.01)
+                                    ->readOnly(),
+                                TextInput::make('price_after_discount')
+                                    ->label(__('Price After Discount'))
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->step(0.01)
+                                    ->readOnly(),
                                 Toggle::make('is_active')
                                     ->label(__('Active'))
                                     ->default(true),
@@ -457,5 +479,16 @@ class ListingResource extends AuthorizedResource
             'create' => Pages\CreateListing::route('/create'),
             'edit' => Pages\EditListing::route('/{record}/edit'),
         ];
+    }
+
+    protected static function syncOfferCalculatedPricing(Get $get, callable $set): void
+    {
+        $pricing = Offer::calculatePricing(
+            $get('price_before_discount'),
+            $get('discount_percentage'),
+        );
+
+        $set('discount_amount', $pricing['discount_amount']);
+        $set('price_after_discount', $pricing['price_after_discount']);
     }
 }

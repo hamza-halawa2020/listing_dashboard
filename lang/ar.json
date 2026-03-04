@@ -320,6 +320,9 @@
     "View Any": "عرض الكل",
     "Delete Any": "حذف الكل",
     "Manage": "إدارة",
+    "Price Before Discount": "السعر قبل الخصم",
+    "Price After Discount": "السعر بعد الخصم",
+    "Discount Amount": "قيمة الخصم",
     "Super Admin": "سوبر أدمن",
     "Moderator": "مشرف"
 }
