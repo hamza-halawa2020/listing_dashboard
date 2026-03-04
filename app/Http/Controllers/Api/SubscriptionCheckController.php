@@ -12,8 +12,8 @@ class SubscriptionCheckController extends Controller
 {
     public function check(SubscriptionCheckRequest $request)
     {
-        $nationalId = (int)$request->national_id;
-        $membershipNumber = (int)$request->membership_card_number;
+        $nationalId = trim((string) $request->national_id);
+        $membershipNumber = trim((string) $request->membership_card_number);
 
         // dd($nationalId, $membershipNumber);
 
@@ -30,7 +30,7 @@ class SubscriptionCheckController extends Controller
                 ->whereHas('payments', function ($query) {
                     $query->where('status', 'completed');
                 })
-                ->with('subscriptionPlan')
+                ->with(['user', 'subscriptionPlan', 'familyMembers', 'payments'])
                 ->latest()
                 ->get();
         } else {
@@ -51,7 +51,7 @@ class SubscriptionCheckController extends Controller
                     ->whereHas('payments', function ($query) {
                         $query->where('status', 'completed');
                     })
-                    ->with('subscriptionPlan')
+                    ->with(['user', 'subscriptionPlan', 'familyMembers', 'payments'])
                     ->latest()
                     ->get();
             }

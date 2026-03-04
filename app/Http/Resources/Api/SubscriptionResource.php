@@ -11,6 +11,7 @@ class SubscriptionResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user' => $this->whenLoaded('user', fn (): UserResource => new UserResource($this->user)),
             'plan' => new SubscriptionPlanResource($this->whenLoaded('subscriptionPlan')),
             'membership_card_number' => $this->membership_card_number,
             'starts_at' => $this->starts_at?->format('Y-m-d'),
@@ -19,7 +20,11 @@ class SubscriptionResource extends JsonResource
             'payment_method' => $this->payment_method,
             'payment_reference' => $this->payment_reference,
             'notes' => $this->notes,
-            'payments' => PaymentResource::collection($this->whenLoaded('payments')),
+            'family_members' => $this->whenLoaded(
+                'familyMembers',
+                fn () => FamilyMemberResource::collection($this->familyMembers),
+            ),
+            'payments' => CheckSubscriptionPaymentResource::collection($this->whenLoaded('payments')),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
         ];
     }

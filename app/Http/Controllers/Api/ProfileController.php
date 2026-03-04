@@ -92,7 +92,7 @@ class ProfileController extends Controller
             'familyMembers.subscription.subscriptionPlan',
             'payments',
             'subscriptions' => fn ($query) => $query
-                ->with(['subscriptionPlan', 'payments'])
+                ->with(['user', 'subscriptionPlan', 'familyMembers', 'payments'])
                 ->latest(),
         ]);
     }
