@@ -18,6 +18,7 @@ class LocationResource extends AuthorizedResource
     protected static ?string $model = Location::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'name';
 

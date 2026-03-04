@@ -81,6 +81,7 @@ class RoleResource extends AuthorizedResource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([])
             ->recordActions([
                 EditAction::make()

@@ -24,6 +24,7 @@ class ContactResource extends AuthorizedResource
     protected static ?string $model = Contact::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
+    protected static ?int $navigationSort = 8;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -89,8 +90,9 @@ class ContactResource extends AuthorizedResource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-   
+
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])

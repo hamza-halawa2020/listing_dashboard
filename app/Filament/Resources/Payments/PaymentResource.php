@@ -21,6 +21,7 @@ class PaymentResource extends AuthorizedResource
     protected static ?string $model = Payment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
+    protected static ?int $navigationSort = 7;
 
     public static function getModelLabel(): string
     {

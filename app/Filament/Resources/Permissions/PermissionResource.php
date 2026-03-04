@@ -31,6 +31,7 @@ class PermissionResource extends AuthorizedResource
     {
         return __('Permissions');
     }
+    
 
     public static function getNavigationGroup(): ?string
     {
@@ -73,20 +74,21 @@ class PermissionResource extends AuthorizedResource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([])
             ->recordActions([
-                EditAction::make()
-                    ->visible(fn (Permission $record): bool => static::canEdit($record)),
-                DeleteAction::make()
-                    ->visible(fn (Permission $record): bool => static::canDelete($record))
-                    ->disabled(fn (Permission $record): bool => in_array($record->name, AdminPermissionRegistry::allPermissions(), true)),
+                // EditAction::make()
+                //     ->visible(fn (Permission $record): bool => static::canEdit($record)),
+                // DeleteAction::make()
+                //     ->visible(fn (Permission $record): bool => static::canDelete($record))
+                //     ->disabled(fn (Permission $record): bool => in_array($record->name, AdminPermissionRegistry::allPermissions(), true)),
             ]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ManagePermissions::route('/'),
+            // 'index' => ManagePermissions::route('/'),
         ];
     }
 }

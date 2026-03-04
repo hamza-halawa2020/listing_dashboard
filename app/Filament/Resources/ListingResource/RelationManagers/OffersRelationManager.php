@@ -103,6 +103,7 @@ class OffersRelationManager extends RelationManager
                     ->dateTime()
                     ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([])
             ->headerActions([
                 CreateAction::make(),

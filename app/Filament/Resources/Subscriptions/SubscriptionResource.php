@@ -20,6 +20,8 @@ class SubscriptionResource extends AuthorizedResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedIdentification;
 
+    protected static ?int $navigationSort = 6;
+
     public static function getModelLabel(): string
     {
         return __('Subscription');
@@ -30,6 +32,11 @@ class SubscriptionResource extends AuthorizedResource
         return __('Subscriptions');
     }
 
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+    
     public static function form(Schema $schema): Schema
     {
         return SubscriptionForm::configure($schema);

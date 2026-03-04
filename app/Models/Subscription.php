@@ -10,6 +10,8 @@ class Subscription extends Model
         'user_id',
         'subscription_plan_id',
         'membership_card_number',
+        'is_card_issued',
+        'card_issued_at',
         'starts_at',
         'ends_at',
         'status',
@@ -19,9 +21,28 @@ class Subscription extends Model
     ];
 
     protected $casts = [
+        'is_card_issued' => 'boolean',
+        'card_issued_at' => 'datetime',
         'starts_at' => 'date',
         'ends_at' => 'date',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Subscription $subscription): void {
+            if ($subscription->is_card_issued) {
+                if (blank($subscription->card_issued_at)) {
+                    $subscription->card_issued_at = now();
+                }
+
+                return;
+            }
+
+            if (filled($subscription->card_issued_at)) {
+                $subscription->card_issued_at = null;
+            }
+        });
+    }
 
     public function user()
     {

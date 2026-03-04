@@ -101,6 +101,7 @@ class ReviewResource extends AuthorizedResource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])

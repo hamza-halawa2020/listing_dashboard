@@ -13,11 +13,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ComprehensiveSeeder::class,
-            // LocationSeeder::class,
-            // CategorySeeder::class,
-            // SubscriptionPlanSeeder::class,
+            LocationSeeder::class,
+            CategorySeeder::class,
+            SubscriptionPlanSeeder::class,
             RoleAndPermissionSeeder::class,
-            // ListingSeeder::class,
+            ListingSeeder::class,
         ]);
     }
 }

@@ -40,10 +40,14 @@ class ListingResource extends AuthorizedResource
 
     protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedBuildingStorefront;
 
+    protected static ?int $navigationSort = 4;
+
     public static function getModelLabel(): string
     {
         return __('Listing');
     }
+
+
 
     public static function getPluralModelLabel(): string
     {
@@ -445,6 +449,7 @@ class ListingResource extends AuthorizedResource
                 IconColumn::make('is_active')->label(__('Active'))->boolean(),
                 TextColumn::make('created_at')->label(__('Created At'))->dateTime()->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 TernaryFilter::make('is_active')->label(__('Active')),
             ])

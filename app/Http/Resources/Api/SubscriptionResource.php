@@ -14,6 +14,8 @@ class SubscriptionResource extends JsonResource
             'user' => $this->whenLoaded('user', fn (): UserResource => new UserResource($this->user)),
             'plan' => new SubscriptionPlanResource($this->whenLoaded('subscriptionPlan')),
             'membership_card_number' => $this->membership_card_number,
+            'is_card_issued' => (bool) $this->is_card_issued,
+            'card_issued_at' => $this->card_issued_at?->format('Y-m-d H:i:s'),
             'starts_at' => $this->starts_at?->format('Y-m-d'),
             'ends_at' => $this->ends_at?->format('Y-m-d'),
             'status' => $this->status,

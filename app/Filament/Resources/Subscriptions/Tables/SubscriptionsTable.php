@@ -7,6 +7,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class SubscriptionsTable
@@ -24,6 +25,14 @@ class SubscriptionsTable
                 TextColumn::make('membership_card_number')
                     ->label(__('Membership Number'))
                     ->searchable(),
+                ToggleColumn::make('is_card_issued')
+                    ->label(__('Card Issued'))
+                    ->sortable(),
+                TextColumn::make('card_issued_at')
+                    ->label(__('Card Issued At'))
+                    ->dateTime()
+                    ->sortable()
+                    ->placeholder('-'),
                 TextColumn::make('starts_at')
                     ->label(__('Starts At'))
                     ->date()
@@ -52,6 +61,7 @@ class SubscriptionsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
@@ -61,8 +71,8 @@ class SubscriptionsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->visible(fn (): bool => SubscriptionResource::canDeleteAny()),
+                    // DeleteBulkAction::make()
+                    //     ->visible(fn (): bool => SubscriptionResource::canDeleteAny()),
                 ]),
             ]);
     }

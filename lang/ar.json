@@ -325,4 +325,7 @@
     "Discount Amount": "قيمة الخصم",
     "Super Admin": "سوبر أدمن",
     "Moderator": "مشرف"
+,
+    "Card Issued": "تم إصدار الكارت",
+    "Card Issued At": "تاريخ إصدار الكارت"
 }

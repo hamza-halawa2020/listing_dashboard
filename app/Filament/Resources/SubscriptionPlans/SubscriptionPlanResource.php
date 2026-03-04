@@ -20,6 +20,8 @@ class SubscriptionPlanResource extends AuthorizedResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
+    protected static ?int $navigationSort = 5;
+
     public static function getModelLabel(): string
     {
         return __('Subscription Plan');

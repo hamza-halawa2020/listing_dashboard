@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Subscriptions\Schemas;
 
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -17,6 +18,13 @@ class SubscriptionInfolist
                     ->label(__('Plan')),
                 TextEntry::make('membership_card_number')
                     ->label(__('Membership Number'))
+                    ->placeholder('-'),
+                IconEntry::make('is_card_issued')
+                    ->label(__('Card Issued'))
+                    ->boolean(),
+                TextEntry::make('card_issued_at')
+                    ->label(__('Card Issued At'))
+                    ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('starts_at')
                     ->label(__('Starts At'))

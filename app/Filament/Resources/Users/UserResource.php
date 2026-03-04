@@ -19,7 +19,7 @@ class UserResource extends AuthorizedResource
     protected static ?string $model = User::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
-
+    protected static ?int $navigationSort = 9;
     public static function getModelLabel(): string
     {
         return __('User');

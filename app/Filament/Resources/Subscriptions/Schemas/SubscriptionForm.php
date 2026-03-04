@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\Subscriptions\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class SubscriptionForm
@@ -30,6 +32,15 @@ class SubscriptionForm
                     ->label(__('Membership Number'))
                     ->disabled()
                     ->dehydrated(false),
+                Toggle::make('is_card_issued')
+                    ->label(__('Card Issued'))
+                    ->inline(false),
+                DateTimePicker::make('card_issued_at')
+                    ->label(__('Card Issued At'))
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->visible(fn (callable $get): bool => (bool) $get('is_card_issued') || filled($get('card_issued_at')))
+                    ->seconds(false),
                 DatePicker::make('starts_at')
                     ->label(__('Starts At'))
                     ->required(),

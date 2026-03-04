@@ -24,6 +24,8 @@ use Illuminate\Support\Str;
 class CategoryResource extends AuthorizedResource
 {
     protected static ?string $model = Category::class;
+    protected static ?int $navigationSort = 2;
+
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
@@ -113,6 +115,7 @@ class CategoryResource extends AuthorizedResource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([])
             ->headerActions([
             ])
