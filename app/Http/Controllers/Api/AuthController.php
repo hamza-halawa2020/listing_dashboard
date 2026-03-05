@@ -20,10 +20,8 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'national_id' => $request->national_id,
-            // 'membership_card_number' => $request->membership_card_number,
             'phone' => $request->phone,
-            'role' => 'member', // Default role for API registration
+            'role' => 'member',
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -46,14 +44,14 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
 
-        $user = User::where('national_id', $request->national_id)
+        $user = User::where('phone', $request->phone)
                     // ->where('membership_card_number', $request->membership_card_number)
                     ->where('role', '!=', 'admin')
                     ->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'national_id' => ['The provided credentials do not match our records.'],
+                'phone' => ['The provided credentials do not match our records.'],
             ]);
         }
 

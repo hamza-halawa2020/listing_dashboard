@@ -24,7 +24,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique();
             $table->enum('role', ['admin', 'member', 'service_provider'])->default('member');
             $table->string('national_id')->nullable()->unique();
             $table->date('birth_date')->nullable();

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -44,11 +45,12 @@ class CategorySeeder extends Seeder
             'بصريات' => [],
         ];
 
-        $admin = \App\Models\User::firstOrCreate(
+        $admin = User::firstOrCreate(
             ['email' => 'admin@admin.com'],
             [
                 'name' => 'Admin User',
                 'password' => bcrypt('password'),
+                'phone' => '1234567892',
                 'role' => 'admin',
             ]
         );
