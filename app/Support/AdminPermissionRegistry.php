@@ -106,6 +106,7 @@ class AdminPermissionRegistry
     {
         return [
             'dashboard.view',
+            'backups.manage',
             'settings.manage',
         ];
     }
@@ -129,7 +130,7 @@ class AdminPermissionRegistry
         return [
             'super_admin' => static::allPermissions(),
             'admin' => array_values(array_unique(array_merge(
-                ['dashboard.view'],
+                ['dashboard.view', 'backups.manage'],
                 static::permissionsForResources(array_values(array_diff(static::resourcePrefixes(), ['users', 'roles', 'permissions']))),
             ))),
             'moderator' => array_values(array_unique(array_merge(
@@ -202,6 +203,7 @@ class AdminPermissionRegistry
             'payments' => __('Payments'),
             'subscription_plans' => __('Subscription Plans'),
             'dashboard' => __('Dashboard'),
+            'backups' => __('Backups'),
             'settings' => __('Settings'),
             default => null,
         };

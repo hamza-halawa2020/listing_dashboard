@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Concerns\AuthorizesPageAccess;
 use App\Filament\Widgets\ContentPulseChart;
+use App\Filament\Widgets\DatabaseBackupsTable;
 use App\Filament\Widgets\PaymentsStatusChart;
 use App\Filament\Widgets\SystemGrowthChart;
 use App\Filament\Widgets\SystemOverviewStats;
@@ -69,6 +70,7 @@ class Dashboard extends BaseDashboard
             SystemOverviewStats::class,
             SystemGrowthChart::class,
             PaymentsStatusChart::class,
+            DatabaseBackupsTable::class,
             // ContentPulseChart::class,
         ];
     }
