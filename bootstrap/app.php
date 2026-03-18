@@ -16,8 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule): void {
         $schedule
             ->command('database:backup', ['--trigger' => 'scheduled'])
-            // ->dailyAt(config('database_backups.schedule_time', '04:00'))
-            ->everyFiveSeconds() // For testing purposes, runs every 5 seconds. Change to dailyAt or your preferred schedule in production.
+            ->dailyAt(config('database_backups.schedule_time', '04:00'))
+            // ->everyFiveSeconds() // For testing purposes, runs every 5 seconds. Change to dailyAt or your preferred schedule in production.
             ->timezone(config('database_backups.schedule_timezone', 'Africa/Cairo'));
     })
     ->withMiddleware(function (Middleware $middleware): void {
