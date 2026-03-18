@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Resources\Resource;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -20,34 +21,64 @@ abstract class AuthorizedResource extends Resource
         return static::getPermissionPrefix() . '.' . $action;
     }
 
+    public static function getViewAnyAuthorizationResponse(): Response
+    {
+        return static::currentUserCanResponse('view_any');
+    }
+
+    public static function getViewAuthorizationResponse(Model $record): Response
+    {
+        return static::currentUserCanResponse('view');
+    }
+
+    public static function getCreateAuthorizationResponse(): Response
+    {
+        return static::currentUserCanResponse('create');
+    }
+
+    public static function getEditAuthorizationResponse(Model $record): Response
+    {
+        return static::currentUserCanResponse('update');
+    }
+
+    public static function getDeleteAuthorizationResponse(Model $record): Response
+    {
+        return static::currentUserCanResponse('delete');
+    }
+
+    public static function getDeleteAnyAuthorizationResponse(): Response
+    {
+        return static::currentUserCanResponse('delete_any');
+    }
+
     public static function canViewAny(): bool
     {
-        return static::currentUserCan('view_any');
+        return static::getViewAnyAuthorizationResponse()->allowed();
     }
 
     public static function canView(Model $record): bool
     {
-        return static::currentUserCan('view');
+        return static::getViewAuthorizationResponse($record)->allowed();
     }
 
     public static function canCreate(): bool
     {
-        return static::currentUserCan('create');
+        return static::getCreateAuthorizationResponse()->allowed();
     }
 
     public static function canEdit(Model $record): bool
     {
-        return static::currentUserCan('update');
+        return static::getEditAuthorizationResponse($record)->allowed();
     }
 
     public static function canDelete(Model $record): bool
     {
-        return static::currentUserCan('delete');
+        return static::getDeleteAuthorizationResponse($record)->allowed();
     }
 
     public static function canDeleteAny(): bool
     {
-        return static::currentUserCan('delete_any');
+        return static::getDeleteAnyAuthorizationResponse()->allowed();
     }
 
     protected static function currentUserCan(string $action): bool
@@ -59,5 +90,12 @@ abstract class AuthorizedResource extends Resource
         }
 
         return $user->can(static::permissionName($action));
+    }
+
+    protected static function currentUserCanResponse(string $action): Response
+    {
+        return static::currentUserCan($action)
+            ? Response::allow()
+            : Response::deny();
     }
 }

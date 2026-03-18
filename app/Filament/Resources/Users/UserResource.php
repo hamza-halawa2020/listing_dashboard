@@ -9,10 +9,13 @@ use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\Tables\UsersTable;
 use App\Filament\Resources\AuthorizedResource;
 use App\Models\User;
+use App\Support\UserRecordProtection;
 use BackedEnum;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Database\Eloquent\Model;
 
 class UserResource extends AuthorizedResource
 {
@@ -28,6 +31,36 @@ class UserResource extends AuthorizedResource
     public static function getPluralModelLabel(): string
     {
         return __('Users');
+    }
+
+    public static function getEditAuthorizationResponse(Model $record): Response
+    {
+        if (! $record instanceof User) {
+            return Response::deny();
+        }
+
+        $permissionResponse = parent::getEditAuthorizationResponse($record);
+
+        if ($permissionResponse->denied()) {
+            return $permissionResponse;
+        }
+
+        return UserRecordProtection::editResponse(auth()->user(), $record);
+    }
+
+    public static function getDeleteAuthorizationResponse(Model $record): Response
+    {
+        if (! $record instanceof User) {
+            return Response::deny();
+        }
+
+        $permissionResponse = parent::getDeleteAuthorizationResponse($record);
+
+        if ($permissionResponse->denied()) {
+            return $permissionResponse;
+        }
+
+        return UserRecordProtection::deleteResponse(auth()->user(), $record);
     }
 
     public static function form(Schema $schema): Schema

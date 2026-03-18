@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Location;
 use App\Models\User;
 use App\Support\AdminPermissionRegistry;
+use App\Support\UserRecordProtection;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -93,6 +94,14 @@ class UserSpreadsheetImporter
 
         if ($exists && $attributes === [] && $systemRoles === null) {
             return 'skipped';
+        }
+
+        if ($exists) {
+            $authorizationResponse = UserRecordProtection::editResponse(auth()->user(), $user);
+
+            if ($authorizationResponse->denied()) {
+                throw new RuntimeException($authorizationResponse->message() ?? 'This user cannot be updated.');
+            }
         }
 
         $user->fill($attributes);

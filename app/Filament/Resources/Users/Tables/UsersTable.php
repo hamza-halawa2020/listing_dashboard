@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Tables;
 
 use App\Filament\Resources\Users\UserResource;
+use App\Models\User;
 use App\Support\AdminPermissionRegistry;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -79,8 +80,12 @@ class UsersTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->authorizeIndividualRecords()
                         ->visible(fn (): bool => UserResource::canDeleteAny()),
                 ]),
-            ]);
+            ])
+            ->checkIfRecordIsSelectableUsing(
+                fn (User $record): bool => UserResource::canDelete($record),
+            );
     }
 }
