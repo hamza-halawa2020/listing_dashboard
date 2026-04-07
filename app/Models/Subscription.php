@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subscription extends Model
 {
-    private const MEMBERSHIP_USER_ID_LENGTH = 5;
     private const MEMBERSHIP_NATIONAL_SUFFIX_LENGTH = 4;
     private const MEMBERSHIP_SUBSCRIPTION_ID_LENGTH = 5;
 
@@ -89,15 +88,12 @@ class Subscription extends Model
 
     public function generateMembershipCardNumber(): string
     {
-        // Format: [plan code][user id: minimum 5 digits][last 4 digits of national ID][subscription id: minimum 5 digits]
-        // Example: user 1 => 00001, user 9999 => 09999. The same rule applies to the subscription id segment.
-        // The subscription id suffix also guarantees a different number for each renewal on the same plan.
-        $planCodePart = strtoupper((string) ($this->subscriptionPlan?->code ?: 'SUB'));
-        $userIdPart = str_pad((string) $this->user_id, self::MEMBERSHIP_USER_ID_LENGTH, '0', STR_PAD_LEFT);
+        // Format: [subscription id: minimum 5 digits][last 4 digits of national ID]
+        // Example: subscription 1 => 00001, subscription 1000 => 01000.
         $nationalIdDigits = preg_replace('/\D+/', '', (string) ($this->user?->national_id ?? ''));
         $lastFourDigits = str_pad(substr($nationalIdDigits, -self::MEMBERSHIP_NATIONAL_SUFFIX_LENGTH), self::MEMBERSHIP_NATIONAL_SUFFIX_LENGTH, '0', STR_PAD_LEFT);
         $subscriptionIdPart = str_pad((string) ($this->getKey() ?? 0), self::MEMBERSHIP_SUBSCRIPTION_ID_LENGTH, '0', STR_PAD_LEFT);
 
-        return "{$planCodePart}{$userIdPart}{$lastFourDigits}{$subscriptionIdPart}";
+        return "{$subscriptionIdPart}{$lastFourDigits}";
     }
 }
