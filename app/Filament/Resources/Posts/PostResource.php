@@ -12,8 +12,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
@@ -24,13 +24,14 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Forms\Components\RichEditor;
+use Illuminate\Database\Eloquent\Builder;
 
 class PostResource extends AuthorizedResource
 {
     protected static ?string $model = Post::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'title';
 
@@ -44,6 +45,10 @@ class PostResource extends AuthorizedResource
         return __('Posts');
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withCount(['approvedComments']);
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -81,6 +86,10 @@ class PostResource extends AuthorizedResource
                 IconEntry::make('status')
                     ->label(__('Status'))
                     ->boolean(),
+                TextEntry::make('views_count')
+                    ->label(__('Views')),
+                TextEntry::make('approved_comments_count')
+                    ->label(__('Approved Comments')),
                 TextEntry::make('user.name')
                     ->label(__('User')),
                 TextEntry::make('created_at')
@@ -107,6 +116,13 @@ class PostResource extends AuthorizedResource
                 IconColumn::make('status')
                     ->label(__('Status'))
                     ->boolean(),
+                TextColumn::make('views_count')
+                    ->label(__('Views'))
+                    ->sortable(),
+                TextColumn::make('approved_comments_count')
+                    ->label(__('Approved Comments'))
+                    ->badge()
+                    ->sortable(),
                 TextColumn::make('user.name')
                     ->label(__('User'))
                     ->sortable(),
@@ -139,7 +155,7 @@ class PostResource extends AuthorizedResource
     public static function getPages(): array
     {
         return [
-            // 'index' => ManagePosts::route('/'),
+            'index' => ManagePosts::route('/'),
         ];
     }
 }

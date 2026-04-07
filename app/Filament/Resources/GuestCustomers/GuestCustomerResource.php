@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\Contacts;
+namespace App\Filament\Resources\GuestCustomers;
 
 use App\Filament\Resources\AuthorizedResource;
-use App\Filament\Resources\Contacts\Pages\ManageContacts;
+use App\Filament\Resources\GuestCustomers\Pages\ManageGuestCustomers;
 use App\Models\Contact;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -14,33 +14,37 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class ContactResource extends AuthorizedResource
+class GuestCustomerResource extends AuthorizedResource
 {
     protected static ?string $model = Contact::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
-    protected static ?int $navigationSort = 8;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
+    protected static ?int $navigationSort = 9;
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getPermissionPrefix(): string
+    {
+        return 'contacts';
+    }
+
     public static function getModelLabel(): string
     {
-        return __('Contact');
+        return __('Guest Customer');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Contacts');
+        return __('Guest Customers');
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->contactMessages();
+        return parent::getEloquentQuery()->guestCommenters();
     }
 
     public static function form(Schema $schema): Schema
@@ -49,14 +53,13 @@ class ContactResource extends AuthorizedResource
             ->components([
                 TextInput::make('name')
                     ->label(__('Name'))
-                    ->required(),
+                    ->disabled(),
                 TextInput::make('phone')
                     ->label(__('Phone'))
-                    ->tel()
-                    ->required(),
+                    ->disabled(),
                 Textarea::make('message')
-                    ->label(__('Message'))
-                    ->required()
+                    ->label(__('Latest Comment'))
+                    ->disabled()
                     ->columnSpanFull(),
             ]);
     }
@@ -69,13 +72,15 @@ class ContactResource extends AuthorizedResource
                     ->label(__('Name')),
                 TextEntry::make('phone')
                     ->label(__('Phone')),
-                TextEntry::make('message')
-                    ->label(__('Message'))
-                    ->columnSpanFull(),
-                TextEntry::make('created_at')
-                    ->label(__('Created At'))
+                TextEntry::make('comment_count')
+                    ->label(__('Comments')),
+                TextEntry::make('last_commented_at')
+                    ->label(__('Last Commented At'))
                     ->dateTime()
                     ->placeholder('-'),
+                TextEntry::make('message')
+                    ->label(__('Latest Comment'))
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -90,21 +95,25 @@ class ContactResource extends AuthorizedResource
                 TextColumn::make('phone')
                     ->label(__('Phone'))
                     ->searchable(),
+                TextColumn::make('comment_count')
+                    ->label(__('Comments'))
+                    ->badge()
+                    ->sortable(),
+                TextColumn::make('last_commented_at')
+                    ->label(__('Last Commented At'))
+                    ->dateTime()
+                    ->sortable()
+                    ->placeholder('-'),
                 TextColumn::make('created_at')
                     ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
             ])
-            ->defaultSort('created_at', 'desc')
-            ->filters([
-                //
-            ])
+            ->defaultSort('last_commented_at', 'desc')
             ->recordActions([
                 ViewAction::make()
                     ->visible(fn ($record): bool => static::canView($record)),
-                // EditAction::make(),
                 DeleteAction::make()
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])
@@ -119,7 +128,7 @@ class ContactResource extends AuthorizedResource
     public static function getPages(): array
     {
         return [
-            'index' => ManageContacts::route('/'),
+            'index' => ManageGuestCustomers::route('/'),
         ];
     }
 }

@@ -11,7 +11,11 @@ class ReviewResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'createdBy' => $this->createdBy->name,
+            'post_id' => $this->post_id,
+            'post_title' => $this->post?->title,
+            'author_name' => $this->author_name,
+            'author_phone' => $this->author_phone,
+            'is_guest' => $this->is_guest,
             'review' => $this->review,
             'status' => $this->status,
             'created_at' => $this->created_at,

@@ -16,7 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('phone');
             $table->text('message');
+            $table->string('source')->default('contact_form');
+            $table->unsignedInteger('comment_count')->default(0);
+            $table->timestamp('last_commented_at')->nullable();
             $table->timestamps();
+            
+            $table->index(['source', 'phone']);
         });
     }
 

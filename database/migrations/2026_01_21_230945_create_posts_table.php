@@ -18,6 +18,7 @@ return new class extends Migration
             $table->longText('description');
             $table->string('image');
             $table->boolean('status')->default(false);
+            $table->unsignedBigInteger('views_count')->default(0);
             $table->foreignIdFor(User::class,'created_by')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

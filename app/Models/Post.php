@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
 {
@@ -11,12 +13,23 @@ class Post extends Model
         'description',
         'image',
         'status',
+        'views_count',
         'created_by',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class,'created_by');
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedComments(): HasMany
+    {
+        return $this->comments()->where('status', true);
     }
 
     public function scopeActive($query)

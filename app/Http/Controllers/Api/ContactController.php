@@ -16,7 +16,10 @@ class ContactController extends ApiController
 
     public function store(ContactStoreRequest $request)
     {
-        $item = $this->model::create($request->validated());
+        $item = $this->model::create([
+            ...$request->validated(),
+            'source' => 'contact_form',
+        ]);
 
         return new $this->resource($item);
     }

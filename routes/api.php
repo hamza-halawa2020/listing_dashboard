@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\SubscriptionsController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ImpactStatsController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\PostCommentController;
 use App\Http\Controllers\Api\SubscriptionCheckController;
 
 // Public routes
@@ -33,6 +34,7 @@ Route::get('/settings', [SettingController::class, 'index']);
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
+Route::post('/posts/{post}/comments', [PostCommentController::class, 'store']);
 
 Route::get('/reviews', [ReviewController::class, 'index']);
 

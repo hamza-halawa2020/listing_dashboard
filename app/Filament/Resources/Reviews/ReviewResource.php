@@ -12,35 +12,40 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReviewResource extends AuthorizedResource
 {
     protected static ?string $model = Review::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $recordTitleAttribute = 'review';
 
     public static function getModelLabel(): string
     {
-        return __('Review');
+        return __('Comment');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Reviews');
+        return __('Comments');
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['createdBy', 'post', 'approvedBy']);
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -64,16 +69,24 @@ class ReviewResource extends AuthorizedResource
     {
         return $schema
             ->components([
-                TextEntry::make('createdBy.name')
-                    ->label(__('Name')),
+                TextEntry::make('post.title')
+                    ->label(__('Post'))
+                    ->placeholder('-'),
+                TextEntry::make('author_name')
+                    ->label(__('Name'))
+                    ->placeholder('-'),
+                TextEntry::make('author_phone')
+                    ->label(__('Phone'))
+                    ->placeholder('-'),
                 TextEntry::make('review')
-                    ->label(__('Review'))
+                    ->label(__('Comment'))
                     ->columnSpanFull(),
                 IconEntry::make('status')
-                    ->label(__('Status'))
+                    ->label(__('Approved'))
                     ->boolean(),
-                TextEntry::make('user.name')
-                    ->label(__('User')),
+                TextEntry::make('approvedBy.name')
+                    ->label(__('Approved By'))
+                    ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->label(__('Created At'))
                     ->dateTime()
@@ -84,17 +97,34 @@ class ReviewResource extends AuthorizedResource
     public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('createdBy.name')
+            ->recordTitleAttribute('author_name')
             ->columns([
-                TextColumn::make('createdBy.name')
-                    ->label(__('Name'))
+                TextColumn::make('post.title')
+                    ->label(__('Post'))
                     ->searchable(),
-                IconColumn::make('status')
-                    ->label(__('Status'))
-                    ->boolean(),
-                TextColumn::make('user.name')
-                    ->label(__('User'))
-                    ->sortable(),
+                TextColumn::make('author_name')
+                    ->label(__('Name'))
+                    ->state(fn (Review $record): ?string => $record->author_name)
+                    ->placeholder('-'),
+                TextColumn::make('author_phone')
+                    ->label(__('Phone'))
+                    ->state(fn (Review $record): ?string => $record->author_phone)
+                    ->placeholder('-'),
+                TextColumn::make('review')
+                    ->label(__('Comment'))
+                    ->limit(50)
+                    ->tooltip(fn (Review $record): string => $record->review),
+                ToggleColumn::make('status')
+                    ->label(__('Approved'))
+                    ->sortable()
+                    ->afterStateUpdated(function (Review $record, bool $state): void {
+                        $record->approved_by = $state ? auth()->id() : null;
+                        $record->save();
+                    }),
+                TextColumn::make('approvedBy.name')
+                    ->label(__('Approved By'))
+                    ->sortable()
+                    ->placeholder('-'),
                 TextColumn::make('created_at')
                     ->label(__('Created At'))
                     ->dateTime()
@@ -124,7 +154,7 @@ class ReviewResource extends AuthorizedResource
     public static function getPages(): array
     {
         return [
-            // 'index' => ManageReviews::route('/'),
+            'index' => ManageReviews::route('/'),
         ];
     }
 }
