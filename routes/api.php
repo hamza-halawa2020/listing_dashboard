@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\SubscriptionsController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ImpactStatsController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SubscriptionCheckController;
 
@@ -26,6 +27,7 @@ Route::get('/locations/{id}', [LocationController::class, 'show']);
 
 Route::get('/subscription-plans', [SubscriptionPlanController::class, 'index']);
 Route::get('/subscription-plans/{id}', [SubscriptionPlanController::class, 'show']);
+Route::get('/impact-stats', ImpactStatsController::class);
 
 Route::get('/settings', [SettingController::class, 'index']);
 
