@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->text('review');
+            $table->text('comment');
             $table->boolean('status')->default(false);
             $table->foreignIdFor(Post::class)->nullable()->constrained()->cascadeOnDelete();
             $table->string('guest_name')->nullable();
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('comments');
     }
 };

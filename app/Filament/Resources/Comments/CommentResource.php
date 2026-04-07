@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Reviews;
+namespace App\Filament\Resources\Comments;
 
 use App\Filament\Resources\AuthorizedResource;
-use App\Filament\Resources\Reviews\Pages\ManageReviews;
-use App\Models\Review;
+use App\Filament\Resources\Comments\Pages\ManageComments;
+use App\Models\Comment;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -23,14 +23,14 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class ReviewResource extends AuthorizedResource
+class CommentResource extends AuthorizedResource
 {
-    protected static ?string $model = Review::class;
+    protected static ?string $model = Comment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;
     protected static ?int $navigationSort = 6;
 
-    protected static ?string $recordTitleAttribute = 'review';
+    protected static ?string $recordTitleAttribute = 'Comment';
 
     public static function getModelLabel(): string
     {
@@ -51,8 +51,8 @@ class ReviewResource extends AuthorizedResource
     {
         return $schema
             ->components([
-                Textarea::make('review')
-                    ->label(__('Review'))
+                Textarea::make('comment')
+                    ->label(__('Comment'))
                     ->required()
                     ->columnSpanFull(),
                 Toggle::make('status')
@@ -78,7 +78,7 @@ class ReviewResource extends AuthorizedResource
                 TextEntry::make('author_phone')
                     ->label(__('Phone'))
                     ->placeholder('-'),
-                TextEntry::make('review')
+                TextEntry::make('comment')
                     ->label(__('Comment'))
                     ->columnSpanFull(),
                 IconEntry::make('status')
@@ -104,20 +104,20 @@ class ReviewResource extends AuthorizedResource
                     ->searchable(),
                 TextColumn::make('author_name')
                     ->label(__('Name'))
-                    ->state(fn (Review $record): ?string => $record->author_name)
+                    ->state(fn (Comment $record): ?string => $record->author_name)
                     ->placeholder('-'),
                 TextColumn::make('author_phone')
                     ->label(__('Phone'))
-                    ->state(fn (Review $record): ?string => $record->author_phone)
+                    ->state(fn (Comment $record): ?string => $record->author_phone)
                     ->placeholder('-'),
-                TextColumn::make('review')
+                TextColumn::make('comment')
                     ->label(__('Comment'))
                     ->limit(50)
-                    ->tooltip(fn (Review $record): string => $record->review),
+                    ->tooltip(fn (Comment $record): string => $record->comment),
                 ToggleColumn::make('status')
                     ->label(__('Approved'))
                     ->sortable()
-                    ->afterStateUpdated(function (Review $record, bool $state): void {
+                    ->afterStateUpdated(function (Comment $record, bool $state): void {
                         $record->approved_by = $state ? auth()->id() : null;
                         $record->save();
                     }),
@@ -154,7 +154,7 @@ class ReviewResource extends AuthorizedResource
     public static function getPages(): array
     {
         return [
-            'index' => ManageReviews::route('/'),
+            'index' => ManageComments::route('/'),
         ];
     }
 }

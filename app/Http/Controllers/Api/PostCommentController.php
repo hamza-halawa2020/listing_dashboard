@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\StorePostCommentRequest;
-use App\Http\Resources\Api\ReviewResource;
+use App\Http\Resources\Api\CommentResource;
 use App\Models\Contact;
 use App\Models\Post;
-use App\Models\Review;
+use App\Models\Comment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,9 +19,9 @@ class PostCommentController extends ApiController
         $user = Auth::guard('sanctum')->user();
         $validated = $request->validated();
 
-        $comment = Review::query()->create([
+        $comment = Comment::query()->create([
             'post_id' => $post->id,
-            'review' => $validated['review'],
+            'comment' => $validated['comment'],
             'created_by' => $user?->id,
             'guest_name' => $user ? null : $validated['guest_name'],
             'guest_phone' => $user ? null : $validated['guest_phone'],
@@ -35,7 +35,7 @@ class PostCommentController extends ApiController
             ]);
 
             $guestCustomer->name = $validated['guest_name'];
-            $guestCustomer->message = $validated['review'];
+            $guestCustomer->message = $validated['comment'];
             $guestCustomer->comment_count = $guestCustomer->exists
                 ? $guestCustomer->comment_count + 1
                 : 1;
@@ -43,7 +43,7 @@ class PostCommentController extends ApiController
             $guestCustomer->save();
         }
 
-        return (new ReviewResource($comment->load(['createdBy', 'post'])))
+        return (new CommentResource($comment->load(['createdBy', 'post'])))
             ->additional([
                 'message' => 'Your comment has been submitted successfully and is awaiting approval.',
             ])

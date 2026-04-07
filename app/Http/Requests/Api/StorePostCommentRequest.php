@@ -17,7 +17,7 @@ class StorePostCommentRequest extends FormRequest
         $isAuthenticated = Auth::guard('sanctum')->check();
 
         return [
-            'review' => ['required', 'string', 'min:3', 'max:2000'],
+            'comment' => ['required', 'string', 'min:3', 'max:2000'],
             'guest_name' => $isAuthenticated
                 ? ['nullable', 'string', 'max:255']
                 : ['required', 'string', 'max:255'],

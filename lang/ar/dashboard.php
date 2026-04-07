@@ -45,7 +45,7 @@ return [
         'heading' => 'نشاط المحتوى والمجتمع',
         'description' => 'المحتوى المنشور والاعتمادات خلال :range',
         'published_posts' => 'المقالات المنشورة',
-        'approved_reviews' => 'التقييمات المعتمدة',
+        'approved_comments' => 'التعليقات المعتمدة',
         'family_members' => 'أفراد الأسرة',
     ],
     'languages' => [

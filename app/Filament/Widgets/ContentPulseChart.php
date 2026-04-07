@@ -4,7 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\FamilyMember;
 use App\Models\Post;
-use App\Models\Review;
+use App\Models\Comment;
 use App\Support\DashboardDateRange;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -44,9 +44,9 @@ class ContentPulseChart extends ChartWidget
                     'backgroundColor' => '#2563eb',
                 ],
                 [
-                    'label' => __('dashboard.content.approved_reviews'),
+                    'label' => __('dashboard.content.approved_comments'),
                     'data' => DashboardDateRange::dailyCounts(
-                        Review::query()->where('status', true),
+                        Comment::query()->where('status', true),
                         $this->pageFilters,
                         $labels,
                     ),

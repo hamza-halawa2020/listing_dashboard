@@ -45,7 +45,7 @@ return [
         'heading' => 'Content and Community Activity',
         'description' => 'Published content and approvals for :range',
         'published_posts' => 'Published Posts',
-        'approved_reviews' => 'Approved Reviews',
+        'approved_comments' => 'Approved Comments',
         'family_members' => 'Family Members',
     ],
     'languages' => [

@@ -21,7 +21,7 @@ class PostResource extends JsonResource
             'comments_count' => $this->comments_count ?? $this->approvedComments()->count(),
             'created_at' => $this->created_at,
             'author_name' => $this->user?->name,
-            'comments' => ReviewResource::collection($this->whenLoaded('approvedComments')),
+            'comments' => CommentResource::collection($this->whenLoaded('approvedComments')),
         ];
     }
 }

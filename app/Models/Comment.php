@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Review extends Model
+class Comment extends Model
 {
-    protected $table = 'reviews';
+    protected $table = 'comments';
 
     protected $fillable = [
         'post_id',
-        'review',
+        'comment',
         'status',
         'guest_name',
         'guest_phone',

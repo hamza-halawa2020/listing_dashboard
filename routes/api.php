@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PostController;
-use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ListingController;
@@ -36,7 +36,7 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::post('/posts/{post}/comments', [PostCommentController::class, 'store']);
 
-Route::get('/reviews', [ReviewController::class, 'index']);
+Route::get('/comments', [CommentController::class, 'index']);
 
 Route::post('/contacts', [ContactController::class, 'store']);
 Route::post('/check-subscription', [SubscriptionCheckController::class, 'check']);

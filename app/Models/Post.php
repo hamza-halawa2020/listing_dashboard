@@ -24,7 +24,7 @@ class Post extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Comment::class);
     }
 
     public function approvedComments(): HasMany
