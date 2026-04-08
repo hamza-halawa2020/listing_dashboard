@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\PriceRequestController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ListingController;
@@ -41,6 +42,8 @@ Route::get('/comments', [CommentController::class, 'index']);
 
 Route::get('/reviews', [ReviewController::class, 'index']);
 Route::post('/reviews', [ReviewController::class, 'store']);
+
+Route::post('/price-requests', [PriceRequestController::class, 'store']);
 
 Route::post('/contacts', [ContactController::class, 'store']);
 Route::post('/check-subscription', [SubscriptionCheckController::class, 'check']);
