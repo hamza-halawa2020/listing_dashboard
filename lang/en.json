@@ -340,5 +340,10 @@
     "Unable to create the backup file.": "Unable to create the backup file.",
     "Unable to read the backup file.": "Unable to read the backup file.",
     "The selected backup file could not be found.": "The selected backup file could not be found.",
-    "Size": "Size"
+    "Size": "Size",
+    "Review": "Review",
+    "Reviews": "Reviews",
+    "Rating": "Rating",
+    "Approved": "Approved",
+    "Phone": "Phone"
 }
