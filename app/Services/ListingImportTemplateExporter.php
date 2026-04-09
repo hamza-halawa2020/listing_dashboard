@@ -11,43 +11,39 @@ use RuntimeException;
 
 class ListingImportTemplateExporter
 {
+    private const SOURCE_FILENAME = 'listings-import-template.xlsx';
+
     public function downloadFilename(): string
     {
-        return 'listings-import-template.xlsx';
+        return self::SOURCE_FILENAME;
     }
 
     public function createTemporaryFile(): string
     {
-        $path = storage_path('app/private/' . Str::uuid() . '.xlsx');
+        $source = $this->prepareSourcePath();
+        $destination = storage_path('app/private/' . Str::uuid() . '.xlsx');
+        $directory = dirname($destination);
 
-        $writer = new Writer();
-        $writer->setCreator(config('app.name', 'Laravel'));
-        $writer->openToFile($path);
-
-        try {
-            $listingsSheet = $writer->getCurrentSheet();
-            $this->configureListingsSheet($listingsSheet);
-            $writer->addRow(Row::fromValues($this->headings()));
-
-            $instructionsSheet = $writer->addNewSheetAndMakeItCurrent();
-            $this->configureInstructionsSheet($instructionsSheet);
-
-            foreach ($this->instructionRows() as $row) {
-                $writer->addRow(Row::fromValues($row));
+        if (! is_dir($directory)) {
+            if (! mkdir($directory, 0755, true) && ! is_dir($directory)) {
+                throw new RuntimeException('Could not prepare temporary directory for the import template.');
             }
-
-            $writer->setCurrentSheet($listingsSheet);
-        } catch (\Throwable $exception) {
-            $writer->close();
-
-            if (is_file($path)) {
-                @unlink($path);
-            }
-
-            throw new RuntimeException('Could not generate the listings import template.', previous: $exception);
         }
 
-        $writer->close();
+        if (! copy($source, $destination)) {
+            throw new RuntimeException('Could not prepare the import template download.');
+        }
+
+        return $destination;
+    }
+
+    private function prepareSourcePath(): string
+    {
+        $path = resource_path('templates/' . self::SOURCE_FILENAME);
+
+        if (! file_exists($path)) {
+            throw new RuntimeException("The import template file [{$path}] is missing.");
+        }
 
         return $path;
     }
