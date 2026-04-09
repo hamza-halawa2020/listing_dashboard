@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             SubscriptionPlanSeeder::class,
             RoleAndPermissionSeeder::class,
-            ListingSeeder::class,
+            // ListingSeeder::class,
         ]);
     }
 }

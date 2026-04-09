@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Category;
 use App\Models\Listing;
 use App\Models\Location;
+use App\Services\GeocodingService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -14,6 +16,67 @@ use ZipArchive;
 
 class ListingSpreadsheetImporter
 {
+    private GeocodingService $geocodingService;
+
+    public function __construct(GeocodingService $geocodingService)
+    {
+        $this->geocodingService = $geocodingService;
+    }
+
+    private const DEFAULT_GOVERNORATE_SHIPPING_COST = 90;
+
+    private const HEADING_ALIASES = [
+        'name' => 'name',
+        'title' => 'name',
+        'listing' => 'name',
+        'provider' => 'name',
+        'listing_name' => 'name',
+        'category' => 'category_name',
+        'category_name' => 'category_name',
+        'category_title' => 'category_name',
+        'specialization' => 'specialization_name',
+        'specialty' => 'specialization_name',
+        'sub_category' => 'specialization_name',
+        'sub_category_name' => 'specialization_name',
+        'subcategory' => 'specialization_name',
+        'governorate' => 'governorate_name',
+        'governorate_name' => 'governorate_name',
+        'province' => 'governorate_name',
+        'province_name' => 'governorate_name',
+        'state' => 'governorate_name',
+        'area' => 'area_name',
+        'area_name' => 'area_name',
+        'city' => 'area_name',
+        'location' => 'area_name',
+        'district' => 'area_name',
+        'neighborhood' => 'area_name',
+        'address' => 'address',
+        'description' => 'description',
+        'notes' => 'description',
+        'phone' => 'phone',
+        'phones' => 'phone',
+        'phone_number' => 'phone',
+        'phone_numbers' => 'phone',
+        'mobile' => 'phone',
+        'discount' => 'discount_percentage',
+        'discount_percentage' => 'discount_percentage',
+        'offer_discount' => 'discount_percentage',
+        'offer' => 'discount_percentage',
+        'المحافظة' => 'governorate_name',
+        'المحافطة' => 'governorate_name',
+        'المنطقة' => 'area_name',
+        'المنطه' => 'area_name',
+        'مقدم الخدمة' => 'name',
+        'الفئة' => 'category_name',
+        'الفئه' => 'category_name',
+        'التخصص' => 'specialization_name',
+        'العنوان' => 'address',
+        'رقم الهاتف' => 'phone',
+        'رقم التليفون' => 'phone',
+        'الهاتف' => 'phone',
+        'الخصم' => 'discount_percentage',
+    ];
+
     /**
      * @return array{
      *     created: int,
@@ -35,7 +98,7 @@ class ListingSpreadsheetImporter
 
         foreach ($rows as $index => $row) {
             try {
-                $result = $this->importRow($row);
+                $result = $this->importRow($row, $index);
 
                 if ($result === 'created') {
                     $summary['created']++;
@@ -62,7 +125,7 @@ class ListingSpreadsheetImporter
     /**
      * @param  array<string, mixed>  $row
      */
-    private function importRow(array $row): string
+    private function importRow(array $row, int $rowIndex): string
     {
         $row = $this->normalizeRow($row);
 
@@ -73,6 +136,8 @@ class ListingSpreadsheetImporter
         [$listing, $exists] = $this->resolveListing($row);
 
         $attributes = $this->extractAttributes($row);
+        $this->fillMissingCoordinates($row, $attributes, $rowIndex);
+        $this->logCoordinateGap($row, $attributes, $rowIndex);
 
         if (! $exists && $attributes === []) {
             return 'skipped';
@@ -92,13 +157,20 @@ class ListingSpreadsheetImporter
 
         $listing->fill($attributes);
 
-        if ($exists && ! $listing->isDirty()) {
-            return 'skipped';
+        if (! $exists) {
+            $listing->save();
+            $result = 'created';
+        } elseif ($listing->isDirty()) {
+            $listing->save();
+            $result = 'updated';
+        } else {
+            $result = 'skipped';
         }
 
-        $listing->save();
+        $this->syncPhones($listing, $row['phone'] ?? null);
+        $this->syncOffer($listing, $row['discount_percentage'] ?? null);
 
-        return $exists ? 'updated' : 'created';
+        return $result;
     }
 
     /**
@@ -107,14 +179,6 @@ class ListingSpreadsheetImporter
      */
     private function resolveListing(array $row): array
     {
-        if ($this->hasFilledValue($row, 'name')) {
-            $listing = $this->applyExactNameSearch(Listing::query(), (string) $row['name'])->first();
-
-            if ($listing) {
-                return [$listing, true];
-            }
-        }
-
         if ($this->hasFilledValue($row, 'id')) {
             $listing = Listing::find((int) $row['id']);
 
@@ -200,8 +264,19 @@ class ListingSpreadsheetImporter
             return $category->id;
         }
 
-        if ($this->hasFilledValue($row, 'category_name') || $this->hasFilledValue($row, 'category_path')) {
-            throw new RuntimeException('The related category could not be resolved from the provided name.');
+        $specializationName = trim((string) ($row['specialization_name'] ?? ''));
+        $categoryName = trim((string) ($row['category_name'] ?? ''));
+
+        if ($specializationName !== '') {
+            $category = $this->findOrCreateCategory($specializationName, $categoryName ?: null);
+
+            return $category->id;
+        }
+
+        if ($categoryName !== '') {
+            $category = $this->findOrCreateCategory($categoryName);
+
+            return $category->id;
         }
 
         return null;
@@ -212,21 +287,17 @@ class ListingSpreadsheetImporter
      */
     private function resolveLocationId(array $row): ?int
     {
-        if ($this->hasFilledValue($row, 'governorate_name') || $this->hasFilledValue($row, 'area_name')) {
-            if (! $this->hasFilledValue($row, 'governorate_name') || ! $this->hasFilledValue($row, 'area_name')) {
-                throw new RuntimeException('Both governorate_name and area_name are required to resolve the location.');
-            }
+        if ($this->hasFilledValue($row, 'governorate_name')) {
+            $governorateName = (string) $row['governorate_name'];
+            $areaName = $this->hasFilledValue($row, 'area_name') ? (string) $row['area_name'] : null;
 
-            $location = $this->findLocationByGovernorateAndArea(
-                (string) $row['governorate_name'],
-                (string) $row['area_name'],
-            );
-
-            if (! $location) {
-                throw new RuntimeException('The related location could not be resolved from the provided governorate and area.');
-            }
+            $location = $this->findOrCreateLocation($governorateName, $areaName);
 
             return $location->id;
+        }
+
+        if ($this->hasFilledValue($row, 'area_name')) {
+            throw new RuntimeException('A governorate_name is required when resolving the location by area_name.');
         }
 
         if ($this->hasFilledValue($row, 'location_id')) {
@@ -264,23 +335,6 @@ class ListingSpreadsheetImporter
         return null;
     }
 
-    private function findLocationByGovernorateAndArea(string $governorateName, string $areaName): ?Location
-    {
-        $governorate = $this->applyExactNameSearch(
-            Location::query()->whereNull('parent_id'),
-            $governorateName,
-        )->first();
-
-        if (! $governorate) {
-            return null;
-        }
-
-        return $this->applyExactNameSearch(
-            Location::query()->where('parent_id', $governorate->id),
-            $areaName,
-        )->first();
-    }
-
     private function findCategoryByPath(string $path): ?Category
     {
         return $this->findByPath(
@@ -297,6 +351,210 @@ class ListingSpreadsheetImporter
             $path,
             static fn (Builder $query): Builder => $query->whereNull('parent_id'),
         );
+    }
+
+    private function findOrCreateCategory(string $name, ?string $parentName = null): Category
+    {
+        $normalized = trim($name);
+
+        if ($normalized === '') {
+            throw new RuntimeException('A category name is required to create a category.');
+        }
+
+        $parent = null;
+
+        if ($parentName !== null && trim($parentName) !== '') {
+            $parent = $this->findCategoryByName($parentName);
+
+            if (! $parent) {
+                $parent = Category::create([
+                    'name' => $parentName,
+                    'slug' => $this->generateUniqueCategorySlug($parentName),
+                ]);
+            }
+        }
+
+        $parentId = $parent ? $parent->id : null;
+
+        $category = $this->findCategoryByName($name, $parentId);
+
+        if ($category) {
+            return $category;
+        }
+
+        return Category::create([
+            'name' => $name,
+            'slug' => $this->generateUniqueCategorySlug($name),
+            'parent_id' => $parentId,
+        ]);
+    }
+
+    private function findCategoryByName(string $name, ?int $parentId = null): ?Category
+    {
+        $query = $this->applyExactNameSearch(Category::query(), $name);
+
+        if ($parentId === null) {
+            $query->whereNull('parent_id');
+        } else {
+            $query->where('parent_id', $parentId);
+        }
+
+        return $query->first();
+    }
+
+    private function findOrCreateLocation(string $governorateName, ?string $areaName): Location
+    {
+        $governorate = $this->findLocationByName($governorateName);
+
+        if (! $governorate) {
+            $governorate = Location::create([
+                'name' => $governorateName,
+                'type' => 'governorate',
+                'shipping_cost' => self::DEFAULT_GOVERNORATE_SHIPPING_COST,
+            ]);
+        }
+
+        if (! $areaName) {
+            return $governorate;
+        }
+
+        $area = $this->findLocationByName($areaName, $governorate->id);
+
+        if (! $area) {
+            $area = Location::create([
+                'name' => $areaName,
+                'parent_id' => $governorate->id,
+                'type' => 'zone',
+            ]);
+        }
+
+        return $area;
+    }
+
+    private function findLocationByName(string $name, ?int $parentId = null): ?Location
+    {
+        $query = $this->applyExactNameSearch(Location::query(), $name);
+
+        if ($parentId === null) {
+            $query->whereNull('parent_id');
+        } else {
+            $query->where('parent_id', $parentId);
+        }
+
+        return $query->first();
+    }
+
+    private function generateUniqueCategorySlug(string $name): string
+    {
+        $slug = Str::slug($name) ?: 'category';
+        $current = $slug;
+        $counter = 1;
+
+        while (Category::where('slug', $current)->exists()) {
+            $current = "{$slug}-{$counter}";
+            $counter++;
+        }
+
+        return $current;
+    }
+
+    private function syncPhones(Listing $listing, ?string $phoneValue): void
+    {
+        if (! filled($phoneValue)) {
+            return;
+        }
+
+        $numbers = $this->splitPhoneNumbers($phoneValue);
+
+        if ($numbers === []) {
+            return;
+        }
+
+        $listing->phones()->whereNotIn('phone_number', $numbers)->delete();
+
+        foreach ($numbers as $number) {
+            $listing->phones()->updateOrCreate(
+                ['phone_number' => $number],
+                ['type' => 'mobile'],
+            );
+        }
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function splitPhoneNumbers(string $value): array
+    {
+        $parts = preg_split('/[\r\n\/|,;]+/', $value) ?: [];
+
+        $numbers = [];
+
+        foreach ($parts as $part) {
+            $number = trim($part);
+
+            if ($number === '') {
+                continue;
+            }
+
+            $numbers[] = $number;
+        }
+
+        return array_values(array_unique($numbers));
+    }
+
+    private function syncOffer(Listing $listing, ?string $discountValue): void
+    {
+        if (! filled($discountValue)) {
+            return;
+        }
+
+        $percentage = $this->normalizeDiscountPercentage($discountValue);
+
+        if ($percentage === null) {
+            return;
+        }
+
+        $attributes = [
+            'title' => 'Imported Discount',
+            'description' => 'Imported discount from the spreadsheet.',
+            'discount_percentage' => $percentage,
+            'is_active' => true,
+        ];
+
+        $offer = $listing->offers()->first();
+
+        if ($offer) {
+            $offer->fill($attributes)->save();
+        } else {
+            $listing->offers()->create($attributes);
+        }
+    }
+
+    private function normalizeDiscountPercentage(string $value): ?float
+    {
+        $cleanValue = str_replace('%', '', trim($value));
+
+        if ($cleanValue === '') {
+            return null;
+        }
+
+        $cleanValue = str_replace(',', '.', $cleanValue);
+
+        if (! is_numeric($cleanValue)) {
+            if (preg_match('/(\d+(?:\.\d+)?)/', $cleanValue, $matches)) {
+                $cleanValue = $matches[1];
+            } else {
+                return null;
+            }
+        }
+
+        $percentage = (float) $cleanValue;
+
+        if ($percentage <= 1) {
+            $percentage *= 100;
+        }
+
+        return min(100, max(0, $percentage));
     }
 
     /**
@@ -600,13 +858,175 @@ class ListingSpreadsheetImporter
         $headings = [];
 
         foreach ($cells as $index => $value) {
-            $heading = preg_replace('/^\xEF\xBB\xBF/u', '', trim((string) $value));
-            $heading = trim(Str::snake(preg_replace('/[^A-Za-z0-9]+/u', ' ', $heading) ?? ''));
+            $heading = $this->normalizeHeading((string) $value);
 
             $headings[$index] = $heading;
         }
 
         return $headings;
+    }
+
+    private function normalizeHeading(string $heading): string
+    {
+        $heading = preg_replace('/^\xEF\xBB\xBF/u', '', trim($heading));
+
+        if ($heading === '') {
+            return '';
+        }
+
+        $lowerHeading = mb_strtolower($heading);
+
+        if (array_key_exists($lowerHeading, self::HEADING_ALIASES)) {
+            return self::HEADING_ALIASES[$lowerHeading];
+        }
+
+        $cleaned = trim(Str::snake(preg_replace('/[^A-Za-z0-9]+/u', ' ', $heading) ?? ''));
+
+        return $cleaned;
+    }
+
+    private function fillMissingCoordinates(array $row, array &$attributes, int $rowIndex): void
+    {
+        $hasLat = array_key_exists('latitude', $attributes) && filled($attributes['latitude']);
+        $hasLng = array_key_exists('longitude', $attributes) && filled($attributes['longitude']);
+
+        if ($hasLat && $hasLng) {
+            return;
+        }
+
+        $address = trim($row['address'] ?? '');
+        $area = trim($row['area_name'] ?? '');
+        $governorate = trim($row['governorate_name'] ?? '');
+
+        if ($address === '' && $area === '' && $governorate === '') {
+            return;
+        }
+
+        $candidates = $this->buildGeocodingCandidates($address, $area, $governorate);
+
+        $geo = $this->geocodingService->geocodeFromCandidates($candidates);
+
+        if (! $geo) {
+            Log::info('OpenStreetMap geocoding did not return coordinates', [
+                'row_number' => $rowIndex + 2,
+                'name' => $row['name'] ?? null,
+                'address' => $address,
+                'area' => $area,
+                'governorate' => $governorate,
+            ]);
+
+            return;
+        }
+
+        $attributes['latitude'] = $geo['lat'];
+        $attributes['longitude'] = $geo['lng'];
+
+        Log::info('OpenStreetMap geocoding supplied coordinates', [
+            'row_number' => $rowIndex + 2,
+            'name' => $row['name'] ?? null,
+            'latitude' => $geo['lat'],
+            'longitude' => $geo['lng'],
+        ]);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function buildGeocodingCandidates(string $address, string $area, string $governorate): array
+    {
+        $segments = $this->splitAddressSegments($address);
+        $candidates = [];
+
+        foreach ($segments as $segment) {
+            $trimmed = trim($segment);
+
+            if ($trimmed === '') {
+                continue;
+            }
+
+            $candidates[] = $trimmed;
+
+            if ($area !== '') {
+                $candidates[] = "{$trimmed}, {$area}";
+            }
+
+            if ($governorate !== '') {
+                $candidates[] = "{$trimmed}, {$governorate}";
+            }
+
+            if ($area !== '' && $governorate !== '') {
+                $candidates[] = "{$trimmed}, {$area}, {$governorate}";
+            }
+        }
+
+        if ($area !== '' && $governorate !== '') {
+            $candidates[] = "{$area}, {$governorate}";
+            $candidates[] = $area;
+        }
+
+        if ($governorate !== '') {
+            $candidates[] = $governorate;
+        }
+
+        return array_values(array_unique(array_filter($candidates, static fn (string $value): bool => $value !== '')));
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function splitAddressSegments(string $address): array
+    {
+        if ($address === '') {
+            return [];
+        }
+
+        $parts = preg_split('/[\r\n,\/\-]+/u', $address) ?: [];
+
+        $segments = [];
+
+        for ($length = count($parts); $length > 0; $length--) {
+            $joined = implode(', ', array_slice($parts, 0, $length));
+            $segments[] = $joined;
+        }
+
+        return $segments;
+    }
+
+    private function logCoordinateGap(array $row, array $attributes, int $rowIndex): void
+    {
+        $hasLocationContext = $this->hasFilledValue($row, 'address')
+            || $this->hasFilledValue($row, 'governorate_name')
+            || $this->hasFilledValue($row, 'area_name');
+
+        if (! $hasLocationContext) {
+            return;
+        }
+
+        $latMissing = ! (array_key_exists('latitude', $attributes) && filled($attributes['latitude']));
+        $lngMissing = ! (array_key_exists('longitude', $attributes) && filled($attributes['longitude']));
+
+        if (! $latMissing && ! $lngMissing) {
+            return;
+        }
+
+        $reasons = [];
+
+        if ($latMissing) {
+            $reasons[] = 'latitude missing';
+        }
+
+        if ($lngMissing) {
+            $reasons[] = 'longitude missing';
+        }
+
+        Log::warning('Listing import row missing coordinates', [
+            'row_number' => $rowIndex + 2,
+            'name' => $row['name'] ?? null,
+            'reasons' => $reasons,
+            'governorate' => $row['governorate_name'] ?? null,
+            'area' => $row['area_name'] ?? null,
+            'address' => $row['address'] ?? null,
+        ]);
     }
 
     private function columnIndexFromReference(string $reference): int

@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'geocoding' => [
+        'url' => env('GEOCODING_URL', 'https://nominatim.openstreetmap.org/search'),
+        'user_agent' => env('GEOCODING_USER_AGENT', env('APP_NAME', 'Laravel')),
+        'cache_ttl_seconds' => env('GEOCODING_CACHE_TTL_SECONDS', 604800),
+    ],
+
 ];
