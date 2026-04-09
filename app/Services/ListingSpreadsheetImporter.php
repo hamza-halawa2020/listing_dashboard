@@ -169,8 +169,35 @@ class ListingSpreadsheetImporter
 
         $this->syncPhones($listing, $row['phone'] ?? null);
         $this->syncOffer($listing, $row['discount_percentage'] ?? null);
+        $this->ensureDefaultWorkingHours($listing);
 
         return $result;
+    }
+
+    private function ensureDefaultWorkingHours(Listing $listing): void
+    {
+        if ($listing->workingHours()->exists()) {
+            return;
+        }
+
+        $days = [
+            'saturday',
+            'sunday',
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+        ];
+
+        $hours = array_map(static fn (string $day): array => [
+            'day' => $day,
+            'open_time' => '09:00:00',
+            'close_time' => '21:00:00',
+            'is_closed' => false,
+        ], $days);
+
+        $listing->workingHours()->createMany($hours);
     }
 
     /**
@@ -515,8 +542,8 @@ class ListingSpreadsheetImporter
         }
 
         $attributes = [
-            'title' => 'Imported Discount',
-            'description' => 'Imported discount from the spreadsheet.',
+            'title' => '',
+            'description' => '',
             'discount_percentage' => $percentage,
             'is_active' => true,
         ];

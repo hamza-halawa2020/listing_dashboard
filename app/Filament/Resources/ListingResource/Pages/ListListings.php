@@ -2,14 +2,16 @@
 
 namespace App\Filament\Resources\ListingResource\Pages;
 
+use App\Filament\Resources\ListingImportRunResource;
 use App\Filament\Resources\ListingResource;
-use App\Services\ListingSpreadsheetImporter;
+use App\Jobs\ProcessListingImport;
+use App\Models\ListingImportRun;
 use Filament\Actions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Facades\Filament;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class ListListings extends ListRecords
@@ -24,6 +26,11 @@ class ListListings extends ListRecords
                 ->icon('heroicon-o-arrow-down-tray')
                 ->visible(fn (): bool => ListingResource::canViewAny())
                 ->url(route('listings.import-template.download')),
+            Actions\Action::make('importHistory')
+                ->label(__('Import History'))
+                ->icon('heroicon-o-clipboard-document-list')
+                ->visible(fn (): bool => ListingImportRunResource::canViewAny())
+                ->url(ListingImportRunResource::getUrl('index')),
             Actions\Action::make('importListings')
                 ->label(__('Import Listings'))
                 ->icon('heroicon-o-arrow-up-tray')
@@ -51,34 +58,23 @@ class ListListings extends ListRecords
                         return;
                     }
 
+                    $run = ListingImportRun::create([
+                        'user_id' => Filament::auth()?->id(),
+                        'disk' => 'local',
+                        'path' => $file,
+                        'status' => ListingImportRun::STATUS_PENDING,
+                    ]);
+
                     try {
-                        $summary = app(ListingSpreadsheetImporter::class)->import(
-                            Storage::disk('local')->path($file),
-                        );
+                        ProcessListingImport::dispatch($run->id);
 
-                        Storage::disk('local')->delete($file);
-
-                        $notification = Notification::make()
-                            ->body($this->buildImportSummary($summary));
-
-                        if ($summary['errors'] === []) {
-                            $notification->title(__('Import completed'));
-                            $notification->success();
-                        } elseif (($summary['created'] + $summary['updated']) > 0) {
-                            $notification->title(__('Import completed with issues'));
-                            $notification->warning()->persistent();
-                        } else {
-                            $notification->title(__('Import failed'));
-                            $notification->danger()->persistent();
-                        }
-
-                        $notification->send();
+                        Notification::make()
+                            ->title(__('Import queued'))
+                            ->body(__('The spreadsheet was queued for background processing. Check the import logs after the job finishes.'))
+                            ->info()
+                            ->send();
                     } catch (Throwable $exception) {
                         report($exception);
-
-                        if (filled($file)) {
-                            Storage::disk('local')->delete($file);
-                        }
 
                         Notification::make()
                             ->title(__('Import failed'))
@@ -93,42 +89,4 @@ class ListListings extends ListRecords
         ];
     }
 
-    /**
-     * @param  array{
-     *     created: int,
-     *     updated: int,
-     *     skipped: int,
-     *     errors: array<int, string>
-     * }  $summary
-     */
-    private function buildImportSummary(array $summary): string
-    {
-        $lines = [
-            __('Created: :created, Updated: :updated, Skipped: :skipped', [
-                'created' => $summary['created'],
-                'updated' => $summary['updated'],
-                'skipped' => $summary['skipped'],
-            ]),
-        ];
-
-        $errors = array_values($summary['errors']);
-
-        if ($errors === []) {
-            return implode(PHP_EOL, $lines);
-        }
-
-        $lines[] = __('Import errors:');
-
-        foreach (array_slice($errors, 0, 5) as $error) {
-            $lines[] = '- ' . $error;
-        }
-
-        $remainingErrors = count($errors) - 5;
-
-        if ($remainingErrors > 0) {
-            $lines[] = __('And :count more errors.', ['count' => $remainingErrors]);
-        }
-
-        return implode(PHP_EOL, $lines);
-    }
 }
