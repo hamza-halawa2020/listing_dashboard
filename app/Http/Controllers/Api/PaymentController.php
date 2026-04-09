@@ -23,14 +23,21 @@ class PaymentController extends ApiController
     {
         $plan = SubscriptionPlan::findOrFail($request->plan_id);
         $validated = $request->validated();
+        $user = auth()->user();
+        
+        if (filled($validated['national_id']) && blank($user->national_id)) {
+            $user->update(['national_id' => $validated['national_id']]);
+            $user->refresh();
+        }
+        
         $deliveryRequired = (bool) ($validated['delivery_required'] ?? false);
         $location = $deliveryRequired ? Location::findOrFail($validated['location_id']) : null;
         $shippingCost = $deliveryRequired ? (float) ($location?->shipping_cost ?? 0) : 0;
         $amount = (float) $plan->price + $shippingCost;
 
-        $payment = DB::transaction(function () use ($request, $validated, $plan, $location, $deliveryRequired, $shippingCost, $amount) {
+        $payment = DB::transaction(function () use ($request, $validated, $plan, $location, $deliveryRequired, $shippingCost, $amount, $user) {
             $subscription = Subscription::create([
-                'user_id' => auth()->id(),
+                'user_id' => $user->id,
                 'subscription_plan_id' => $plan->id,
                 'starts_at' => Carbon::now(),
                 'ends_at' => Carbon::now()->addDays($plan->duration_days),
@@ -41,7 +48,7 @@ class PaymentController extends ApiController
             ]);
 
             $data = [
-                'user_id' => auth()->id(),
+                'user_id' => $user->id,
                 'subscription_id' => $subscription->id,
                 'location_id' => $deliveryRequired ? $location?->id : null,
                 'amount' => $amount,

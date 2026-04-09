@@ -19,6 +19,7 @@ class PaymentStoreRequest extends FormRequest
             'plan_id' => 'required|exists:subscription_plans,id',
             'amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:cash,credit_card,bank_transfer,fawry,vodafone_cash,instapay',
+            'national_id' => 'nullable|string|max:20|min:14',
             'transaction_reference' => 'nullable|string|max:255',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'notes' => 'nullable|string',
@@ -34,7 +35,10 @@ class PaymentStoreRequest extends FormRequest
     public function withValidator($validator): void
     {
         $validator->after(function ($validator): void {
-            if (filled($this->user()?->national_id)) {
+            $userHasNationalId = filled($this->user()?->national_id);
+            $requestHasNationalId = filled($this->national_id);
+
+            if ($userHasNationalId || $requestHasNationalId) {
                 return;
             }
 

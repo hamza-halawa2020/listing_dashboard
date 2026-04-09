@@ -29,7 +29,8 @@ class UpdateProfileRequest extends FormRequest
             'national_id' => [
                 'sometimes',
                 'string',
-                'max:255',
+                'max:20',
+                'min:14',
                 Rule::unique('users', 'national_id')->ignore($user?->id),
                 Rule::unique('family_members', 'national_id'),
             ],
