@@ -33,6 +33,7 @@ class ImagesRelationManager extends RelationManager
                     ->label(__('Image'))
                     ->image()
                     ->disk('public')
+                    ->directory('listings')
                     ->required(),
                 Toggle::make('is_cover')
                     ->label(__('Cover Image'))

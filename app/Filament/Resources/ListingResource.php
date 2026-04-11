@@ -333,7 +333,8 @@ class ListingResource extends AuthorizedResource
                                 FileUpload::make('image_path')
                                     ->label(__('Image'))
                                     ->image()
-                                    // ->directory('listings')
+                                    ->disk('public')
+                                    ->directory('listings')
                                     ->required()
                                     ->columnSpanFull(),
                                 Toggle::make('is_cover')

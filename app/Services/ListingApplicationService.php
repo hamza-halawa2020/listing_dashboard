@@ -132,22 +132,31 @@ class ListingApplicationService
         // Extract mime type and base64 data
         if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $matches)) {
             $extension = $matches[1];
+            // Fix jpeg extension to jpg for consistency
+            if ($extension === 'jpeg') $extension = 'jpg';
             $base64Data = substr($base64Image, strpos($base64Image, ',') + 1);
         } else {
-            // Assume it's raw base64 without the data URI prefix
             $extension = 'png';
             $base64Data = $base64Image;
         }
 
+        // Replace spaces with + (common issue with base64 over HTTP)
+        $base64Data = str_replace(' ', '+', $base64Data);
         $imageData = base64_decode($base64Data);
 
         if ($imageData === false) {
             throw new \InvalidArgumentException('Invalid base64 image data');
         }
 
-        $fileName = Str::uuid() . '.' . $extension;
+        $directory = 'listings';
+        $fileName = $directory . '/' . Str::uuid() . '.' . $extension;
 
-        Storage::disk('public')->put($fileName, $imageData);
+        // Ensure directory exists
+        if (!Storage::disk('public')->exists($directory)) {
+            Storage::disk('public')->makeDirectory($directory);
+        }
+
+        Storage::disk('public')->put($fileName, $imageData, 'public');
 
         return $fileName;
     }
