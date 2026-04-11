@@ -32,6 +32,7 @@ class ImagesRelationManager extends RelationManager
                 FileUpload::make('image_path')
                     ->label(__('Image'))
                     ->image()
+                    ->disk('public')
                     ->required(),
                 Toggle::make('is_cover')
                     ->label(__('Cover Image'))
@@ -45,6 +46,7 @@ class ImagesRelationManager extends RelationManager
             ->columns([
                 ImageColumn::make('image_path')
                     ->label(__('Image'))
+                    ->disk('public')
                     ->square(),
                 IconColumn::make('is_cover')
                     ->label(__('Cover'))

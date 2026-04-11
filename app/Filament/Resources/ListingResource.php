@@ -221,7 +221,21 @@ class ListingResource extends AuthorizedResource
                             ->columnSpanFull(),
                         Toggle::make('is_active')
                             ->label(__('Active'))
-                            ->default(true),
+                            ->default(true)
+                            ->disabled(fn (Listing $record) => 
+                                $record->id && 
+                                \App\Models\ListingApplication::where('listing_id', $record->id)
+                                    ->where('status', 'pending')
+                                    ->exists()
+                            )
+                            ->helperText(fn (Listing $record) => 
+                                $record->id && 
+                                \App\Models\ListingApplication::where('listing_id', $record->id)
+                                    ->where('status', 'pending')
+                                    ->exists()
+                                    ? __('This listing is linked to a pending application. You can only change its status through the application review process.')
+                                    : ''
+                            ),
                     ])
                     ->columns(2),
 

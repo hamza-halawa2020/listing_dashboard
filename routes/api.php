@@ -1,22 +1,23 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\CommentController;
-use App\Http\Controllers\Api\ReviewController;
-use App\Http\Controllers\Api\PriceRequestController;
 use App\Http\Controllers\Api\ContactController;
-use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\ImpactStatsController;
+use App\Http\Controllers\Api\ListingApplicationController;
 use App\Http\Controllers\Api\ListingController;
 use App\Http\Controllers\Api\LocationController;
-use App\Http\Controllers\Api\SubscriptionPlanController;
-use App\Http\Controllers\Api\SubscriptionsController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ImpactStatsController;
-use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PostCommentController;
+use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\PriceRequestController;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SubscriptionCheckController;
+use App\Http\Controllers\Api\SubscriptionPlanController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PaymentController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -47,6 +48,7 @@ Route::post('/price-requests', [PriceRequestController::class, 'store']);
 
 Route::post('/contacts', [ContactController::class, 'store']);
 Route::post('/check-subscription', [SubscriptionCheckController::class, 'check']);
+Route::post('/listing-applications', [ListingApplicationController::class, 'store']);
 
 // Protected routes - require authentication
 Route::middleware('auth:sanctum')->group(function () {
@@ -60,6 +62,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/listings/{id}', [ListingController::class, 'show']);
 
     // Subscriptions routes
-    Route::post('/payments', [App\Http\Controllers\Api\PaymentController::class, 'store']);
+    Route::post('/payments', [PaymentController::class, 'store']);
 
 });

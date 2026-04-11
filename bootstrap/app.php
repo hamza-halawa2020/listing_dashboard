@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,6 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
             ->timezone(config('database_backups.schedule_timezone', 'Africa/Cairo'));
     })
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(HandleCors::class);
+
         $middleware->web(append: [
             SetLocale::class,
         ]);

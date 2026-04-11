@@ -4,8 +4,13 @@ namespace App\Filament\Resources\ListingResource\Pages;
 
 use App\Filament\Resources\ListingResource;
 use App\Models\Location;
+use App\Models\ListingApplication;
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section as InfoSection;
+use Filament\Infolists\Components\TextEntry;
 
 class EditListing extends EditRecord
 {
@@ -13,10 +18,35 @@ class EditListing extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
+        $record = $this->getRecord();
+        $pendingApplication = null;
+        
+        if ($record->id) {
+            $pendingApplication = ListingApplication::where('listing_id', $record->id)
+                ->where('status', 'pending')
+                ->first();
+        }
+
+        $actions = [
             Actions\DeleteAction::make()
-                ->visible(fn (): bool => ListingResource::canDelete($this->getRecord())),
+                ->visible(fn (): bool => ListingResource::canDelete($this->getRecord()))
+                ->disabled(fn () => $pendingApplication !== null)
+                ->tooltip(fn () => 
+                    $pendingApplication 
+                        ? __('Cannot delete this listing. It is linked to a pending application.')
+                        : ''
+                ),
         ];
+
+        if ($pendingApplication) {
+            $actions[] = Actions\Action::make('viewApplication')
+                ->label(__('View Application'))
+                ->icon('heroicon-o-arrow-top-right-on-square')
+                ->url(route('filament.admin.resources.listing-applications.view', $pendingApplication->id))
+                ->openUrlInNewTab();
+        }
+
+        return $actions;
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
@@ -66,6 +96,25 @@ class EditListing extends EditRecord
         unset($data['location_level_3']);
         unset($data['location_level_4']);
         unset($data['location_level_5']);
+
+        // Check if this listing is linked to a pending application
+        $record = $this->getRecord();
+        if ($record->id) {
+            $pendingApplication = ListingApplication::where('listing_id', $record->id)
+                ->where('status', 'pending')
+                ->first();
+
+            if ($pendingApplication) {
+                // Prevent changing is_active when there's a pending application
+                $data['is_active'] = $record->is_active;
+                
+                Notification::make()
+                    ->title(__('Action Blocked'))
+                    ->body(__('This listing is linked to a pending application. Status changes are not allowed until the application is reviewed.'))
+                    ->warning()
+                    ->send();
+            }
+        }
         
         return $data;
     }
