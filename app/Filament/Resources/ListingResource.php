@@ -225,13 +225,13 @@ class ListingResource extends AuthorizedResource
                             ->disabled(fn (Listing $record) => 
                                 $record->id && 
                                 \App\Models\ListingApplication::where('listing_id', $record->id)
-                                    ->where('status', 'pending')
+                                    ->where('status','!=','approved')
                                     ->exists()
                             )
                             ->helperText(fn (Listing $record) => 
                                 $record->id && 
                                 \App\Models\ListingApplication::where('listing_id', $record->id)
-                                    ->where('status', 'pending')
+                                    ->where('status','!=','approved')
                                     ->exists()
                                     ? __('This listing is linked to a pending application. You can only change its status through the application review process.')
                                     : ''

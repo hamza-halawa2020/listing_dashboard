@@ -20,7 +20,7 @@ class ViewApplication extends ViewRecord
             Action::make('approve')
                 ->label(__('Approve & Activate Listing'))
                 ->icon('heroicon-o-check-circle')
-                ->visible(fn (ListingApplication $record) => $record->status === 'pending')
+                ->visible(fn (ListingApplication $record) => $record->status !== 'approved')
                 ->color('success')
                 ->action(function (ListingApplication $record) {
                     try {
@@ -46,7 +46,7 @@ class ViewApplication extends ViewRecord
             Action::make('reject')
                 ->label(__('Reject Application'))
                 ->icon('heroicon-o-x-circle')
-                ->visible(fn (ListingApplication $record) => $record->status === 'pending')
+                ->visible(fn (ListingApplication $record) => $record->status !== 'rejected')
                 ->color('danger')
                 ->form([
                     Textarea::make('rejection_reason')

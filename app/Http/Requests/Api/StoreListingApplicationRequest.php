@@ -38,6 +38,7 @@ class StoreListingApplicationRequest extends FormRequest
             
             'links' => 'nullable|array',
             'links.*.url' => 'required_with:links|url',
+            'links.*.title' => 'nullable|string|max:255',
             'links.*.type' => 'required_with:links|string|max:50',
             
             'images' => 'nullable|array',

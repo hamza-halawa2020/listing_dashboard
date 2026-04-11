@@ -23,7 +23,7 @@ class EditListing extends EditRecord
         
         if ($record->id) {
             $pendingApplication = ListingApplication::where('listing_id', $record->id)
-                ->where('status', 'pending')
+                // ->where('status', 'pending')
                 ->first();
         }
 

@@ -62,6 +62,7 @@ class ListingApplicationService
                     'listing_id' => $listing->id,
                     'url' => $link['url'],
                     'type' => $link['type'],
+                    'title' => $link['type'],
                 ]);
             }
         }
@@ -110,14 +111,13 @@ class ListingApplicationService
      */
     public function rejectApplication(ListingApplication $application, string $reason = null): ListingApplication
     {
-        $application->listing->delete();
+        $application->listing->update(['is_active' => false]);
 
         $application->update([
             'status' => 'rejected',
             'rejection_reason' => $reason,
             'reviewed_by' => auth()->id(),
             'reviewed_at' => now(),
-            'listing_id' => null,
         ]);
 
         return $application->refresh();

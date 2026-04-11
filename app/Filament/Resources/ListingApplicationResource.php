@@ -11,7 +11,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\Section as InfoSection;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Schemas\Components\Section as InfoSection;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\BadgeColumn;
@@ -31,7 +34,7 @@ class ListingApplicationResource extends AuthorizedResource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 5;
 
     public static function getModelLabel(): string
     {
@@ -47,7 +50,8 @@ class ListingApplicationResource extends AuthorizedResource
     {
         return $schema
             ->components([
-                TextEntry::make(__('Application Information'))
+                // ─── Application / Contact Info ───
+                InfoSection::make(__('Application Information'))
                     ->schema([
                         TextEntry::make('id')
                             ->label(__('ID')),
@@ -60,7 +64,8 @@ class ListingApplicationResource extends AuthorizedResource
                     ])
                     ->columns(2),
 
-                TextEntry::make(__('Listing Information'))
+                // ─── Listing Basic Info ───
+                InfoSection::make(__('Listing Information'))
                     ->schema([
                         TextEntry::make('listing.name')
                             ->label(__('Business Name')),
@@ -71,15 +76,96 @@ class ListingApplicationResource extends AuthorizedResource
                         TextEntry::make('listing.address')
                             ->label(__('Address')),
                         TextEntry::make('listing.description')
-                            ->label(__('Description')),
-                        TextEntry::make('listing.is_active')
+                            ->label(__('Description'))
+                            ->columnSpanFull(),
+                        TextEntry::make('listing.latitude')
+                            ->label(__('Latitude')),
+                        TextEntry::make('listing.longitude')
+                            ->label(__('Longitude')),
+                        IconEntry::make('listing.is_active')
                             ->label(__('Active'))
-                            ->badge()
-                            ->color(fn ($state) => $state ? 'success' : 'warning'),
+                            ->boolean(),
                     ])
                     ->columns(2),
 
-                TextEntry::make(__('Review Information'))
+                // ─── Phone Numbers ───
+                InfoSection::make(__('Phone Numbers'))
+                    ->schema([
+                        RepeatableEntry::make('listing.phones')
+                            ->label('')
+                            ->schema([
+                                TextEntry::make('phone_number')
+                                    ->label(__('Phone Number')),
+                                TextEntry::make('type')
+                                    ->label(__('Type'))
+                                    ->badge(),
+                                TextEntry::make('contact_person')
+                                    ->label(__('Contact Person')),
+                            ])
+                            ->columns(3),
+                    ])
+                    ->collapsible(),
+
+                // ─── Working Hours ───
+                InfoSection::make(__('Working Hours'))
+                    ->schema([
+                        RepeatableEntry::make('listing.workingHours')
+                            ->label('')
+                            ->schema([
+                                TextEntry::make('day')
+                                    ->label(__('Day'))
+                                    ->badge(),
+                                IconEntry::make('is_closed')
+                                    ->label(__('Closed'))
+                                    ->boolean()
+                                    ->trueColor('danger')
+                                    ->falseColor('success'),
+                                TextEntry::make('open_time')
+                                    ->label(__('Opening Time')),
+                                TextEntry::make('close_time')
+                                    ->label(__('Closing Time')),
+                            ])
+                            ->columns(4),
+                    ])
+                    ->collapsible(),
+
+                // ─── Links ───
+                InfoSection::make(__('Links'))
+                    ->schema([
+                        RepeatableEntry::make('listing.links')
+                            ->label('')
+                            ->schema([
+                                TextEntry::make('title')
+                                    ->label(__('Title')),
+                                TextEntry::make('url')
+                                    ->label(__('URL'))
+                                    ->url(fn ($state) => $state, true),
+                            ])
+                            ->columns(2),
+                    ])
+                    ->collapsible(),
+
+                // ─── Images ───
+                InfoSection::make(__('Images'))
+                    ->schema([
+                        RepeatableEntry::make('listing.images')
+                            ->label('')
+                            ->schema([
+                                ImageEntry::make('image_path')
+                                    ->label(__('Image'))
+                                    ->disk('public')
+                                    ->height(200)
+                                    ->width(300),
+                                IconEntry::make('is_cover')
+                                    ->label(__('Cover Image'))
+                                    ->boolean(),
+                            ])
+                            ->columns(2),
+                    ])
+                    ->collapsible(),
+
+                // ─── Review Status ───
+                InfoSection::make(__('Review Information'))
                     ->schema([
                         TextEntry::make('status')
                             ->label(__('Status'))
@@ -102,7 +188,8 @@ class ListingApplicationResource extends AuthorizedResource
                     ])
                     ->columns(2),
 
-                TextEntry::make(__('Timestamps'))
+                // ─── Timestamps ───
+                InfoSection::make(__('Timestamps'))
                     ->schema([
                         TextEntry::make('created_at')
                             ->label(__('Created At'))
@@ -166,3 +253,4 @@ class ListingApplicationResource extends AuthorizedResource
         ];
     }
 }
+
