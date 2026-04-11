@@ -466,5 +466,13 @@
     "Admin Notes": "ملاحظات الأدمن",
     "Rejection Reason": "سبب الرفض",
     "Contact Person Name": "اسم جهة الاتصال",
-    "Contact Email": "بريد جهة الاتصال"
+    "Contact Email": "بريد جهة الاتصال",
+    "Go to Listing": "الجهة الطبية",
+    "Reject Application": "رفض الطلب",
+    "Approve & Activate Listing": "الموافقة على الطلب وتفعيله",
+    "Application Information": "معلومات الطلب",
+    "Listing Information": "معلومات الجهة الطبية",
+    "Review Information": "معلومات المراجعة",
+    "Timestamps": "الطوابع الزمنية",
+    "This listing is linked to a pending application. You can only change its status through the application review process.": "هذا السجل مرتبط بطلب قيد الانتظار. يمكنك فقط تغيير حالته من خلال عملية مراجعة الطلب."
 }

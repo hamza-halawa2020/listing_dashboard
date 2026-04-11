@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ListingApplicationResource\Pages;
 
 use App\Filament\Resources\ListingApplicationResource;
+use App\Filament\Resources\ListingResource;
 use App\Models\ListingApplication;
 use Filament\Actions;
 use Filament\Actions\Action;
@@ -17,6 +18,13 @@ class ViewApplication extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('goToListing')
+                ->label(__('Go to Listing'))
+                ->icon('heroicon-o-arrow-top-right-on-square')
+                ->color('gray')
+                ->url(fn (ListingApplication $record) => $record->listing_id ? ListingResource::getUrl('edit', ['record' => $record->listing_id]) : null)
+                ->openUrlInNewTab()
+                ->visible(fn (ListingApplication $record) => $record->listing_id !== null),
             Action::make('approve')
                 ->label(__('Approve & Activate Listing'))
                 ->icon('heroicon-o-check-circle')
