@@ -66,12 +66,22 @@ class ListingController extends ApiController
             });
         }
 
+        $lat = $request->lat ?? $request->latitude;
+        $lng = $request->lng ?? $request->longitude;
+
+        if ($lat && $lng) {
+            $query->selectRaw("*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance", [$lat, $lng, $lat])
+                  ->orderBy('distance', 'asc');
+        } else {
+            $query->latest();
+        }
+
         if ($this->paginate) {
-            $items = $query->latest()->paginate(
+            $items = $query->paginate(
                 $request->get('limit', $this->perPage)
             );
         } else {
-            $items = $query->latest()->get();
+            $items = $query->get();
         }
 
         return $this->resource::collection($items);

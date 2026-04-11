@@ -29,6 +29,9 @@ class ListingResource extends JsonResource
             'images' => $this->whenLoaded('images'),
             'phones' => $this->whenLoaded('phones'),
             'links' => $this->whenLoaded('links'),
+            'distance' => $this->when($this->distance !== null, function() {
+                return round($this->distance, 2);
+            }),
         ];
     }
 }
