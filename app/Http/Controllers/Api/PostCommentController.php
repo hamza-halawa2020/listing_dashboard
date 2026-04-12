@@ -45,7 +45,7 @@ class PostCommentController extends ApiController
 
         return (new CommentResource($comment->load(['createdBy', 'post'])))
             ->additional([
-                'message' => 'Your comment has been submitted successfully and is awaiting approval.',
+                'message' => __('Your comment has been submitted successfully and is awaiting approval.'),
             ])
             ->response()
             ->setStatusCode(201);

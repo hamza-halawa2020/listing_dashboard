@@ -9,6 +9,7 @@ class ListingApplication extends Model
 {
     protected $fillable = [
         'listing_id',
+        'user_id',
         'contact_name',
         'contact_email',
         'contact_phone',
@@ -26,6 +27,11 @@ class ListingApplication extends Model
     public function listing(): BelongsTo
     {
         return $this->belongsTo(Listing::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function reviewer(): BelongsTo

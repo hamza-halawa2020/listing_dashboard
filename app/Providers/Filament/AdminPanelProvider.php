@@ -36,6 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->darkModeBrandLogo(asset('logo.svg'))
             ->brandLogoHeight('3rem')
             ->brandName('Care & Share')
+            ->databaseNotifications()
             ->colors([
                 'primary' => Color::Blue,
             ])

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ImpactStatsController;
 use App\Http\Controllers\Api\ListingApplicationController;
 use App\Http\Controllers\Api\ListingController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PostCommentController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\PriceRequestController;
@@ -56,6 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::match(['put', 'patch'], '/profile', [ProfileController::class, 'update']);
     Route::post('/profile/family-members', [ProfileController::class, 'storeFamilyMember']);
     Route::match(['put', 'patch'], '/profile/family-members/{id}', [ProfileController::class, 'updateFamilyMember']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+    Route::post('/notifications/{notificationId}/read', [NotificationController::class, 'markRead']);
 
     // Listings routes (subscription-based access)
     Route::get('/listings', [ListingController::class, 'index']);

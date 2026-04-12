@@ -6,6 +6,7 @@ use App\Models\Review;
 use App\Http\Resources\Api\ReviewResource;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\StoreReviewRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends ApiController
 {
@@ -20,7 +21,7 @@ class ReviewController extends ApiController
     {
         $validated = $request->validated();
 
-        $user = auth()->user();
+        $user = Auth::guard('sanctum')->user();
 
         if ($user) {
             $validated['guest_name'] = $user->name;

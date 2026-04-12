@@ -24,7 +24,7 @@ class SubscriptionCheckRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
-            'message' => 'Validation error',
+            'message' => __('Validation error'),
             'errors' => $validator->errors(),
         ], 422));
     }

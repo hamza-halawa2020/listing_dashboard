@@ -8,6 +8,7 @@ use App\Models\ListingPhone;
 use App\Models\ListingWorkingHour;
 use App\Models\ListingLink;
 use App\Models\ListingImage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -18,6 +19,8 @@ class ListingApplicationService
      */
     public function submitApplication(array $data): ListingApplication
     {
+        $user = Auth::guard('sanctum')->user();
+
         // Create the listing (disabled initially)
         $listing = Listing::create([
             'name' => $data['name'],
@@ -81,6 +84,7 @@ class ListingApplicationService
         // Create application record (only contact info)
         $application = ListingApplication::create([
             'listing_id' => $listing->id,
+            'user_id' => $user?->id,
             'contact_name' => $data['contact_name'],
             'contact_email' => $data['contact_email'],
             'contact_phone' => $data['contact_phone'],

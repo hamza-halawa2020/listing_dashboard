@@ -59,10 +59,21 @@ class PaymentsStatusChart extends ChartWidget
                 ],
             ],
             'labels' => array_map(
-                static fn (string $status): string => __("dashboard.payments.statuses.{$status}"),
+                [$this, 'paymentStatusLabel'],
                 $statuses,
             ),
         ];
+    }
+
+    protected function paymentStatusLabel(string $status): string
+    {
+        return match ($status) {
+            'pending' => __('dashboard.payments.statuses.pending'),
+            'completed' => __('dashboard.payments.statuses.completed'),
+            'failed' => __('dashboard.payments.statuses.failed'),
+            'refunded' => __('dashboard.payments.statuses.refunded'),
+            default => $status,
+        };
     }
 
     protected function getOptions(): ?array

@@ -6,6 +6,7 @@ use App\Models\PriceRequest;
 use App\Http\Resources\Api\PriceRequestResource;
 use App\Http\Requests\Api\StorePriceRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PriceRequestController extends ApiController
 {
@@ -22,7 +23,7 @@ class PriceRequestController extends ApiController
 
         $priceRequest = PriceRequest::create([
             ...$validated,
-            'created_by' => auth()->id(),
+            'created_by' => Auth::guard('sanctum')->id(),
         ]);
 
         return new PriceRequestResource($priceRequest->load($this->with));

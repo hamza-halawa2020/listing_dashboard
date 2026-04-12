@@ -20,12 +20,12 @@ class ListingApplicationController extends ApiController
             $application = $this->service->submitApplication($request->validated());
 
             return response()->json([
-                'message' => 'Your application has been received successfully. It will be reviewed by our team.',
-                'data' => $application->load('listing'),
+                'message' => __('Your application has been received successfully. It will be reviewed by our team.'),
+                'data' => $application->load('listing', 'user'),
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'An error occurred while submitting your application',
+                'message' => __('An error occurred while submitting your application.'),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -39,19 +39,19 @@ class ListingApplicationController extends ApiController
         try {
             if ($application->status !== 'pending') {
                 return response()->json([
-                    'message' => 'Cannot approve an application that is not in pending status',
+                    'message' => __('Cannot approve an application that is not in pending status.'),
                 ], 400);
             }
 
             $application = $this->service->approveApplication($application);
 
             return response()->json([
-                'message' => 'Application approved and listing has been activated successfully',
+                'message' => __('Application approved and listing has been activated successfully.'),
                 'data' => $application,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'An error occurred while approving the application',
+                'message' => __('An error occurred while approving the application.'),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -65,7 +65,7 @@ class ListingApplicationController extends ApiController
         try {
             if ($application->status !== 'pending') {
                 return response()->json([
-                    'message' => 'Cannot reject an application that is not in pending status',
+                    'message' => __('Cannot reject an application that is not in pending status.'),
                 ], 400);
             }
 
@@ -73,12 +73,12 @@ class ListingApplicationController extends ApiController
             $application = $this->service->rejectApplication($application, $reason);
 
             return response()->json([
-                'message' => 'Application has been rejected',
+                'message' => __('Application has been rejected.'),
                 'data' => $application,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'An error occurred while rejecting the application',
+                'message' => __('An error occurred while rejecting the application.'),
                 'error' => $e->getMessage(),
             ], 500);
         }
