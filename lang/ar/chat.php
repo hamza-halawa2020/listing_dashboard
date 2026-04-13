@@ -22,4 +22,5 @@ return [
     'group_chat' => 'محادثة جماعية',
     'conversation_number' => 'المحادثة رقم :id',
     'you_message_prefix' => 'أنت: :message',
+    'emoji_button_label' => 'Ø¥Ø¶Ø§ÙØ© Ø¥ÙŠÙ…ÙˆØ¬ÙŠ',
 ];

@@ -38,6 +38,72 @@
                     min-height: calc(100vh - 5rem);
                 }
             }
+
+            .chat-messenger-page .chat-composer-emoji-ctn {
+                position: relative;
+                flex-shrink: 0;
+            }
+
+            .chat-messenger-page .chat-composer-emoji-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 3rem;
+                height: 3rem;
+                border-radius: 1rem;
+                border: 1px solid rgba(59, 130, 246, 0.14);
+                background: #fff;
+                font-size: 1.35rem;
+                line-height: 1;
+                transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+            }
+
+            .chat-messenger-page .chat-composer-emoji-btn:hover,
+            .chat-messenger-page .chat-composer-emoji-btn.is-open {
+                transform: translateY(-1px);
+                border-color: rgba(59, 130, 246, 0.3);
+                box-shadow: 0 12px 24px rgba(59, 130, 246, 0.08);
+            }
+
+            .chat-messenger-page .chat-composer-emoji-panel {
+                position: absolute;
+                inset-inline-start: 0;
+                inset-block-end: calc(100% + 0.75rem);
+                z-index: 20;
+                width: 17rem;
+                display: grid;
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 0.5rem;
+                padding: 0.75rem;
+                border-radius: 1.25rem;
+                border: 1px solid rgba(59, 130, 246, 0.12);
+                background: rgba(255, 255, 255, 0.98);
+                box-shadow: 0 20px 45px rgba(15, 23, 42, 0.14);
+                backdrop-filter: blur(12px);
+            }
+
+            .dark .chat-messenger-page .chat-composer-emoji-panel {
+                background: rgba(17, 24, 39, 0.98);
+                border-color: rgba(148, 163, 184, 0.16);
+            }
+
+            .chat-messenger-page .chat-composer-emoji-option {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                height: 2.5rem;
+                border-radius: 0.85rem;
+                border: 0;
+                background: rgba(59, 130, 246, 0.06);
+                font-size: 1.35rem;
+                line-height: 1;
+                transition: transform 160ms ease, background-color 160ms ease;
+            }
+
+            .chat-messenger-page .chat-composer-emoji-option:hover {
+                transform: translateY(-1px);
+                background: rgba(59, 130, 246, 0.14);
+            }
         </style>
     @endonce
 
@@ -192,6 +258,8 @@
                 class="chat-messages-area col-span-12 flex min-h-full flex-col lg:col-span-8 {{ $isArabic ? 'lg:order-first' : '' }}"
                 x-data="{
                     pendingMessages: [],
+                    emojiList: ['😀', '😂', '😍', '😎', '😊', '😉', '🙌', '👏', '🔥', '🎉', '❤️', '👍', '🙏', '😢', '😮', '🤝', '💙', '✅', '⭐', '📍'],
+                    isEmojiPickerOpen: false,
                     queuePendingMessage() {
                         const body = ($wire.draft ?? '').trim();
 
@@ -205,10 +273,37 @@
                             timeLabel: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                         });
 
+                        this.closeEmojiPicker();
                         this.scrollToBottom();
                     },
                     clearPendingMessages() {
                         this.pendingMessages = [];
+                    },
+                    toggleEmojiPicker() {
+                        this.isEmojiPickerOpen = ! this.isEmojiPickerOpen;
+                    },
+                    closeEmojiPicker() {
+                        this.isEmojiPickerOpen = false;
+                    },
+                    insertEmoji(emoji) {
+                        if (! this.$refs.draftInput) {
+                            return;
+                        }
+
+                        const input = this.$refs.draftInput;
+                        const start = input.selectionStart ?? input.value.length;
+                        const end = input.selectionEnd ?? input.value.length;
+                        const nextValue = input.value.slice(0, start) + emoji + input.value.slice(end);
+
+                        input.value = nextValue;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        this.closeEmojiPicker();
+
+                        requestAnimationFrame(() => {
+                            input.focus();
+                            const nextPosition = start + emoji.length;
+                            input.setSelectionRange(nextPosition, nextPosition);
+                        });
                     },
                     scrollToBottom() {
                         if (! this.$refs.messagesPanel) {
@@ -344,8 +439,32 @@
                 <div class="border-t border-gray-200 bg-white/90 px-4 py-4 backdrop-blur dark:border-gray-800 dark:bg-gray-900/90 md:px-6">
                     <form class="flex items-center gap-3" wire:submit.prevent="send" x-on:submit="queuePendingMessage()">
                         <div class="flex flex-1 items-center rounded-3xl border border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-gray-700 dark:bg-gray-950">
+                            <div class="chat-composer-emoji-ctn" x-on:click.outside="closeEmojiPicker()">
+                                <button
+                                    type="button"
+                                    class="chat-composer-emoji-btn"
+                                    x-bind:class="{ 'is-open': isEmojiPickerOpen }"
+                                    x-on:click.stop="toggleEmojiPicker()"
+                                    aria-label="{{ __('chat.emoji_button_label') }}"
+                                >
+                                    😊
+                                </button>
+
+                                <div class="chat-composer-emoji-panel" x-show="isEmojiPickerOpen" x-cloak>
+                                    <template x-for="emoji in emojiList" :key="emoji">
+                                        <button
+                                            type="button"
+                                            class="chat-composer-emoji-option"
+                                            x-text="emoji"
+                                            x-on:click.stop="insertEmoji(emoji)"
+                                        ></button>
+                                    </template>
+                                </div>
+                            </div>
+
                             <input
                                 type="text"
+                                x-ref="draftInput"
                                 class="fi-input w-full border-none bg-transparent px-2 shadow-none ring-0 focus:ring-0"
                                 placeholder="{{ __('chat.message_placeholder') }}"
                                 wire:model.defer="draft"

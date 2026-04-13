@@ -22,4 +22,5 @@ return [
     'group_chat' => 'Group chat',
     'conversation_number' => 'Conversation #:id',
     'you_message_prefix' => 'You: :message',
+    'emoji_button_label' => 'Add emoji',
 ];
