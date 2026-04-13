@@ -81,6 +81,8 @@ class AdminPermissionRegistry
             'contacts',
             'payments',
             'subscription_plans',
+            'chat_conversations',
+            'chat_messages',
         ];
     }
 
@@ -202,6 +204,8 @@ class AdminPermissionRegistry
             'contacts' => __('Contacts'),
             'payments' => __('Payments'),
             'subscription_plans' => __('Subscription Plans'),
+            'chat_conversations' => __('Chat Conversations'),
+            'chat_messages' => __('Chat Messages'),
             'dashboard' => __('Dashboard'),
             'backups' => __('Backups'),
             'settings' => __('Settings'),

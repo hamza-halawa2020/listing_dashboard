@@ -62,6 +62,18 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(Location::class);
     }
 
+    public function chatConversations()
+    {
+        return $this->belongsToMany(ChatConversation::class, 'chat_conversation_participants')
+            ->withPivot(['is_admin', 'last_read_at', 'joined_at'])
+            ->withTimestamps();
+    }
+
+    public function sentChatMessages()
+    {
+        return $this->hasMany(ChatMessage::class, 'sender_id');
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasAnyRole(AdminPermissionRegistry::panelRoles())

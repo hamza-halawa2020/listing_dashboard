@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'navigation_label' => 'Chat',
+    'messages_heading' => 'Messages',
+    'messenger_intro' => 'A full-page chat layout closer to Messenger.',
+    'search_placeholder' => 'Search for a person or conversation...',
+    'people_section' => 'People',
+    'no_matching_contacts' => 'No matching contacts right now.',
+    'other_conversations' => 'Other Conversations',
+    'direct_conversation' => 'Direct conversation',
+    'available_now' => 'Available now',
+    'choose_from_list' => 'Choose anyone from the list',
+    'conversation_preview_hint' => 'The conversation will open here in a clear full-page chat layout.',
+    'start_from_sidebar' => 'Start from the sidebar',
+    'start_from_sidebar_description' => 'Choose any person and the conversation will open here directly, without extra settings or distracting pages.',
+    'unknown_sender' => 'Unknown',
+    'no_messages_yet' => 'No messages yet',
+    'no_messages_description' => 'Send the first message and the conversation will appear here in a cleaner layout.',
+    'message_placeholder' => 'Write your message here...',
+    'enter_to_send_hint' => 'You can press Enter for quick sending.',
+    'group_chat' => 'Group chat',
+    'conversation_number' => 'Conversation #:id',
+    'you_message_prefix' => 'You: :message',
+];

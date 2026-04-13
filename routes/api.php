@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ChatConversationController;
+use App\Http\Controllers\Api\ChatMessageController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ImpactStatsController;
@@ -67,5 +69,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Subscriptions routes
     Route::post('/payments', [PaymentController::class, 'store']);
+    Route::get('/chat/contacts', [ChatConversationController::class, 'contacts']);
+    Route::get('/chat/summary', [ChatConversationController::class, 'summary']);
+    Route::get('/chat/conversations', [ChatConversationController::class, 'index']);
+    Route::post('/chat/conversations', [ChatConversationController::class, 'store']);
+    Route::post('/chat/conversations/{chatConversation}/read', [ChatConversationController::class, 'markRead']);
+    Route::get('/chat/conversations/{chatConversation}/messages', [ChatMessageController::class, 'index']);
+    Route::post('/chat/conversations/{chatConversation}/messages', [ChatMessageController::class, 'store']);
 
 });

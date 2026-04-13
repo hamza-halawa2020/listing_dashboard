@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\ChatCenter;
 use App\Http\Middleware\SetLocale;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -29,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->profile()
             ->favicon(asset('logo.svg'))
@@ -37,6 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->brandName('Care & Share')
             ->databaseNotifications()
+            ->databaseNotificationsPolling(null)
             ->colors([
                 'primary' => Color::Blue,
             ])
@@ -50,6 +53,15 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
                 fn () => view('filament.components.language-switch'),
+            )
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_BEFORE,
+                fn () => auth()->user()?->can('chat_conversations.view_any')
+                    ? view('filament.components.topbar-chat-shortcut', [
+                        'chatUrl' => ChatCenter::getUrl(),
+                        'unreadCount' => ChatCenter::getUnreadMessagesCount(),
+                    ])
+                    : null,
             )
             ->middleware([
                 EncryptCookies::class,

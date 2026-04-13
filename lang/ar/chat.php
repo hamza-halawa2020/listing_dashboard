@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'navigation_label' => 'الدردشة',
+    'messages_heading' => 'الرسائل',
+    'messenger_intro' => 'واجهة شات كاملة بشكل قريب من ماسنجر.',
+    'search_placeholder' => 'ابحث عن شخص أو محادثة...',
+    'people_section' => 'الأشخاص',
+    'no_matching_contacts' => 'لا توجد نتائج مطابقة الآن.',
+    'other_conversations' => 'محادثات أخرى',
+    'direct_conversation' => 'محادثة مباشرة',
+    'available_now' => 'متاح الآن',
+    'choose_from_list' => 'اختر أي شخص من القائمة',
+    'conversation_preview_hint' => 'وهنا ستظهر المحادثة بشكل كامل وواضح مثل صفحات الشات الكبيرة.',
+    'start_from_sidebar' => 'ابدأ من القائمة الجانبية',
+    'start_from_sidebar_description' => 'اختر أي شخص، وستفتح المحادثة هنا مباشرة من غير صفحات إضافية أو إعدادات مشتتة.',
+    'unknown_sender' => 'غير معروف',
+    'no_messages_yet' => 'لا توجد رسائل بعد',
+    'no_messages_description' => 'اكتب أول رسالة الآن، وستظهر المحادثة هنا بشكل مرتب.',
+    'message_placeholder' => 'اكتب رسالتك هنا...',
+    'enter_to_send_hint' => 'يمكنك الضغط على Enter للإرسال السريع.',
+    'group_chat' => 'محادثة جماعية',
+    'conversation_number' => 'المحادثة رقم :id',
+    'you_message_prefix' => 'أنت: :message',
+];
