@@ -88,12 +88,13 @@ class Subscription extends Model
 
     public function generateMembershipCardNumber(): string
     {
-        // Format: [subscription id: minimum 5 digits][last 4 digits of national ID]
-        // Example: subscription 1 => 00001, subscription 1000 => 01000.
+  
+        $planCode = strtoupper($this->subscriptionPlan?->code ?: 'SUB');
         $nationalIdDigits = preg_replace('/\D+/', '', (string) ($this->user?->national_id ?? ''));
         $lastFourDigits = str_pad(substr($nationalIdDigits, -self::MEMBERSHIP_NATIONAL_SUFFIX_LENGTH), self::MEMBERSHIP_NATIONAL_SUFFIX_LENGTH, '0', STR_PAD_LEFT);
         $subscriptionIdPart = str_pad((string) ($this->getKey() ?? 0), self::MEMBERSHIP_SUBSCRIPTION_ID_LENGTH, '0', STR_PAD_LEFT);
 
-        return "{$subscriptionIdPart}{$lastFourDigits}";
+        return "{$planCode}{$subscriptionIdPart}{$lastFourDigits}";
+
     }
 }
