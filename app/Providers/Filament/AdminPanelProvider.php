@@ -54,15 +54,15 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
                 fn () => view('filament.components.language-switch'),
             )
-            ->renderHook(
-                PanelsRenderHook::USER_MENU_BEFORE,
-                fn () => auth()->user()?->can('chat_conversations.view_any')
-                    ? view('filament.components.topbar-chat-shortcut', [
-                        'chatUrl' => ChatCenter::getUrl(),
-                        'unreadCount' => ChatCenter::getUnreadMessagesCount(),
-                    ])
-                    : null,
-            )
+            //  ->renderHook(
+            //     PanelsRenderHook::USER_MENU_BEFORE,
+            //     fn () => auth()->user()?->can('chat_conversations.view_any')
+            //         ? view('filament.components.topbar-chat-shortcut', [
+            //             'chatUrl' => ChatCenter::getUrl(),
+            //             'unreadCount' => ChatCenter::getUnreadMessagesCount(),
+            //         ])
+            //         : null,
+            // )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

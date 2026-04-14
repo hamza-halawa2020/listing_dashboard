@@ -27,6 +27,8 @@ class ChatCenter extends Page
 
     protected static ?string $navigationLabel = null;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected string $view = 'filament.pages.chat-center';
 
     protected Width|string|null $maxContentWidth = Width::Full;
