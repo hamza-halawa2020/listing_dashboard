@@ -26,6 +26,21 @@ class UsersTable
                 TextColumn::make('phone')
                     ->label(__('Phone'))
                     ->searchable(),
+                TextColumn::make('referral_code')
+                    ->label(__('Referral Code'))
+                    ->searchable()
+                    ->toggleable()
+                    ->formatStateUsing(fn ($state, $record) => $record->payments()->where('status', 'completed')->exists() ? $state : '-')
+                    ->placeholder('-'),
+                TextColumn::make('points_balance')
+                    ->label(__('Points'))
+                    ->numeric()
+                    ->sortable()
+                    ->badge(),
+                TextColumn::make('referrer.name')
+                    ->label(__('Referred By'))
+                    ->placeholder('-')
+                    ->searchable(),
                 TextColumn::make('role')
                     ->label(__('Role'))
                     ->badge(),

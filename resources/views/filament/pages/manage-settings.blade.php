@@ -4,8 +4,12 @@
 
         <div style="margin-top: 20px;">
             <x-filament::button type="submit" size="lg">
-                Update
+                {{ __('Save') }}
             </x-filament::button>
         </div>
     </form>
+
+    <div style="margin-top: 32px;">
+        {{ $this->table }}
+    </div>
 </x-filament-panels::page>

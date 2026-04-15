@@ -18,6 +18,15 @@ class UserInfolist
                 TextEntry::make('phone')
                     ->label(__('Phone'))
                     ->placeholder('-'),
+                TextEntry::make('referral_code')
+                    ->label(__('Referral Code'))
+                    ->placeholder('-'),
+                TextEntry::make('points_balance')
+                    ->label(__('Points Balance'))
+                    ->badge(),
+                TextEntry::make('referrer.name')
+                    ->label(__('Referred By'))
+                    ->placeholder('-'),
                 TextEntry::make('role')
                     ->label(__('Role'))
                     ->badge(),

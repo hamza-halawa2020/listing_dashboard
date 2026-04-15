@@ -9,8 +9,11 @@ class Payment extends Model
     protected $fillable = [
         'user_id',
         'subscription_id',
+        'referral_id',
         'location_id',
         'amount',
+        'original_amount',
+        'discount_amount',
         'payment_method',
         'transaction_reference',
         'status',
@@ -27,6 +30,8 @@ class Payment extends Model
     protected $casts = [
         'paid_at' => 'datetime',
         'amount' => 'decimal:2',
+        'original_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'shipping_cost' => 'decimal:2',
         'delivery_required' => 'boolean',
     ];
@@ -70,6 +75,11 @@ class Payment extends Model
     public function subscription()
     {
         return $this->belongsTo(Subscription::class);
+    }
+
+    public function referral()
+    {
+        return $this->belongsTo(Referral::class);
     }
 
     public function location()

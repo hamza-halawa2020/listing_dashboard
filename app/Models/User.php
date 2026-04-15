@@ -3,13 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Support\AdminPermissionRegistry;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
-use App\Support\AdminPermissionRegistry;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
@@ -20,6 +21,9 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'phone',
+        'referral_code',
+        'referred_by_user_id',
+        'points_balance',
         'role', //admin, member, service_provider
         'national_id',
         'location_id',
@@ -39,7 +43,26 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'points_balance' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user): void {
+            if (blank($user->referral_code)) {
+                $user->referral_code = static::generateUniqueReferralCode();
+            }
+        });
+    }
+
+    public static function generateUniqueReferralCode(): string
+    {
+        do {
+            $code = 'REF' . Str::upper(Str::random(8));
+        } while (static::query()->where('referral_code', $code)->exists());
+
+        return $code;
     }
 
     public function subscriptions()
@@ -60,6 +83,31 @@ class User extends Authenticatable implements FilamentUser
     public function location()
     {
         return $this->belongsTo(Location::class);
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referred_by_user_id');
+    }
+
+    public function referredUsers()
+    {
+        return $this->hasMany(User::class, 'referred_by_user_id');
+    }
+
+    public function sentReferrals()
+    {
+        return $this->hasMany(Referral::class, 'referrer_user_id');
+    }
+
+    public function receivedReferral()
+    {
+        return $this->hasOne(Referral::class, 'referred_user_id');
+    }
+
+    public function pointTransactions()
+    {
+        return $this->hasMany(PointTransaction::class);
     }
 
     public function chatConversations()

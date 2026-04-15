@@ -7,15 +7,15 @@ use App\Models\User;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Resources\Api\UserResource;
+use App\Services\ReferralService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request, ReferralService $referralService)
     {
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -24,10 +24,14 @@ class AuthController extends Controller
             'role' => 'member',
         ]);
 
+        $referralService->registerReferralForUser($user, $request->input('referral_code'));
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         $user->load([
             'location',
+            'referrer',
+            'receivedReferral.referrer',
             'familyMembers.subscription.subscriptionPlan',
             'payments',
             'subscriptions' => fn ($query) => $query
@@ -59,6 +63,8 @@ class AuthController extends Controller
 
         $user->load([
             'location',
+            'referrer',
+            'receivedReferral.referrer',
             'familyMembers.subscription.subscriptionPlan',
             'payments',
             'subscriptions' => fn ($query) => $query

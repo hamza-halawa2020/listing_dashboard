@@ -3,11 +3,15 @@
 namespace App\Observers;
 
 use App\Models\Payment;
+use App\Services\ReferralService;
 use App\Services\SystemNotificationService;
 
 class PaymentObserver
 {
-    public function __construct(private readonly SystemNotificationService $notifications) {}
+    public function __construct(
+        private readonly SystemNotificationService $notifications,
+        private readonly ReferralService $referrals,
+    ) {}
 
     public function created(Payment $payment): void
     {
@@ -39,6 +43,14 @@ class PaymentObserver
     {
         if (! $payment->wasChanged('status')) {
             return;
+        }
+
+        if ($payment->status === 'completed') {
+            $this->referrals->processCompletedPayment($payment);
+        }
+
+        if (in_array($payment->status, ['failed', 'refunded'], true)) {
+            $this->referrals->releaseDiscountReservation($payment);
         }
 
         $payment->loadMissing('user');

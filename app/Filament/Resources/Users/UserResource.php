@@ -17,6 +17,8 @@ use Filament\Tables\Table;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Filament\Resources\Users\RelationManagers\SentReferralsRelationManager;
+
 class UserResource extends AuthorizedResource
 {
     protected static ?string $model = User::class;
@@ -76,7 +78,7 @@ class UserResource extends AuthorizedResource
     public static function getRelations(): array
     {
         return [
-            //
+            SentReferralsRelationManager::class,
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Payments\Schemas;
 
+use App\Models\Payment;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -33,6 +34,16 @@ class PaymentForm
                     ->numeric()
                     ->disabledOn('edit')
                     ->prefix(__('EGP')),
+                TextInput::make('original_amount')
+                    ->label(__('Original Amount'))
+                    ->numeric()
+                    ->disabled()
+                    ->prefix(__('EGP')),
+                TextInput::make('discount_amount')
+                    ->label(__('Discount Amount'))
+                    ->numeric()
+                    ->disabled()
+                    ->prefix(__('EGP')),
                 Select::make('payment_method')
                     ->label(__('Payment Method'))
                     ->options([
@@ -48,6 +59,13 @@ class PaymentForm
                 TextInput::make('transaction_reference')
                     ->label(__('Transaction Reference'))
                     ->disabledOn('edit'),
+                TextInput::make('referral.referral_code_used')
+                    ->label(__('Referral Code'))
+                    ->disabled()
+                    ->afterStateHydrated(function (TextInput $component, ?Payment $record): void {
+                        $component->state($record?->referral?->referral_code_used);
+                    })
+                    ->dehydrated(false),
                 Select::make('status')
                     ->label(__('Status'))
                     ->options([

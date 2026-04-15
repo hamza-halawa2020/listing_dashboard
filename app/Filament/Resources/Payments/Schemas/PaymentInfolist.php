@@ -27,6 +27,17 @@ class PaymentInfolist
                 TextEntry::make('amount')
                     ->label(__('Amount'))
                     ->money('egp'),
+                TextEntry::make('original_amount')
+                    ->label(__('Original Amount'))
+                    ->money('egp')
+                    ->placeholder('-'),
+                TextEntry::make('discount_amount')
+                    ->label(__('Discount Amount'))
+                    ->money('egp')
+                    ->placeholder('-'),
+                TextEntry::make('referral.referral_code_used')
+                    ->label(__('Referral Code'))
+                    ->placeholder('-'),
                 TextEntry::make('payment_method')
                     ->label(__('Payment Method'))
                     ->badge(),

@@ -89,6 +89,8 @@ class ProfileController extends Controller
     {
         return $user->load([
             'location',
+            'referrer',
+            'receivedReferral.referrer',
             'familyMembers.subscription.subscriptionPlan',
             'payments',
             'subscriptions' => fn ($query) => $query

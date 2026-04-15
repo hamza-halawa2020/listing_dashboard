@@ -31,6 +31,18 @@ class UserForm
                 TextInput::make('phone')
                     ->label(__('Phone'))
                     ->tel(),
+                TextInput::make('referral_code')
+                    ->label(__('Referral Code'))
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->hiddenOn('create')
+                    ->hidden(fn ($record) => $record && ! $record->payments()->where('status', 'completed')->exists()),
+                TextInput::make('points_balance')
+                    ->label(__('Points Balance'))
+                    ->numeric()
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->hiddenOn('create'),
                 Select::make('role')
                     ->label(__('Role'))
                     ->options([

@@ -14,4 +14,15 @@ Route::get('/listings/import-template', ListingImportTemplateController::class)-
 Route::get('/subscriptions/import-template', SubscriptionImportTemplateController::class)->name('subscriptions.import-template.download');
 Route::get('/users/import-template', UserImportTemplateController::class)->name('users.import-template.download');
 
-Route::get('/storage/{filename}', [FileController::class, 'show'])->name('storage.file');
+// Route::get('/storage/{filename}', [FileController::class, 'show'])->name('storage.file');
+
+
+Route::get('/files/{path}', function ($path) {
+    $file = storage_path('app/public/' . $path);
+
+    if (!file_exists($file)) {
+        abort(404);
+    }
+
+    return response()->file($file);
+})->where('path', '.*');

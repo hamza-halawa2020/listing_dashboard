@@ -15,6 +15,9 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
+            'referral_code' => $this->hasCompletedPayment() ? $this->referral_code : null,
+            'referred_by_user_id' => $this->referred_by_user_id,
+            'points_balance' => (int) $this->points_balance,
             'role' => $this->role,
             'national_id' => $this->national_id,
             'birth_date' => $this->formatDateValue($this->birth_date, 'Y-m-d'),
@@ -28,6 +31,16 @@ class UserResource extends JsonResource
             'created_at' => $this->formatDateValue($this->created_at, 'Y-m-d H:i:s'),
             'updated_at' => $this->formatDateValue($this->updated_at, 'Y-m-d H:i:s'),
         ];
+    }
+
+    private function hasCompletedPayment(): bool
+    {
+        // Check loaded payments first to avoid extra query
+        if ($this->relationLoaded('payments')) {
+            return $this->payments->contains('status', 'completed');
+        }
+
+        return $this->resource->payments()->where('status', 'completed')->exists();
     }
 
     private function formatDateValue(mixed $value, string $format): ?string

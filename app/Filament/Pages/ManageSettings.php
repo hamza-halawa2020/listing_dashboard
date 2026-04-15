@@ -3,31 +3,35 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\AuthorizesPageAccess;
+use App\Models\Referral;
 use App\Models\Setting;
+use App\Models\SubscriptionPlan;
 use BackedEnum;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
+use Filament\Tables\Table;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
-class ManageSettings extends Page
+class ManageSettings extends Page implements HasTable
 {
     use AuthorizesPageAccess;
+    use InteractsWithTable;
 
     protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected string $view = 'filament.pages.manage-settings';
-
-    protected static ?string $navigationLabel = null;
-
-    protected static ?string $title = null;
 
     protected static string | UnitEnum | null $navigationGroup = null;
 
@@ -35,17 +39,17 @@ class ManageSettings extends Page
 
     public static function shouldRegisterNavigation(): bool
     {
-        return false;
+        return static::canAccess();
     }
 
     public static function getNavigationLabel(): string
     {
-        return __('Settings');
+        return __('Referral Settings');
     }
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return __('Settings');
+        return __('Referral & Rewards');
     }
 
     protected static function getAccessPermissionName(): ?string
@@ -55,75 +59,76 @@ class ManageSettings extends Page
 
     public function getTitle(): string | Htmlable
     {
-        return __('Settings');
+        return __('Referral Settings');
     }
 
     public function mount(): void
     {
-        $this->form->fill(Setting::getAllSettings());
+        $this->form->fill([
+            'referral_enabled' => filter_var(Setting::getValue('referral_enabled', true), FILTER_VALIDATE_BOOLEAN),
+        ]);
     }
 
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make(__('Contact Information'))
+                Section::make(__('Referral Program'))
                     ->schema([
-                        TextInput::make('phone')
-                            ->label(__('Phone'))
-                            ->tel(),
-                        TextInput::make('whatsapp')
-                            ->label(__('WhatsApp'))
-                            ->tel(),
-                        TextInput::make('facebook')
-                            ->label(__('Facebook'))
-                            ->url(),
-                        TextInput::make('instagram')
-                            ->label(__('Instagram'))
-                            ->url(),
-                        TextInput::make('email')
-                            ->label(__('Email'))
-                            ->email(),
-                    ])->columns(2),
-                Section::make(__('About Us'))
-                    ->schema([
-                        Textarea::make('about_us')
-                            ->label(__('About Us'))
-                            ->rows(5),
-                        Textarea::make('about_us_footer')
-                            ->label(__('About Us (Footer)'))
-                            ->rows(3),
-                        TextInput::make('address')
-                            ->label(__('Address')),
-                    ]),
-                Section::make(__('Policies'))
-                    ->schema([
-                        RichEditor::make('privacy_policy')
-                            ->label(__('Privacy Policy'))
-                            ->columnSpanFull(),
-                        RichEditor::make('terms_conditions')
-                            ->label(__('Terms & Conditions'))
-                            ->columnSpanFull(),
-                    ]),
-                Section::make(__('Media'))
-                    ->schema([
-                        FileUpload::make('logo')
-                            ->label(__('Logo'))
-                            ->directory('settings')
-                            ->image(),
+                        Toggle::make('referral_enabled')
+                            ->label(__('Enable referral program'))
+                            ->default(true),
                     ]),
             ])
             ->statePath('data');
+    }
+
+    public function table(Table $table): Table
+    {
+        $rewardTypeOptions = [
+            Referral::REWARD_NONE => __('None'),
+            Referral::REWARD_POINTS => __('Points'),
+            Referral::REWARD_FIXED_DISCOUNT => __('Fixed discount'),
+            Referral::REWARD_PERCENT_DISCOUNT => __('Percent discount'),
+        ];
+
+        return $table
+            ->query(SubscriptionPlan::query())
+            ->heading(__('Rewards per Subscription Plan'))
+            ->description(__('Set the referral rewards for each plan. Changes are saved immediately.'))
+            ->columns([
+                TextColumn::make('name')
+                    ->label(__('Plan'))
+                    ->sortable(),
+                TextColumn::make('price')
+                    ->label(__('Price'))
+                    ->money('egp')
+                    ->sortable(),
+                TextInputColumn::make('referrer_reward_points')
+                    ->label(__('Referrer reward points'))
+                    ->type('number')
+                    ->rules(['min:0', 'integer']),
+                SelectColumn::make('referee_reward_type')
+                    ->label(__('New user reward type'))
+                    ->options($rewardTypeOptions)
+                    ->selectablePlaceholder(false)
+                    ->default(Referral::REWARD_NONE),
+                TextInputColumn::make('referee_reward_value')
+                    ->label(__('New user reward value') . ' — ' . __('Points, fixed amount, or percent (0-100)'))
+                    ->type('number')
+                    ->rules(fn ($record) => $record?->referee_reward_type === Referral::REWARD_PERCENT_DISCOUNT
+                        ? ['min:0', 'max:100', 'numeric']
+                        : ['min:0', 'numeric']
+                    ),
+            ])
+            ->paginated(false);
     }
 
     public function save(): void
     {
         try {
             $data = $this->form->getState();
-
-            foreach ($data as $key => $value) {
-                Setting::setValue($key, $value);
-            }
+            Setting::setValue('referral_enabled', $data['referral_enabled'] ?? true);
 
             Notification::make()
                 ->title(__('Settings saved successfully'))

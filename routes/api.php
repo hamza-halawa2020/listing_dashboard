@@ -21,6 +21,8 @@ use App\Http\Controllers\Api\SubscriptionCheckController;
 use App\Http\Controllers\Api\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\PointSettingsController;
+use App\Http\Controllers\Api\ReferralController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -37,6 +39,10 @@ Route::get('/subscription-plans/{id}', [SubscriptionPlanController::class, 'show
 Route::get('/impact-stats', ImpactStatsController::class);
 
 Route::get('/settings', [SettingController::class, 'index']);
+
+// Point calculation (public)
+Route::get('/points/calculate', [PointSettingsController::class, 'calculatePoints']);
+Route::get('/points/calculate-egp', [PointSettingsController::class, 'calculateEgp']);
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
@@ -69,6 +75,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Subscriptions routes
     Route::post('/payments', [PaymentController::class, 'store']);
+
+    // Point settings (admin only - you may want to add middleware for admin role)
+    Route::get('/point-settings', [PointSettingsController::class, 'index']);
+    Route::put('/point-settings', [PointSettingsController::class, 'update']);
+    Route::get('/point-settings/history', [PointSettingsController::class, 'history']);
+
+    // Referral
+    Route::get('/referral', [ReferralController::class, 'show']);
     Route::get('/chat/contacts', [ChatConversationController::class, 'contacts']);
     Route::get('/chat/summary', [ChatConversationController::class, 'summary']);
     Route::get('/chat/conversations', [ChatConversationController::class, 'index']);

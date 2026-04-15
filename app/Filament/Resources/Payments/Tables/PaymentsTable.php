@@ -34,6 +34,21 @@ class PaymentsTable
                     ->label(__('Amount'))
                     ->money('egp')
                     ->sortable(),
+                TextColumn::make('original_amount')
+                    ->label(__('Original Amount'))
+                    ->money('egp')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('discount_amount')
+                    ->label(__('Discount'))
+                    ->money('egp')
+                    ->sortable()
+                    ->badge(),
+                TextColumn::make('referral.referral_code_used')
+                    ->label(__('Referral Code'))
+                    ->placeholder('-')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('payment_method')
                     ->label(__('Payment Method'))
                     ->badge(),
