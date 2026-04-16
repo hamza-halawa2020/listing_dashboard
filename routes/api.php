@@ -35,6 +35,7 @@ Route::post('/forgot-password/verify-code', [ForgotPasswordController::class, 'v
 Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/all-categories', [CategoryController::class, 'withOthers']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 Route::get('/locations', [LocationController::class, 'index']);
