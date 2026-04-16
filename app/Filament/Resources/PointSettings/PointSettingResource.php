@@ -23,14 +23,24 @@ class PointSettingResource extends Resource
 {
     protected static ?string $model = PointSetting::class;
 
-    // protected static ?string $navigationIcon = 'heroicon-o-coins';
-    // protected static string | \UnitEnum | null $navigationGroup = 'System Settings';
-    // protected static ?string $navigationIcon = 'heroicon-o-coins';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
+    protected static ?int $navigationSort = 3;
 
-    
-    protected static ?int $navigationSort = 1;
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Referral & Rewards');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Point Setting');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Point Settings');
+    }
 
     public static function canCreate(): bool
     {
@@ -41,19 +51,19 @@ class PointSettingResource extends Resource
     {
         return $schema
             ->schema([
-                Section::make('Point Rate Settings')
-                    ->description('Configure the conversion rate between points and Egyptian Pounds')
+                Section::make(__('Point Rate Settings'))
+                    ->description(__('Configure the conversion rate between points and Egyptian Pounds'))
                     ->schema([
                         TextInput::make('points_to_egp_rate')
-                            ->label('Point Value (EGP)')
-                            ->helperText('How much one point is worth in Egyptian Pounds (e.g., 0.1000 = 10 piasters)')
+                            ->label(__('Point Value (EGP)'))
+                            ->helperText(__('How much one point is worth in Egyptian Pounds (e.g., 0.1000 = 10 piasters)'))
                             ->required()
                             ->numeric()
                             ->step(0.0001)
                             ->minValue(0.0001)
                             ->maxValue(9999.9999)
                             ->prefix('EGP')
-                            ->suffix('per point')
+                            ->suffix(__('per point'))
                             ->reactive()
                             ->afterStateUpdated(function ($state, $set, $get) {
                                 // Calculate examples
@@ -65,29 +75,29 @@ class PointSettingResource extends Resource
                             }),
 
                         Forms\Components\Placeholder::make('example_100_egp')
-                            ->label('100 EGP = ? points')
+                            ->label(__('100 EGP = ? points'))
                             ->content('1000 points'),
 
                         Forms\Components\Placeholder::make('example_1000_egp')
-                            ->label('1000 EGP = ? points')
+                            ->label(__('1000 EGP = ? points'))
                             ->content('10000 points'),
 
                         Forms\Components\Placeholder::make('example_100_points')
-                            ->label('100 points = ? EGP')
+                            ->label(__('100 points = ? EGP'))
                             ->content('10.00 EGP'),
 
                         Forms\Components\Placeholder::make('example_1000_points')
-                            ->label('1000 points = ? EGP')
+                            ->label(__('1000 points = ? EGP'))
                             ->content('100.00 EGP'),
 
                         Forms\Components\Textarea::make('notes')
-                            ->label('Notes')
-                            ->helperText('Any additional notes about this point rate setting')
+                            ->label(__('Notes'))
+                            ->helperText(__('Any additional notes about this point rate setting'))
                             ->rows(3)
                             ->maxLength(1000),
 
                         Forms\Components\Hidden::make('reason')
-                            ->default('Updated from admin panel'),
+                            ->default(__('Updated from admin panel')),
                     ])
                     ->columns(2),
             ]);
@@ -98,23 +108,23 @@ class PointSettingResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('points_to_egp_rate')
-                    ->label('Point Value')
+                    ->label(__('Point Value'))
                     ->money('EGP')
                     ->formatStateUsing(fn ($state) => number_format($state, 4) . ' EGP/point')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('points_to_egp_rate')
-                    ->label('Points per 100 EGP')
+                    ->label(__('Points per 100 EGP'))
                     ->formatStateUsing(fn ($state) => number_format(100 / $state, 0) . ' points')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('notes')
-                    ->label('Notes')
+                    ->label(__('Notes'))
                     ->limit(50)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Last Updated')
+                    ->label(__('Last Updated'))
                     ->dateTime()
                     ->sortable(),
             ])

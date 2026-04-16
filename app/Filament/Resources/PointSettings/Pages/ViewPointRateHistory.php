@@ -18,7 +18,7 @@ class ViewPointRateHistory extends ListRecords
     {
         return [
             Actions\Action::make('back_to_settings')
-                ->label('Back to Settings')
+                ->label(__('Back to Settings'))
                 ->icon('heroicon-o-arrow-left')
                 ->url(fn () => PointSettingResource::getUrl()),
         ];
@@ -33,15 +33,15 @@ class ViewPointRateHistory extends ListRecords
     {
         return [
             Tables\Columns\TextColumn::make('old_rate')
-                ->label('Old Rate')
+                ->label(__('Old Rate'))
                 ->formatStateUsing(fn ($state) => number_format($state, 4) . ' EGP/point'),
 
             Tables\Columns\TextColumn::make('new_rate')
-                ->label('New Rate')
+                ->label(__('New Rate'))
                 ->formatStateUsing(fn ($state) => number_format($state, 4) . ' EGP/point'),
 
             Tables\Columns\TextColumn::make('change_percentage')
-                ->label('Change %')
+                ->label(__('Change %'))
                 ->formatStateUsing(function ($record) {
                     if ($record->old_rate == 0) return 'N/A';
                     $change = (($record->new_rate - $record->old_rate) / $record->old_rate) * 100;
@@ -51,17 +51,17 @@ class ViewPointRateHistory extends ListRecords
                 }),
 
             Tables\Columns\TextColumn::make('reason')
-                ->label('Reason')
+                ->label(__('Reason'))
                 ->limit(50)
                 ->searchable(),
 
             Tables\Columns\TextColumn::make('changedByAdmin.name')
-                ->label('Changed By')
-                ->default('System')
+                ->label(__('Changed By'))
+                ->default(__('System'))
                 ->searchable(),
 
             Tables\Columns\TextColumn::make('created_at')
-                ->label('Date')
+                ->label(__('Date'))
                 ->dateTime()
                 ->sortable(),
         ];

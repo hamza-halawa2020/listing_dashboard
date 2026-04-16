@@ -16,16 +16,16 @@ class ManagePointSettings extends ManageRecords
     {
         return [
             Actions\Action::make('view_history')
-                ->label('View Rate History')
+                ->label(__('View Rate History'))
                 ->icon('heroicon-o-clock')
                 ->url(fn () => PointSettingResource::getUrl('history')),
 
             Actions\Action::make('test_calculations')
-                ->label('Test Calculations')
+                ->label(__('Test Calculations'))
                 ->icon('heroicon-o-calculator')
                 ->form([
                     \Filament\Forms\Components\TextInput::make('amount')
-                        ->label('Amount (EGP)')
+                        ->label(__('Amount (EGP)'))
                         ->numeric()
                         ->default(1000)
                         ->required(),
@@ -36,7 +36,7 @@ class ManagePointSettings extends ManageRecords
                     $rate = PointSetting::getCurrentRate();
 
                     Notification::make()
-                        ->title('Calculation Result')
+                        ->title(__('Calculation Result'))
                         ->body("{$amount} EGP = {$points} points (Rate: {$rate} EGP/point)")
                         ->success()
                         ->send();
