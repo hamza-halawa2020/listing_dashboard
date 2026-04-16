@@ -4,26 +4,26 @@ namespace App\Filament\Resources\PointSettings;
 
 use App\Filament\Resources\PointSettings\Pages\ManagePointSettings;
 use App\Models\PointSetting;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Support\Icons\Heroicon;
 use BackedEnum;
 use Filament\Actions\EditAction;
-
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-
-
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PointSettingResource extends Resource
 {
     protected static ?string $model = PointSetting::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static ?int $navigationSort = 3;
 
@@ -34,72 +34,134 @@ class PointSettingResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Point Setting');
+        return __('point-settings.model_label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Point Settings');
+        return __('point-settings.plural_model_label');
     }
 
     public static function canCreate(): bool
     {
-        return false; // Only one record allowed
+        return false;
     }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->schema([
-                Section::make(__('Point Rate Settings'))
-                    ->description(__('Configure the conversion rate between points and Egyptian Pounds'))
+                Section::make(__('point-settings.sections.rate.title'))
+                    ->description(__('point-settings.sections.rate.description'))
+                    ->icon('heroicon-o-banknotes')
                     ->schema([
                         TextInput::make('points_to_egp_rate')
-                            ->label(__('Point Value (EGP)'))
-                            ->helperText(__('How much one point is worth in Egyptian Pounds (e.g., 0.1000 = 10 piasters)'))
+                            ->label(__('point-settings.fields.points_to_egp_rate.label'))
+                            ->helperText(__('point-settings.fields.points_to_egp_rate.helper'))
                             ->required()
                             ->numeric()
                             ->step(0.0001)
                             ->minValue(0.0001)
                             ->maxValue(9999.9999)
                             ->prefix('EGP')
-                            ->suffix(__('per point'))
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, $set, $get) {
-                                // Calculate examples
+                            ->suffix(__('point-settings.fields.points_to_egp_rate.suffix'))
+                            ->live(debounce: 500)
+                            ->afterStateUpdated(function ($state, $set): void {
                                 $rate = (float) $state;
-                                $set('example_100_egp', number_format(100 / $rate, 0) . ' points');
-                                $set('example_1000_egp', number_format(1000 / $rate, 0) . ' points');
-                                $set('example_100_points', number_format(100 * $rate, 2) . ' EGP');
-                                $set('example_1000_points', number_format(1000 * $rate, 2) . ' EGP');
+
+                                if ($rate <= 0) {
+                                    return;
+                                }
+
+                                $set('example_100_egp', number_format(100 / $rate, 0) . ' ' . __('point-settings.units.points'));
+                                $set('example_1000_egp', number_format(1000 / $rate, 0) . ' ' . __('point-settings.units.points'));
+                                $set('example_100_points', number_format(100 * $rate, 2) . ' ' . __('point-settings.units.egp'));
+                                $set('example_1000_points', number_format(1000 * $rate, 2) . ' ' . __('point-settings.units.egp'));
+                            })
+                            ->columnSpanFull(),
+
+                        Placeholder::make('current_rate_summary')
+                            ->label(__('point-settings.placeholders.summary.label'))
+                            ->content(function (Get $get): string {
+                                $liveRate = $get('points_to_egp_rate');
+                                $rate = (float) ($liveRate ?: PointSetting::getCurrentRate());
+
+                                if ($rate <= 0) {
+                                    return __('point-settings.placeholders.summary.invalid_rate');
+                                }
+
+                                return __('point-settings.placeholders.summary.content', [
+                                    'rate' => number_format($rate, 4),
+                                    'points' => number_format((int) ceil(100 / $rate)),
+                                    'egp' => number_format(1000 * $rate, 2),
+                                ]);
+                            })
+                            ->columnSpanFull(),
+
+                        Placeholder::make('example_100_egp')
+                            ->label(__('point-settings.placeholders.example_100_egp.label'))
+                            ->content(function (Get $get): string {
+                                $liveRate = $get('points_to_egp_rate');
+                                $rate = (float) ($liveRate ?: PointSetting::getCurrentRate());
+
+                                return $rate > 0 ? number_format(100 / $rate, 0) . ' ' . __('point-settings.units.points') : '-';
                             }),
 
-                        Forms\Components\Placeholder::make('example_100_egp')
-                            ->label(__('100 EGP = ? points'))
-                            ->content('1000 points'),
+                        Placeholder::make('example_1000_egp')
+                            ->label(__('point-settings.placeholders.example_1000_egp.label'))
+                            ->content(function (Get $get): string {
+                                $liveRate = $get('points_to_egp_rate');
+                                $rate = (float) ($liveRate ?: PointSetting::getCurrentRate());
 
-                        Forms\Components\Placeholder::make('example_1000_egp')
-                            ->label(__('1000 EGP = ? points'))
-                            ->content('10000 points'),
+                                return $rate > 0 ? number_format(1000 / $rate, 0) . ' ' . __('point-settings.units.points') : '-';
+                            }),
 
-                        Forms\Components\Placeholder::make('example_100_points')
-                            ->label(__('100 points = ? EGP'))
-                            ->content('10.00 EGP'),
+                        Placeholder::make('example_100_points')
+                            ->label(__('point-settings.placeholders.example_100_points.label'))
+                            ->content(function (Get $get): string {
+                                $liveRate = $get('points_to_egp_rate');
+                                $rate = (float) ($liveRate ?: PointSetting::getCurrentRate());
 
-                        Forms\Components\Placeholder::make('example_1000_points')
-                            ->label(__('1000 points = ? EGP'))
-                            ->content('100.00 EGP'),
+                                return number_format(100 * $rate, 2) . ' ' . __('point-settings.units.egp');
+                            }),
 
-                        Forms\Components\Textarea::make('notes')
-                            ->label(__('Notes'))
-                            ->helperText(__('Any additional notes about this point rate setting'))
-                            ->rows(3)
-                            ->maxLength(1000),
+                        Placeholder::make('example_1000_points')
+                            ->label(__('point-settings.placeholders.example_1000_points.label'))
+                            ->content(function (Get $get): string {
+                                $liveRate = $get('points_to_egp_rate');
+                                $rate = (float) ($liveRate ?: PointSetting::getCurrentRate());
 
-                        Forms\Components\Hidden::make('reason')
-                            ->default(__('Updated from admin panel')),
+                                return number_format(1000 * $rate, 2) . ' ' . __('point-settings.units.egp');
+                            }),
                     ])
                     ->columns(2),
+
+                Section::make(__('point-settings.sections.notes.title'))
+                    ->description(__('point-settings.sections.notes.description'))
+                    ->icon('heroicon-o-document-text')
+                    ->schema([
+                        Textarea::make('reason_visible')
+                            ->label(__('point-settings.fields.reason_visible.label'))
+                            ->helperText(__('point-settings.fields.reason_visible.helper'))
+                            ->rows(2)
+                            ->maxLength(500)
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function ($component, $state): void {
+                                $component->state($state ?: __('point-settings.defaults.reason'));
+                            })
+                            ->afterStateUpdated(fn ($state, $set) => $set('reason', $state ?: __('point-settings.defaults.reason')))
+                            ->columnSpanFull(),
+
+                        Textarea::make('notes')
+                            ->label(__('point-settings.fields.notes.label'))
+                            ->helperText(__('point-settings.fields.notes.helper'))
+                            ->rows(3)
+                            ->maxLength(1000)
+                            ->columnSpanFull(),
+
+                        Hidden::make('reason')
+                            ->default(__('point-settings.defaults.reason')),
+                    ]),
             ]);
     }
 
@@ -107,53 +169,46 @@ class PointSettingResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('points_to_egp_rate')
-                    ->label(__('Point Value'))
-                    ->money('EGP')
-                    ->formatStateUsing(fn ($state) => number_format($state, 4) . ' EGP/point')
-                    ->sortable(),
+                TextColumn::make('points_to_egp_rate')
+                    ->label(__('point-settings.table.current_rate'))
+                    ->formatStateUsing(fn ($state): string => number_format((float) $state, 4) . ' ' . __('point-settings.table.rate_format_suffix'))
+                    ->badge()
+                    ->color('success')
+                    ->description(fn (): string => __('point-settings.table.current_rate_description', [
+                        'points' => number_format(PointSetting::calculatePointsNeeded(100)),
+                    ])),
 
-                Tables\Columns\TextColumn::make('points_to_egp_rate')
-                    ->label(__('Points per 100 EGP'))
-                    ->formatStateUsing(fn ($state) => number_format(100 / $state, 0) . ' points')
-                    ->sortable(),
+                TextColumn::make('conversion_preview')
+                    ->label(__('point-settings.table.quick_preview'))
+                    ->state(fn (PointSetting $record): string => number_format(1000 * (float) $record->points_to_egp_rate, 2) . ' ' . __('point-settings.units.egp'))
+                    ->description(__('point-settings.table.quick_preview_description')),
 
-                Tables\Columns\TextColumn::make('notes')
-                    ->label(__('Notes'))
-                    ->limit(50)
-                    ->searchable(),
+                TextColumn::make('notes')
+                    ->label(__('point-settings.table.latest_notes'))
+                    ->limit(70)
+                    ->placeholder(__('point-settings.table.no_notes')),
 
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('Last Updated'))
+                TextColumn::make('updated_at')
+                    ->label(__('point-settings.table.last_updated'))
                     ->dateTime()
-                    ->sortable(),
-            ])
-            ->filters([
-                //
+                    ->sortable()
+                    ->since(),
             ])
             ->actions([
                 EditAction::make()
-                    ->mutateFormDataUsing(function (array $data): array {
-                        // Record the change in history
-                        $current = PointSetting::first();
-                        $oldRate = $current?->points_to_egp_rate ?? 0.1000;
-                        $newRate = (float) $data['points_to_egp_rate'];
-
-                        if (abs($oldRate - $newRate) >= 0.0001) {
-                            \App\Models\PointRateHistory::create([
-                                'old_rate' => $oldRate,
-                                'new_rate' => $newRate,
-                                'reason' => $data['reason'] ?? 'Updated from admin panel',
-                                'changed_by_admin_id' => auth()->id(),
-                            ]);
-                        }
-
-                        return $data;
-                    }),
+                    ->label(__('point-settings.actions.edit_rate'))
+                    ->icon('heroicon-o-pencil-square')
+                    ->color('primary')
+                    ->modalWidth('3xl')
+                    ->modalHeading(__('point-settings.actions.edit_modal_heading'))
+                    ->modalDescription(__('point-settings.actions.edit_modal_description'))
+                    ->modalSubmitActionLabel(__('point-settings.actions.save_changes'))
+                    ->successNotificationTitle(__('point-settings.actions.edit_success')),
             ])
-            ->bulkActions([
-                //
-            ]);
+            ->recordAction(null)
+            ->recordUrl(null)
+            ->paginated(false)
+            ->striped(false);
     }
 
     public static function getPages(): array

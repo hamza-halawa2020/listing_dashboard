@@ -15,6 +15,22 @@ class PointSetting extends Model
         'points_to_egp_rate' => 'decimal:4',
     ];
 
+    protected static function booted(): void
+    {
+        static::updated(function (PointSetting $pointSetting): void {
+            if (! $pointSetting->wasChanged('points_to_egp_rate')) {
+                return;
+            }
+
+            PointRateHistory::create([
+                'old_rate' => $pointSetting->getOriginal('points_to_egp_rate'),
+                'new_rate' => $pointSetting->points_to_egp_rate,
+                'reason' => $pointSetting->reason ?? __('point-settings.defaults.reason'),
+                'changed_by_admin_id' => auth()->id(),
+            ]);
+        });
+    }
+
     /**
      * Get the current point rate
      */

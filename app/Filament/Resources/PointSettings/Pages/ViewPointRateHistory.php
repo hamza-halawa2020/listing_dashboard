@@ -14,12 +14,23 @@ class ViewPointRateHistory extends ListRecords
 {
     protected static string $resource = PointSettingResource::class;
 
+    public function getTitle(): string
+    {
+        return __('point-settings.history.title');
+    }
+
+    public function getSubheading(): ?string
+    {
+        return __('point-settings.history.subheading');
+    }
+
     protected function getHeaderActions(): array
     {
         return [
             Actions\Action::make('back_to_settings')
-                ->label(__('Back to Settings'))
+                ->label(__('point-settings.history.back'))
                 ->icon('heroicon-o-arrow-left')
+                ->color('gray')
                 ->url(fn () => PointSettingResource::getUrl()),
         ];
     }
@@ -29,56 +40,59 @@ class ViewPointRateHistory extends ListRecords
         return PointRateHistory::with('changedByAdmin')->latest();
     }
 
-    protected function getTableColumns(): array
+    public function table(Table $table): Table
     {
-        return [
-            Tables\Columns\TextColumn::make('old_rate')
-                ->label(__('Old Rate'))
-                ->formatStateUsing(fn ($state) => number_format($state, 4) . ' EGP/point'),
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('old_rate')
+                    ->label(__('point-settings.history.table.old_rate'))
+                    ->formatStateUsing(fn ($state) => number_format((float) $state, 4) . ' ' . __('point-settings.history.table.rate_suffix'))
+                    ->badge()
+                    ->color('gray'),
 
-            Tables\Columns\TextColumn::make('new_rate')
-                ->label(__('New Rate'))
-                ->formatStateUsing(fn ($state) => number_format($state, 4) . ' EGP/point'),
+                Tables\Columns\TextColumn::make('new_rate')
+                    ->label(__('point-settings.history.table.new_rate'))
+                    ->formatStateUsing(fn ($state) => number_format((float) $state, 4) . ' ' . __('point-settings.history.table.rate_suffix'))
+                    ->badge()
+                    ->color('success'),
 
-            Tables\Columns\TextColumn::make('change_percentage')
-                ->label(__('Change %'))
-                ->formatStateUsing(function ($record) {
-                    if ($record->old_rate == 0) return 'N/A';
-                    $change = (($record->new_rate - $record->old_rate) / $record->old_rate) * 100;
-                    $color = $change > 0 ? 'danger' : ($change < 0 ? 'success' : 'warning');
-                    $icon = $change > 0 ? 'trending-up' : ($change < 0 ? 'trending-down' : 'minus');
-                    return "{$icon} " . number_format($change, 2) . '%';
-                }),
+                Tables\Columns\TextColumn::make('change')
+                    ->label(__('point-settings.history.table.change'))
+                    ->state(function (PointRateHistory $record) {
+                        if ($record->old_rate == 0) {
+                            return 0;
+                        }
 
-            Tables\Columns\TextColumn::make('reason')
-                ->label(__('Reason'))
-                ->limit(50)
-                ->searchable(),
+                        return (($record->new_rate - $record->old_rate) / $record->old_rate) * 100;
+                    })
+                    ->badge()
+                    ->color(fn ($state) => $state > 0 ? 'danger' : ($state < 0 ? 'success' : 'warning'))
+                    ->icon(fn ($state) => $state > 0 ? 'heroicon-m-arrow-trending-up' : ($state < 0 ? 'heroicon-m-arrow-trending-down' : 'heroicon-m-minus'))
+                    ->formatStateUsing(fn ($state) => ($state > 0 ? '+' : '') . number_format((float) $state, 2) . '%'),
 
-            Tables\Columns\TextColumn::make('changedByAdmin.name')
-                ->label(__('Changed By'))
-                ->default(__('System'))
-                ->searchable(),
+                Tables\Columns\TextColumn::make('reason')
+                    ->label(__('point-settings.history.table.reason'))
+                    ->limit(60)
+                    ->tooltip(fn (PointRateHistory $record): ?string => $record->reason)
+                    ->placeholder(__('point-settings.history.table.undefined'))
+                    ->searchable(),
 
-            Tables\Columns\TextColumn::make('created_at')
-                ->label(__('Date'))
-                ->dateTime()
-                ->sortable(),
-        ];
-    }
+                Tables\Columns\TextColumn::make('changedByAdmin.name')
+                    ->label(__('point-settings.history.table.changed_by'))
+                    ->default(__('point-settings.history.table.system'))
+                    ->searchable(),
 
-    protected function getTableFilters(): array
-    {
-        return [];
-    }
-
-    protected function getTableActions(): array
-    {
-        return [];
-    }
-
-    protected function getTableBulkActions(): array
-    {
-        return [];
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('point-settings.history.table.changed_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->since(),
+            ])
+            ->filters([])
+            ->actions([])
+            ->bulkActions([])
+            ->recordAction(null)
+            ->recordUrl(null)
+            ->defaultSort('created_at', 'desc');
     }
 }
