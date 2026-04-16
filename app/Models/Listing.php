@@ -22,6 +22,11 @@ class Listing extends Model
         'is_active' => 'boolean',
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -51,7 +56,6 @@ class Listing extends Model
     {
         return $this->hasMany(Offer::class);
     }
-
 
     public function workingHours()
     {
