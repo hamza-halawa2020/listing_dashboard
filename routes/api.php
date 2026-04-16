@@ -59,6 +59,8 @@ Route::post('/contacts', [ContactController::class, 'store']);
 Route::post('/check-subscription', [SubscriptionCheckController::class, 'check']);
 Route::post('/listing-applications', [ListingApplicationController::class, 'store']);
 
+Route::get('/point-settings', [PointSettingsController::class, 'index']);
+
 // Protected routes - require authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
@@ -77,7 +79,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/payments', [PaymentController::class, 'store']);
 
     // Point settings (admin only - you may want to add middleware for admin role)
-    Route::get('/point-settings', [PointSettingsController::class, 'index']);
     Route::put('/point-settings', [PointSettingsController::class, 'update']);
     Route::get('/point-settings/history', [PointSettingsController::class, 'history']);
 

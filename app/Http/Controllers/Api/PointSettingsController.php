@@ -22,7 +22,7 @@ class PointSettingsController extends Controller
 
         return response()->json([
             'settings' => $settings,
-            'history' => $history,
+            // 'history' => $history,
             'current_rate' => $settings?->points_to_egp_rate ?? 0.1000,
         ]);
     }
