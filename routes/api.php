@@ -23,10 +23,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PointSettingsController;
 use App\Http\Controllers\Api\ReferralController;
+use App\Http\Controllers\Api\ForgotPasswordController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Forgot password
+Route::post('/forgot-password/send-code', [ForgotPasswordController::class, 'sendCode']);
+Route::post('/forgot-password/verify-code', [ForgotPasswordController::class, 'verifyCode']);
+Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
