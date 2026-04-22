@@ -583,6 +583,7 @@
     "Referral bonus": "Referral bonus",
     "Welcome bonus": "Welcome bonus",
     "Signup bonus": "Signup bonus",
+    "Subscription bonus": "Subscription bonus",
     "Redeem": "Redeem",
     "Admin add": "Admin add",
     "Admin deduct": "Admin deduct",
@@ -654,6 +655,10 @@
     "Point rate updated successfully": "Point rate updated successfully",
     "Rate: :rate EGP/point": "Rate: :rate EGP/point",
     "Registration reward": "Registration reward",
+    "Subscription reward": "Subscription reward",
     "Welcome to the app!": "Welcome to the app!",
-    "Your account has been created successfully and you received :points points as a registration bonus.": "Your account has been created successfully and you received :points points as a registration bonus."
+    "Your account has been created successfully and you received :points points as a registration bonus.": "Your account has been created successfully and you received :points points as a registration bonus.",
+    "Subscription reward for plan: :plan": "Subscription reward for plan: :plan",
+    "You earned subscription points!": "You earned subscription points!",
+    "You received :points points because your subscription to :plan was approved.": "You received :points points because your subscription to :plan was approved."
 }

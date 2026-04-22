@@ -4,6 +4,8 @@ namespace App\Filament\Resources\PointSettings;
 
 use App\Filament\Resources\PointSettings\Pages\ManagePointSettings;
 use App\Models\PointSetting;
+use App\Models\RegistrationRewardSetting;
+use App\Models\SubscriptionPlan;
 use BackedEnum;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Hidden;
@@ -182,6 +184,33 @@ class PointSettingResource extends Resource
                     ->label(__('point-settings.table.quick_preview'))
                     ->state(fn (PointSetting $record): string => number_format(1000 * (float) $record->points_to_egp_rate, 2) . ' ' . __('point-settings.units.egp'))
                     ->description(__('point-settings.table.quick_preview_description')),
+
+                TextColumn::make('registration_reward')
+                    ->label('Registration Reward')
+                    ->state(fn (): string => number_format(RegistrationRewardSetting::getPoints()) . ' ' . __('point-settings.units.points')),
+
+                TextColumn::make('subscription_rewards')
+                    ->label('Subscription Rewards')
+                    ->state(function (): string {
+                        $configuredPlans = SubscriptionPlan::query()
+                            ->where('subscription_reward_points', '>', 0)
+                            ->count();
+
+                        return $configuredPlans > 0
+                            ? 'Configured per plan'
+                            : 'No plan rewards configured';
+                    })
+                    ->description(function (): string {
+                        $configuredPlans = SubscriptionPlan::query()
+                            ->where('subscription_reward_points', '>', 0)
+                            ->count();
+
+                        if ($configuredPlans === 0) {
+                            return 'Open Subscription Plans to assign reward points for each package.';
+                        }
+
+                        return number_format($configuredPlans) . ' plan(s) currently grant subscription reward points.';
+                    }),
 
                 TextColumn::make('notes')
                     ->label(__('point-settings.table.latest_notes'))

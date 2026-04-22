@@ -708,5 +708,14 @@
     "New Rate": "السعر الجديد",
     "Change %": "نسبة التغيير",
     "Changed By": "تم التغيير بواسطة",
-    "Initial setup: 1 point = 10 piasters": "الإعداد الأولي: 1 نقطة = 10 قروش"
+    "Initial setup: 1 point = 10 piasters": "الإعداد الأولي: 1 نقطة = 10 قروش",
+    "Subscription bonus": "مكافأة الاشتراك",
+    "Signup bonus": "مكافأة التسجيل",
+    "Registration reward": "مكافأة التسجيل",
+    "Subscription reward": "مكافأة الاشتراك",
+    "Welcome to the app!": "مرحبًا بك في التطبيق!",
+    "Your account has been created successfully and you received :points points as a registration bonus.": "تم إنشاء حسابك بنجاح وحصلت على :points نقطة كمكافأة تسجيل.",
+    "Subscription reward for plan: :plan": "مكافأة الاشتراك للخطة: :plan",
+    "You earned subscription points!": "لقد حصلت على نقاط الاشتراك!",
+    "You received :points points because your subscription to :plan was approved.": "لقد حصلت على :points نقطة لأنه تمت الموافقة على اشتراكك في الخطة :plan."
 }

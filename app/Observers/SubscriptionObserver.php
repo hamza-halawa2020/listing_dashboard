@@ -3,11 +3,12 @@
 namespace App\Observers;
 
 use App\Models\Subscription;
+use App\Services\ReferralService;
 use App\Services\SystemNotificationService;
 
 class SubscriptionObserver
 {
-    public function __construct(private readonly SystemNotificationService $notifications) {}
+    public function __construct(private readonly SystemNotificationService $notifications,private readonly ReferralService $referrals,) {}
 
     public function updated(Subscription $subscription): void
     {
@@ -44,6 +45,10 @@ class SubscriptionObserver
                 $status,
                 ['source' => 'subscription']
             );
+
+            if ($subscription->status === 'active' && $this->referrals->awardSubscriptionPoints($subscription)) {
+                $this->referrals->sendSubscriptionRewardNotification($subscription);
+            }
         }
 
         if ($subscription->wasChanged('is_card_issued') && $subscription->is_card_issued) {

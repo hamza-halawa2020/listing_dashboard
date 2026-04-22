@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PointSettings\Pages;
 
 use App\Filament\Resources\PointSettings\PointSettingResource;
+use App\Filament\Resources\SubscriptionPlans\SubscriptionPlanResource;
 use App\Models\PointSetting;
 use App\Models\RegistrationRewardHistory;
 use App\Models\RegistrationRewardSetting;
@@ -22,14 +23,14 @@ class ManagePointSettings extends ManageRecords
         return __('point-settings.page.title');
     }
 
-    public function getSubheading(): ?string
-    {
-        $rate = PointSetting::getCurrentRate();
+    // public function getSubheading(): ?string
+    // {
+    //     $rate = PointSetting::getCurrentRate();
 
-        return __('point-settings.page.subheading', [
-            'rate' => number_format($rate, 4),
-        ]);
-    }
+    //     return __('point-settings.page.subheading', [
+    //         'rate' => number_format($rate, 4),
+    //     ]);
+    // }
 
     public function mount(): void
     {
@@ -117,6 +118,13 @@ class ManagePointSettings extends ManageRecords
                         ->success()
                         ->send();
                 }),
+
+            Actions\Action::make('manage_subscription_rewards')
+                ->label('Manage Subscription Rewards')
+                ->icon('heroicon-o-queue-list')
+                ->color('success')
+                ->tooltip('Subscription reward points are configured separately for each subscription plan.')
+                ->url(fn (): string => SubscriptionPlanResource::getUrl('index')),
 
             Actions\Action::make('test_calculations')
                 ->label(__('point-settings.header_actions.calculator'))

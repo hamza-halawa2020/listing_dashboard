@@ -15,6 +15,7 @@ class Subscription extends Model
         'membership_card_number',
         'is_card_issued',
         'card_issued_at',
+        'reward_points_granted_at',
         'starts_at',
         'ends_at',
         'status',
@@ -26,6 +27,7 @@ class Subscription extends Model
     protected $casts = [
         'is_card_issued' => 'boolean',
         'card_issued_at' => 'datetime',
+        'reward_points_granted_at' => 'datetime',
         'starts_at' => 'date',
         'ends_at' => 'date',
     ];

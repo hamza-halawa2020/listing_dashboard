@@ -51,6 +51,10 @@ class SubscriptionPlansTable
                     ->label(__('Max Family Members'))
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('subscription_reward_points')
+                    ->label('Subscription Reward')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label(__('Created At'))
                     ->dateTime()

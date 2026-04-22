@@ -15,6 +15,7 @@ class SubscriptionPlan extends Model
         'points_price',
         'duration_days',
         'max_family_members',
+        'subscription_reward_points',
         'referrer_reward_points',
         'referee_reward_type',
         'referee_reward_value',
@@ -22,6 +23,7 @@ class SubscriptionPlan extends Model
 
     protected $casts = [
         'referrer_reward_points' => 'integer',
+        'subscription_reward_points' => 'integer',
         'referee_reward_value' => 'decimal:2',
         'points_price' => 'integer',
     ];
@@ -34,6 +36,11 @@ class SubscriptionPlan extends Model
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function rewardHistory()
+    {
+        return $this->hasMany(SubscriptionRewardHistory::class);
     }
 
     /**

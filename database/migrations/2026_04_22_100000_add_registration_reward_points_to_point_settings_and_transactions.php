@@ -24,6 +24,9 @@ return new class extends Migration
             $table->foreignId('changed_by_admin_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
+        Schema::table('subscriptions', function (Blueprint $table): void {
+            $table->timestamp('reward_points_granted_at')->nullable()->after('card_issued_at');
+        });
 
         DB::statement("
             ALTER TABLE point_transactions
@@ -31,6 +34,7 @@ return new class extends Migration
                 'referral_bonus',
                 'referee_bonus',
                 'signup_bonus',
+                'subscription_bonus',
                 'redeem',
                 'admin_add',
                 'admin_deduct',
@@ -47,6 +51,7 @@ return new class extends Migration
             MODIFY COLUMN type ENUM(
                 'referral_bonus',
                 'referee_bonus',
+                'signup_bonus',
                 'redeem',
                 'admin_add',
                 'admin_deduct',
@@ -55,6 +60,12 @@ return new class extends Migration
             ) NOT NULL
         ");
 
+        Schema::table('subscriptions', function (Blueprint $table): void {
+            $table->dropColumn('reward_points_granted_at');
+        });
+
+        Schema::dropIfExists('subscription_reward_histories');
+        Schema::dropIfExists('subscription_reward_settings');
         Schema::dropIfExists('registration_reward_histories');
         Schema::dropIfExists('registration_reward_settings');
     }

@@ -47,6 +47,12 @@ class PaymentObserver
 
         if ($payment->status === 'completed') {
             $this->referrals->processCompletedPayment($payment);
+
+            $payment->loadMissing('subscription.user', 'subscription.subscriptionPlan');
+
+            if ($payment->subscription && $this->referrals->awardSubscriptionPoints($payment->subscription)) {
+                $this->referrals->sendSubscriptionRewardNotification($payment->subscription);
+            }
         }
 
         if (in_array($payment->status, ['failed', 'refunded'], true)) {

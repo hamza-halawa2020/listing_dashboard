@@ -107,7 +107,7 @@ class PointTransactionResource extends AuthorizedResource
                     ->label(__('Type'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'referral_bonus', 'referee_bonus', 'signup_bonus', 'admin_add' => 'success',
+                        'referral_bonus', 'referee_bonus', 'signup_bonus', 'subscription_bonus', 'admin_add' => 'success',
                         'admin_deduct', 'redeem', 'expire' => 'danger',
                         default => 'gray',
                     })

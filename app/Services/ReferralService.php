@@ -7,6 +7,7 @@ use App\Models\PointTransaction;
 use App\Models\RegistrationRewardSetting;
 use App\Models\Referral;
 use App\Models\Setting;
+use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -268,6 +269,65 @@ class ReferralService
             ]),
             'success',
             ['source' => 'registration'],
+        );
+    }
+
+    public function awardSubscriptionPoints(Subscription $subscription): ?PointTransaction
+    {
+        $subscription->loadMissing('user', 'subscriptionPlan');
+        $points = max((int) ($subscription->subscriptionPlan?->subscription_reward_points ?? 0), 0);
+
+        if ($points <= 0) {
+            return null;
+        }
+
+        return DB::transaction(function () use ($subscription, $points): ?PointTransaction {
+            $lockedSubscription = Subscription::query()
+                ->with('user', 'subscriptionPlan')
+                ->lockForUpdate()
+                ->find($subscription->getKey());
+
+            if (! $lockedSubscription || $lockedSubscription->reward_points_granted_at) {
+                return null;
+            }
+
+            $transaction = $this->addPoints(
+                $lockedSubscription->user,
+                $points,
+                'subscription_bonus',
+                null,
+                null,
+                __('Subscription reward for plan: :plan', [
+                    'plan' => $lockedSubscription->subscriptionPlan?->name ?? '#' . $lockedSubscription->subscription_plan_id,
+                ]),
+            );
+
+            $lockedSubscription->forceFill([
+                'reward_points_granted_at' => now(),
+            ])->saveQuietly();
+
+            return $transaction;
+        });
+    }
+
+    public function sendSubscriptionRewardNotification(Subscription $subscription): void
+    {
+        $subscription->loadMissing('user', 'subscriptionPlan');
+        $points = max((int) ($subscription->subscriptionPlan?->subscription_reward_points ?? 0), 0);
+
+        if ($points <= 0) {
+            return;
+        }
+
+        $this->notifications->notifyUser(
+            $subscription->user,
+            __('You earned subscription points!'),
+            __('You received :points points because your subscription to :plan was approved.', [
+                'points' => $points,
+                'plan' => $subscription->subscriptionPlan?->name ?? __('a subscription plan'),
+            ]),
+            'success',
+            ['source' => 'subscription_reward'],
         );
     }
 
