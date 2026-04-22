@@ -582,6 +582,7 @@
     "Point Transactions": "Point Transactions",
     "Referral bonus": "Referral bonus",
     "Welcome bonus": "Welcome bonus",
+    "Signup bonus": "Signup bonus",
     "Redeem": "Redeem",
     "Admin add": "Admin add",
     "Admin deduct": "Admin deduct",
@@ -651,5 +652,8 @@
     "Optional reason or note for this adjustment": "Optional reason or note for this adjustment",
     "Point adjustment saved": "Point adjustment saved",
     "Point rate updated successfully": "Point rate updated successfully",
-    "Rate: :rate EGP/point": "Rate: :rate EGP/point"
+    "Rate: :rate EGP/point": "Rate: :rate EGP/point",
+    "Registration reward": "Registration reward",
+    "Welcome to the app!": "Welcome to the app!",
+    "Your account has been created successfully and you received :points points as a registration bonus.": "Your account has been created successfully and you received :points points as a registration bonus."
 }

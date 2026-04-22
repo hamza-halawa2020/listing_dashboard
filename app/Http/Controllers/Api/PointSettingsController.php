@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\PointSetting;
 use App\Models\PointRateHistory;
-use App\Models\SubscriptionPlan;
+use App\Models\PointSetting;
+use App\Models\RegistrationRewardSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -24,6 +24,7 @@ class PointSettingsController extends Controller
             'settings' => $settings,
             // 'history' => $history,
             'current_rate' => $settings?->points_to_egp_rate ?? 0.1000,
+            'registration_reward_points' => RegistrationRewardSetting::getPoints(),
         ]);
     }
 
@@ -47,19 +48,11 @@ class PointSettingsController extends Controller
         }
 
         return DB::transaction(function () use ($validated, $oldRate, $newRate, $currentSetting) {
-            // Record the change in history
-            PointRateHistory::create([
-                'old_rate' => $oldRate,
-                'new_rate' => $newRate,
-                'reason' => $validated['reason'] ?? 'Rate updated by admin',
-                'changed_by_admin_id' => auth()->id(),
-            ]);
-
-            // Update or create settings
-            $settings = PointSetting::updateOrCreate(['id' => 1], [
-                'points_to_egp_rate' => $newRate,
-                'notes' => $validated['notes'] ?? null,
-            ]);
+            $settings = $currentSetting ?? new PointSetting();
+            $settings->reason = $validated['reason'] ?? 'Rate updated by admin';
+            $settings->points_to_egp_rate = $newRate;
+            $settings->notes = $validated['notes'] ?? null;
+            $settings->save();
 
             return response()->json([
                 'message' => 'Point settings updated successfully',

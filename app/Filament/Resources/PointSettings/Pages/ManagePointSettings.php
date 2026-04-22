@@ -4,10 +4,14 @@ namespace App\Filament\Resources\PointSettings\Pages;
 
 use App\Filament\Resources\PointSettings\PointSettingResource;
 use App\Models\PointSetting;
+use App\Models\RegistrationRewardHistory;
+use App\Models\RegistrationRewardSetting;
 use Filament\Actions;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRecords;
+use Illuminate\Validation\ValidationException;
 
 class ManagePointSettings extends ManageRecords
 {
@@ -36,6 +40,8 @@ class ManagePointSettings extends ManageRecords
             ]);
         }
 
+        RegistrationRewardSetting::getOrCreateDefault();
+
         parent::mount();
     }
 
@@ -48,6 +54,69 @@ class ManagePointSettings extends ManageRecords
                 ->color('gray')
                 ->tooltip(__('point-settings.header_actions.history_tooltip'))
                 ->url(fn () => PointSettingResource::getUrl('history')),
+
+            Actions\Action::make('edit_registration_reward')
+                ->label('Edit Registration Reward')
+                ->icon('heroicon-o-gift')
+                ->color('warning')
+                ->modalWidth('lg')
+                ->modalHeading('Edit Registration Reward')
+                ->modalDescription('Update the registration reward points separately and keep a full history of changes.')
+                ->modalSubmitActionLabel('Save Registration Reward')
+                ->fillForm(function (): array {
+                    $setting = RegistrationRewardSetting::getOrCreateDefault();
+
+                    return [
+                        'points' => $setting->points,
+                        'reason' => 'Updated from admin panel',
+                        'notes' => $setting->notes,
+                    ];
+                })
+                ->form([
+                    TextInput::make('points')
+                        ->label('Registration Reward Points')
+                        ->numeric()
+                        ->required()
+                        ->minValue(0)
+                        ->step(1),
+                    Textarea::make('reason')
+                        ->label('Reason for Change')
+                        ->rows(2)
+                        ->required()
+                        ->maxLength(500),
+                    Textarea::make('notes')
+                        ->label('Additional Notes')
+                        ->rows(3)
+                        ->maxLength(1000),
+                ])
+                ->action(function (array $data): void {
+                    $setting = RegistrationRewardSetting::getOrCreateDefault();
+                    $oldPoints = (int) $setting->points;
+                    $newPoints = max((int) $data['points'], 0);
+
+                    if ($oldPoints === $newPoints && (($setting->notes ?? null) === ($data['notes'] ?? null))) {
+                        throw ValidationException::withMessages([
+                            'points' => 'The new registration reward must be different from the current value.',
+                        ]);
+                    }
+
+                    RegistrationRewardHistory::create([
+                        'old_points' => $oldPoints,
+                        'new_points' => $newPoints,
+                        'reason' => $data['reason'],
+                        'changed_by_admin_id' => auth()->id(),
+                    ]);
+
+                    $setting->update([
+                        'points' => $newPoints,
+                        'notes' => $data['notes'] ?? null,
+                    ]);
+
+                    Notification::make()
+                        ->title('Registration reward updated successfully')
+                        ->success()
+                        ->send();
+                }),
 
             Actions\Action::make('test_calculations')
                 ->label(__('point-settings.header_actions.calculator'))

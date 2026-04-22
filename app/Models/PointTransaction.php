@@ -26,6 +26,7 @@ class PointTransaction extends Model
         return [
             'referral_bonus' => __('Referral bonus'),
             'referee_bonus' => __('Welcome bonus'),
+            'signup_bonus' => __('Signup bonus'),
             'redeem' => __('Redeem'),
             'admin_add' => __('Admin add'),
             'admin_deduct' => __('Admin deduct'),

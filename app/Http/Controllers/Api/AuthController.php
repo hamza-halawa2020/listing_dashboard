@@ -24,7 +24,11 @@ class AuthController extends Controller
             'role' => 'member',
         ]);
 
+        $referralService->awardRegistrationPoints($user);
         $referralService->registerReferralForUser($user, $request->input('referral_code'));
+        $referralService->sendRegistrationWelcomeNotification($user);
+
+        $user->refresh();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

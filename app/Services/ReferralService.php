@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Payment;
 use App\Models\PointTransaction;
+use App\Models\RegistrationRewardSetting;
 use App\Models\Referral;
 use App\Models\Setting;
 use App\Models\SubscriptionPlan;
@@ -237,6 +238,37 @@ class ReferralService
 
             return $transaction;
         });
+    }
+
+    public function awardRegistrationPoints(User $user): ?PointTransaction
+    {
+        $points = RegistrationRewardSetting::getPoints();
+
+        if ($points <= 0) {
+            return null;
+        }
+
+        return $this->addPoints(
+            $user,
+            $points,
+            'signup_bonus',
+            null,
+            null,
+            __('Registration reward'),
+        );
+    }
+
+    public function sendRegistrationWelcomeNotification(User $user): void
+    {
+        $this->notifications->notifyUser(
+            $user,
+            __('Welcome to the app!'),
+            __('Your account has been created successfully and you received :points points as a registration bonus.', [
+                'points' => RegistrationRewardSetting::getPoints(),
+            ]),
+            'success',
+            ['source' => 'registration'],
+        );
     }
 
     private function qualifyAndRewardReferral(Referral $referral, ?Payment $payment = null): void

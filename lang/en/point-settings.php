@@ -33,6 +33,10 @@ return [
             'helper' => 'Example: 0.1000 means one point equals 10 piasters.',
             'suffix' => 'per point',
         ],
+        'registration_reward_points' => [
+            'label' => 'Registration Reward Points',
+            'helper' => 'The number of points automatically awarded to each newly registered user.',
+        ],
         'reason_visible' => [
             'label' => 'Reason for Change',
             'helper' => 'This short reason is stored in the history log.',
@@ -59,6 +63,7 @@ return [
         'current_rate_description' => '100 EGP = :points points',
         'quick_preview' => 'Quick Preview',
         'quick_preview_description' => 'Value of 1000 points',
+        'registration_reward_points' => 'Registration Reward',
         'latest_notes' => 'Latest Notes',
         'no_notes' => 'No notes available',
         'last_updated' => 'Last Updated',
