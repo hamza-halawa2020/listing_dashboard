@@ -18,6 +18,7 @@ use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Filament\Resources\Users\RelationManagers\SentReferralsRelationManager;
+use App\Filament\Resources\Users\RelationManagers\PointTransactionsRelationManager;
 
 class UserResource extends AuthorizedResource
 {
@@ -79,6 +80,7 @@ class UserResource extends AuthorizedResource
     {
         return [
             SentReferralsRelationManager::class,
+            PointTransactionsRelationManager::class,
         ];
     }
 

@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PointSettingsController;
+use App\Http\Controllers\Api\PointsController;
 use App\Http\Controllers\Api\ReferralController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 
@@ -91,6 +92,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Referral
     Route::get('/referral', [ReferralController::class, 'show']);
+
+    // Points summary
+    Route::get('/points/summary', [PointsController::class, 'summary']);
     Route::get('/chat/contacts', [ChatConversationController::class, 'contacts']);
     Route::get('/chat/summary', [ChatConversationController::class, 'summary']);
     Route::get('/chat/conversations', [ChatConversationController::class, 'index']);
