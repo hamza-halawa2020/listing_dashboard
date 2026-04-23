@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Placeholder;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Validation\Rule;
 
 class SubscriptionPlanForm
 {
@@ -21,7 +22,15 @@ class SubscriptionPlanForm
                     ->required(),
                 TextInput::make('code')
                     ->label(__('Code'))
-                    ->required(),
+                    ->required()
+                    ->unique(
+                        table: 'subscription_plans',
+                        column: 'code',
+                        ignorable: fn ($record) => $record,
+                    )
+                    ->validationMessages([
+                        'unique' => __('This code is already used by another plan. Please choose a different code.'),
+                    ]),
                 Select::make('type')
                     ->label(__('Type'))
                     ->options([
