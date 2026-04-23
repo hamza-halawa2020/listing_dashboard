@@ -9,15 +9,28 @@ use App\Services\SystemNotificationService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Resources\Pages\Page;
 
-class ViewVisit extends ViewRecord
+class ViewVisit extends Page
 {
     protected static string $resource = VisitResource::class;
+
+    // Livewire property — bound from route {record}
+    public Visit $record;
 
     public function getView(): string
     {
         return 'filament.resources.visits.pages.view-visit';
+    }
+
+    public function getTitle(): string
+    {
+        return __('Visit') . ' #' . $this->record->id;
+    }
+
+    public function mount(int|string $record): void
+    {
+        $this->record = Visit::with(['user', 'listing', 'attachments', 'approvedByAdmin'])->findOrFail($record);
     }
 
     protected function getHeaderActions(): array
@@ -72,7 +85,9 @@ class ViewVisit extends ViewRecord
                     );
 
                     Notification::make()->title(__('Visit approved and points granted.'))->success()->send();
-                    $this->refreshFormData(['status', 'approved_at']);
+
+                    // Reload record to reflect new status in UI
+                    $this->record = $this->record->fresh(['user', 'listing', 'attachments', 'approvedByAdmin']);
                 }),
 
             Action::make('reject')
@@ -114,7 +129,8 @@ class ViewVisit extends ViewRecord
                     );
 
                     Notification::make()->title(__('Visit rejected.'))->warning()->send();
-                    $this->refreshFormData(['status', 'rejection_reason']);
+
+                    $this->record = $this->record->fresh(['user', 'listing', 'attachments', 'approvedByAdmin']);
                 }),
 
             Action::make('back')
@@ -128,7 +144,7 @@ class ViewVisit extends ViewRecord
     public function getViewData(): array
     {
         return [
-            'visit' => $this->record->load(['user', 'listing', 'attachments', 'approvedByAdmin']),
+            'visit' => $this->record,
         ];
     }
 }
