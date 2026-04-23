@@ -24,15 +24,16 @@ class PointTransaction extends Model
     public static function typeLabels(): array
     {
         return [
-            'referral_bonus' => __('Referral bonus'),
-            'referee_bonus' => __('Welcome bonus'),
-            'signup_bonus' => __('Signup bonus'),
+            'referral_bonus'     => __('Referral bonus'),
+            'referee_bonus'      => __('Welcome bonus'),
+            'signup_bonus'       => __('Signup bonus'),
             'subscription_bonus' => __('Subscription bonus'),
-            'redeem' => __('Redeem'),
-            'admin_add' => __('Admin add'),
-            'admin_deduct' => __('Admin deduct'),
-            'expire' => __('Expire'),
-            'adjustment' => __('Adjustment'),
+            'visit_bonus'        => __('Visit bonus'),
+            'redeem'             => __('Redeem'),
+            'admin_add'          => __('Admin add'),
+            'admin_deduct'       => __('Admin deduct'),
+            'expire'             => __('Expire'),
+            'adjustment'         => __('Adjustment'),
         ];
     }
 

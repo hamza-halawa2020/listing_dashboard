@@ -6,8 +6,10 @@ use App\Filament\Concerns\AuthorizesPageAccess;
 use App\Models\Referral;
 use App\Models\Setting;
 use App\Models\SubscriptionPlan;
+use App\Models\Visit;
 use BackedEnum;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -65,7 +67,8 @@ class ManageSettings extends Page implements HasTable
     public function mount(): void
     {
         $this->form->fill([
-            'referral_enabled' => filter_var(Setting::getValue('referral_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'referral_enabled'     => filter_var(Setting::getValue('referral_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'visit_points_reward'  => (int) Setting::getValue('visit_points_reward', 10),
         ]);
     }
 
@@ -78,6 +81,17 @@ class ManageSettings extends Page implements HasTable
                         Toggle::make('referral_enabled')
                             ->label(__('Enable referral program'))
                             ->default(true),
+                    ]),
+
+                Section::make(__('Visit Rewards'))
+                    ->description(__('Points granted to the user when a visit is approved by admin.'))
+                    ->schema([
+                        TextInput::make('visit_points_reward')
+                            ->label(__('Points per approved visit'))
+                            ->numeric()
+                            ->minValue(0)
+                            ->default(10)
+                            ->suffix('pts'),
                     ]),
             ])
             ->statePath('data');
@@ -129,6 +143,7 @@ class ManageSettings extends Page implements HasTable
         try {
             $data = $this->form->getState();
             Setting::setValue('referral_enabled', $data['referral_enabled'] ?? true);
+            Setting::setValue('visit_points_reward', (int) ($data['visit_points_reward'] ?? 10));
 
             Notification::make()
                 ->title(__('Settings saved successfully'))

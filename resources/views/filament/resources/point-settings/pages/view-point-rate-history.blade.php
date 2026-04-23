@@ -14,7 +14,7 @@
                     {{ number_format($currentRate, 4) }}
                     <span class="text-sm font-normal text-gray-400">{{ __('point-settings.history.table.rate_suffix') }}</span>
                 </p>
-                <p class="mt-0.5 text-xs text-gray-400">100 EGP â‰ˆ {{ $pointsFor100 }} {{ __('point-settings.units.points') }}</p>
+                <p class="mt-0.5 text-xs text-gray-400">100 EGP {{ $pointsFor100 }} {{ __('point-settings.units.points') }}</p>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
                                     @if ($row->reason)
                                         <div class="truncate text-xs text-gray-400" title="{{ $row->reason }}">{{ $row->reason }}</div>
                                     @else
-                                        @if (!$row->extra) <span class="text-gray-300 dark:text-gray-600">â€”</span> @endif
+                                        @if (!$row->extra) <span class="text-gray-300 dark:text-gray-600"></span> @endif
                                     @endif
                                 </td>
 

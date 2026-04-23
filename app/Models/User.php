@@ -110,6 +110,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(PointTransaction::class);
     }
 
+    public function visits()
+    {
+        return $this->hasMany(Visit::class);
+    }
+
     public function chatConversations()
     {
         return $this->belongsToMany(ChatConversation::class, 'chat_conversation_participants')

@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\PointSettingsController;
 use App\Http\Controllers\Api\PointsController;
 use App\Http\Controllers\Api\ReferralController;
 use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\VisitController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -95,6 +96,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Points summary
     Route::get('/points/summary', [PointsController::class, 'summary']);
+
+    // Visits
+    Route::get('/visits', [VisitController::class, 'index']);
+    Route::post('/visits', [VisitController::class, 'store']);
+    Route::get('/visits/listing/{listingId}', [VisitController::class, 'byListing']);
+    Route::get('/visits/{id}', [VisitController::class, 'show']);
     Route::get('/chat/contacts', [ChatConversationController::class, 'contacts']);
     Route::get('/chat/summary', [ChatConversationController::class, 'summary']);
     Route::get('/chat/conversations', [ChatConversationController::class, 'index']);
