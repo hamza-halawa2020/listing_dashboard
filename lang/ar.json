@@ -761,5 +761,6 @@
     "Registration Reward Points": "نقاط مكافأة التسجيل",
     "Reason for Change": "سبب التغيير",
     "This will grant :points points to :user.": "سيتم منح :points نقطة إلى :user.",
-    "Subscription reward points are configured separately for each subscription plan.": "يتم تحديد نقاط مكافأة الاشتراك بشكل منفصل لكل خطة اشتراك."
+    "Subscription reward points are configured separately for each subscription plan.": "يتم تحديد نقاط مكافأة الاشتراك بشكل منفصل لكل خطة اشتراك.",
+    "Visit":"زيارة"
 }
