@@ -88,36 +88,71 @@ class ListingSpreadsheetImporter
     public function import(string $path): array
     {
         $rows = $this->readRows($path);
+        $totalRows = count($rows);
+
+        Log::info('Listing import started', [
+            'file'       => basename($path),
+            'total_rows' => $totalRows,
+            'memory_mb'  => round(memory_get_usage(true) / 1024 / 1024, 1),
+        ]);
 
         $summary = [
             'created' => 0,
             'updated' => 0,
             'skipped' => 0,
-            'errors' => [],
+            'errors'  => [],
         ];
 
+        $logEvery = max(1, (int) ceil($totalRows / 20)); // log every 5%
+
         foreach ($rows as $index => $row) {
+            $rowNumber = $index + 2;
+
             try {
                 $result = $this->importRow($row, $index);
 
                 if ($result === 'created') {
                     $summary['created']++;
-
-                    continue;
-                }
-
-                if ($result === 'updated') {
+                } elseif ($result === 'updated') {
                     $summary['updated']++;
-
-                    continue;
+                } else {
+                    $summary['skipped']++;
                 }
-
-                $summary['skipped']++;
             } catch (Throwable $exception) {
                 $summary['skipped']++;
-                $summary['errors'][] = 'Row ' . ($index + 2) . ': ' . $exception->getMessage();
+                $errorMsg = 'Row ' . $rowNumber . ': ' . $exception->getMessage();
+                $summary['errors'][] = $errorMsg;
+
+                Log::warning('Listing import row error', [
+                    'row'     => $rowNumber,
+                    'name'    => $row['name'] ?? $row['مقدم الخدمة'] ?? '?',
+                    'error'   => $exception->getMessage(),
+                ]);
+            }
+
+            // Progress log every 5%
+            if (($index + 1) % $logEvery === 0 || ($index + 1) === $totalRows) {
+                Log::info('Listing import progress', [
+                    'processed'  => $index + 1,
+                    'total'      => $totalRows,
+                    'pct'        => round(($index + 1) / $totalRows * 100) . '%',
+                    'created'    => $summary['created'],
+                    'updated'    => $summary['updated'],
+                    'skipped'    => $summary['skipped'],
+                    'errors'     => count($summary['errors']),
+                    'memory_mb'  => round(memory_get_usage(true) / 1024 / 1024, 1),
+                ]);
             }
         }
+
+        Log::info('Listing import finished', [
+            'file'      => basename($path),
+            'created'   => $summary['created'],
+            'updated'   => $summary['updated'],
+            'skipped'   => $summary['skipped'],
+            'errors'    => count($summary['errors']),
+            'memory_mb' => round(memory_get_peak_usage(true) / 1024 / 1024, 1) . ' peak',
+        ]);
 
         return $summary;
     }
@@ -140,6 +175,10 @@ class ListingSpreadsheetImporter
         $this->logCoordinateGap($row, $attributes, $rowIndex);
 
         if (! $exists && $attributes === []) {
+            Log::debug('Listing import: row skipped — no attributes extracted', [
+                'row' => $rowIndex + 2,
+                'name' => $row['name'] ?? '?',
+            ]);
             return 'skipped';
         }
 
@@ -434,9 +473,12 @@ class ListingSpreadsheetImporter
         $governorate = $this->findLocationByName($governorateName);
 
         if (! $governorate) {
-            $governorate = Location::create([
+            Log::info('Listing import: creating new governorate', [
                 'name' => $governorateName,
-                'type' => 'governorate',
+            ]);
+            $governorate = Location::create([
+                'name'          => $governorateName,
+                'type'          => 'governorate',
                 'shipping_cost' => self::DEFAULT_GOVERNORATE_SHIPPING_COST,
             ]);
         }
@@ -448,10 +490,14 @@ class ListingSpreadsheetImporter
         $area = $this->findLocationByName($areaName, $governorate->id);
 
         if (! $area) {
+            Log::info('Listing import: creating new area', [
+                'name'        => $areaName,
+                'governorate' => $governorateName,
+            ]);
             $area = Location::create([
-                'name' => $areaName,
+                'name'      => $areaName,
                 'parent_id' => $governorate->id,
-                'type' => 'zone',
+                'type'      => 'zone',
             ]);
         }
 
