@@ -125,7 +125,7 @@ class ManagePointSettings extends ManageRecords
                 ->label(__('Manage Subscription Rewards'))
                 ->icon('heroicon-o-queue-list')
                 ->color('success')
-                ->tooltip('Subscription reward points are configured separately for each subscription plan.')
+                ->tooltip(__('Subscription reward points are configured separately for each subscription plan.'))
                 ->url(fn (): string => SubscriptionPlanResource::getUrl('index')),
 
             Actions\Action::make('edit_visit_reward')
