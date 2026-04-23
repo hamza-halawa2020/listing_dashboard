@@ -7,6 +7,7 @@ use App\Models\PointRateHistory;
 use App\Models\RegistrationRewardHistory;
 use App\Models\SubscriptionRewardHistory;
 use App\Models\SubscriptionPlan;
+use App\Models\VisitPointRewardHistory;
 use Filament\Actions;
 use Filament\Resources\Pages\Page;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -116,9 +117,28 @@ class ViewPointRateHistory extends Page
                 'extra'      => $h->subscriptionPlan?->name,
             ]);
 
+        $visitChanges = VisitPointRewardHistory::query()
+            ->with('changedByAdmin')
+            ->latest()
+            ->get()
+            ->map(fn ($h) => (object) [
+                'type'       => 'visit',
+                'label'      => __('point-settings.history.type_visit'),
+                'old_value'  => number_format((int) $h->old_points),
+                'new_value'  => number_format((int) $h->new_points),
+                'suffix'     => __('point-settings.units.points'),
+                'direction'  => $h->new_points > $h->old_points ? 'up' : ($h->new_points < $h->old_points ? 'down' : 'same'),
+                'pct'        => $h->old_points > 0 ? round((($h->new_points - $h->old_points) / $h->old_points) * 100, 2) : 0,
+                'reason'     => $h->reason,
+                'changed_by' => $h->changedByAdmin?->name ?? __('point-settings.history.table.system'),
+                'created_at' => $h->created_at,
+                'extra'      => null,
+            ]);
+
         return $rateChanges
             ->concat($registrationChanges)
             ->concat($subscriptionChanges)
+            ->concat($visitChanges)
             ->sortByDesc('created_at')
             ->values();
     }

@@ -94,12 +94,15 @@
                                         <span class="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-700 dark:bg-violet-500/10 dark:text-violet-400">
                                             <x-heroicon-m-gift class="h-3 w-3" />{{ $row->label }}
                                         </span>
+                                    @elseif ($row->type === 'visit')
+                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700 dark:bg-teal-500/10 dark:text-teal-400">
+                                            <x-heroicon-m-building-office-2 class="h-3 w-3" />{{ $row->label }}
+                                        </span>
                                     @else
                                         <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">
                                             <x-heroicon-m-clipboard-document-list class="h-3 w-3" />{{ $row->label }}
                                         </span>
-                                    @endif
-                                </td>
+                                    @endif                                </td>
 
                                 {{-- Old value --}}
                                 <td class="whitespace-nowrap px-4 py-3.5 text-gray-500 dark:text-gray-400">

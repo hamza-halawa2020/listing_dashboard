@@ -717,5 +717,16 @@
     "Your account has been created successfully and you received :points points as a registration bonus.": "تم إنشاء حسابك بنجاح وحصلت على :points نقطة كمكافأة تسجيل.",
     "Subscription reward for plan: :plan": "مكافأة الاشتراك للخطة: :plan",
     "You earned subscription points!": "لقد حصلت على نقاط الاشتراك!",
-    "You received :points points because your subscription to :plan was approved.": "لقد حصلت على :points نقطة لأنه تمت الموافقة على اشتراكك في الخطة :plan."
+    "You received :points points because your subscription to :plan was approved.": "لقد حصلت على :points نقطة لأنه تمت الموافقة على اشتراكك في الخطة :plan.",
+    "Visited At": "تمت الزيارة في",
+    "Approve": "موافقة",
+    "Reject": "رفض",
+    "Approve Visit & Grant Points": "الموافقة على الزيارة ومنح النقاط",
+    "Waiting for admin review. Points will be added upon approval.": "بانتظار مراجعة الإدارة. سيتم إضافة النقاط بعد الموافقة.",
+    "Pending Review": "قيد المراجعة",
+    "Service & Date": "الخدمة والتاريخ",
+    "Submitted": "تم الإرسال",
+    "Attachments": "المرفقات",
+    "Click to open": "اضغط للفتح",
+    "uploaded": "تم الرفع"
 }

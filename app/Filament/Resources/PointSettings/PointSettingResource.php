@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PointSettings;
 use App\Filament\Resources\PointSettings\Pages\ManagePointSettings;
 use App\Models\PointSetting;
 use App\Models\RegistrationRewardSetting;
+use App\Models\Setting;
 use App\Models\SubscriptionPlan;
 use BackedEnum;
 use Filament\Actions\EditAction;
@@ -188,6 +189,13 @@ class PointSettingResource extends Resource
                 TextColumn::make('registration_reward')
                     ->label('Registration Reward')
                     ->state(fn (): string => number_format(RegistrationRewardSetting::getPoints()) . ' ' . __('point-settings.units.points')),
+
+                TextColumn::make('visit_reward')
+                    ->label(__('Visit Reward'))
+                    ->state(fn (): string => number_format((int) Setting::getValue('visit_points_reward', 10)) . ' ' . __('point-settings.units.points'))
+                    ->description(__('Per approved visit'))
+                    ->badge()
+                    ->color('primary'),
 
                 TextColumn::make('subscription_rewards')
                     ->label('Subscription Rewards')

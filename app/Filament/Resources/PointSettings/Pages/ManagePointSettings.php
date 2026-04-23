@@ -7,6 +7,8 @@ use App\Filament\Resources\SubscriptionPlans\SubscriptionPlanResource;
 use App\Models\PointSetting;
 use App\Models\RegistrationRewardHistory;
 use App\Models\RegistrationRewardSetting;
+use App\Models\Setting;
+use App\Models\VisitPointRewardHistory;
 use Filament\Actions;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -125,6 +127,51 @@ class ManagePointSettings extends ManageRecords
                 ->color('success')
                 ->tooltip('Subscription reward points are configured separately for each subscription plan.')
                 ->url(fn (): string => SubscriptionPlanResource::getUrl('index')),
+
+            Actions\Action::make('edit_visit_reward')
+                ->label(__('Visit Points Reward'))
+                ->icon('heroicon-o-building-office-2')
+                ->color('primary')
+                ->modalWidth('sm')
+                ->modalHeading(__('Visit Points Reward'))
+                ->modalDescription(__('Points granted to the user when a visit is approved by admin.'))
+                ->modalSubmitActionLabel(__('Save'))
+                ->fillForm(fn (): array => [
+                    'visit_points_reward' => (int) Setting::getValue('visit_points_reward', 10),
+                    'reason'              => '',
+                ])
+                ->form([
+                    TextInput::make('visit_points_reward')
+                        ->label(__('Points per approved visit'))
+                        ->numeric()
+                        ->required()
+                        ->minValue(0)
+                        ->default(10)
+                        ->suffix('pts'),
+                    \Filament\Forms\Components\Textarea::make('reason')
+                        ->label(__('Reason for change'))
+                        ->rows(2)
+                        ->maxLength(500)
+                        ->placeholder(__('Optional — explain why you changed this value')),
+                ])
+                ->action(function (array $data): void {
+                    $oldPoints = (int) Setting::getValue('visit_points_reward', 10);
+                    $newPoints = (int) ($data['visit_points_reward'] ?? 10);
+
+                    VisitPointRewardHistory::create([
+                        'old_points'          => $oldPoints,
+                        'new_points'          => $newPoints,
+                        'reason'              => $data['reason'] ?? null,
+                        'changed_by_admin_id' => auth()->id(),
+                    ]);
+
+                    Setting::setValue('visit_points_reward', $newPoints);
+
+                    Notification::make()
+                        ->title(__('Visit points reward updated successfully'))
+                        ->success()
+                        ->send();
+                }),
 
             Actions\Action::make('test_calculations')
                 ->label(__('point-settings.header_actions.calculator'))
