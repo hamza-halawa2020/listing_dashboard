@@ -174,7 +174,7 @@ class VisitController extends Controller
             'attachments'      => $visit->attachments->map(fn ($a) => [
                 'id'        => $a->id,
                 'file_name' => $a->file_name,
-                'url'       => asset('storage/' . $a->file_path),
+                'url'       => asset('files/' . $a->file_path),
                 'mime_type' => $a->mime_type,
             ]),
         ];
