@@ -15,7 +15,7 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'excerpt' => Str::limit(strip_tags((string) $this->description), 180),
-            'image_url' => $this->image ? asset('storage/' . $this->image) : null,
+            'image_url' => $this->image ? asset('files/' . $this->image) : null,
             'status' => $this->status,
             'views_count' => $this->views_count,
             'comments_count' => $this->comments_count ?? $this->approvedComments()->count(),

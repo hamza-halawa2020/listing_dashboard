@@ -21,7 +21,7 @@ class PaymentResource extends JsonResource
             'payment_method' => $this->payment_method,
             'transaction_reference' => $this->transaction_reference,
             'status' => $this->status,
-            'attachment' => $this->attachment ? url('storage/' . $this->attachment) : null,
+            'attachment' => $this->attachment ? url('files/' . $this->attachment) : null,
             'notes' => $this->notes,
             'delivery_required' => (bool) $this->delivery_required,
             'delivery_name' => $this->delivery_name,

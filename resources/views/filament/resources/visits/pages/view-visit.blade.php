@@ -191,12 +191,12 @@
             <div class="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 @foreach ($visit->attachments as $attachment)
                     @php $isImage = str_contains($attachment->mime_type ?? '', 'image'); @endphp
-                    <a href="{{ asset('storage/' . $attachment->file_path) }}"
+                    <a href="{{ asset('files/' . $attachment->file_path) }}"
                        target="_blank"
                        class="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-gray-50 transition hover:border-primary-400 hover:shadow-md dark:border-white/10 dark:bg-white/5">
                         <div class="relative h-24 w-full overflow-hidden bg-gray-100 dark:bg-white/5">
                             @if ($isImage)
-                                <img src="{{ asset('storage/' . $attachment->file_path) }}"
+                                <img src="{{ asset('files/' . $attachment->file_path) }}"
                                      alt="{{ $attachment->file_name }}"
                                      class="h-full w-full object-cover transition group-hover:scale-105">
                             @else
