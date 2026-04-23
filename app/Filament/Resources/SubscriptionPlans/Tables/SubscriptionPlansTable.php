@@ -52,7 +52,7 @@ class SubscriptionPlansTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('subscription_reward_points')
-                    ->label('Subscription Reward')
+                    ->label(__('Subscription Reward'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')

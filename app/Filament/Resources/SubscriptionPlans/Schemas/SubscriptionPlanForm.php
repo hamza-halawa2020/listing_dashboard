@@ -62,8 +62,8 @@ class SubscriptionPlanForm
                     ->label(__('Max Family Members'))
                     ->numeric(),
                 TextInput::make('subscription_reward_points')
-                    ->label('Subscription Reward Points')
-                    ->helperText('Points awarded when this specific plan is approved for the user.')
+                    ->label(__('Subscription Reward Points'))
+                    ->helperText(__('Points awarded when this specific plan is approved for the user.'))
                     ->numeric()
                     ->default(0)
                     ->minValue(0)

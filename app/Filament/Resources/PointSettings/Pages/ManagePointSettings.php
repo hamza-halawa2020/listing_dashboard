@@ -59,13 +59,13 @@ class ManagePointSettings extends ManageRecords
                 ->url(fn () => PointSettingResource::getUrl('history')),
 
             Actions\Action::make('edit_registration_reward')
-                ->label('Edit Registration Reward')
+                ->label(__('Edit Registration Reward'))
                 ->icon('heroicon-o-gift')
                 ->color('warning')
                 ->modalWidth('lg')
-                ->modalHeading('Edit Registration Reward')
-                ->modalDescription('Update the registration reward points separately and keep a full history of changes.')
-                ->modalSubmitActionLabel('Save Registration Reward')
+                ->modalHeading(__('Edit Registration Reward'))
+                ->modalDescription(__('Update the registration reward points separately and keep a full history of changes.'))
+                ->modalSubmitActionLabel(__('Save Registration Reward'))
                 ->fillForm(function (): array {
                     $setting = RegistrationRewardSetting::getOrCreateDefault();
 
@@ -77,18 +77,18 @@ class ManagePointSettings extends ManageRecords
                 })
                 ->form([
                     TextInput::make('points')
-                        ->label('Registration Reward Points')
+                        ->label(__('Registration Reward Points'))
                         ->numeric()
                         ->required()
                         ->minValue(0)
                         ->step(1),
                     Textarea::make('reason')
-                        ->label('Reason for Change')
+                        ->label(__('Reason for Change'))
                         ->rows(2)
                         ->required()
                         ->maxLength(500),
                     Textarea::make('notes')
-                        ->label('Additional Notes')
+                        ->label(__('Additional Notes'))
                         ->rows(3)
                         ->maxLength(1000),
                 ])
@@ -99,7 +99,7 @@ class ManagePointSettings extends ManageRecords
 
                     if ($oldPoints === $newPoints && (($setting->notes ?? null) === ($data['notes'] ?? null))) {
                         throw ValidationException::withMessages([
-                            'points' => 'The new registration reward must be different from the current value.',
+                            'points' => __('The new registration reward must be different from the current value.'),
                         ]);
                     }
 
@@ -116,13 +116,13 @@ class ManagePointSettings extends ManageRecords
                     ]);
 
                     Notification::make()
-                        ->title('Registration reward updated successfully')
+                        ->title(__('Registration reward updated successfully'))
                         ->success()
                         ->send();
                 }),
 
             Actions\Action::make('manage_subscription_rewards')
-                ->label('Manage Subscription Rewards')
+                ->label(__('Manage Subscription Rewards'))
                 ->icon('heroicon-o-queue-list')
                 ->color('success')
                 ->tooltip('Subscription reward points are configured separately for each subscription plan.')

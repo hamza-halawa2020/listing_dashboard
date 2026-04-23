@@ -138,7 +138,7 @@ class VisitResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading(__('Approve Visit & Grant Points'))
                     ->modalDescription(fn (Visit $r): string => __(
-                        'This will grant :points points to :user.',
+                        __('This will grant :points points to :user.'),
                         ['points' => Visit::getVisitPoints(), 'user' => $r->user?->name ?? '']
                     ))
                     ->action(function (Visit $record, ReferralService $referralService, SystemNotificationService $notifications): void {

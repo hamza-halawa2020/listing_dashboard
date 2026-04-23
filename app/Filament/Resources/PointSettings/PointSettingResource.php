@@ -187,7 +187,7 @@ class PointSettingResource extends Resource
                     ->description(__('point-settings.table.quick_preview_description')),
 
                 TextColumn::make('registration_reward')
-                    ->label('Registration Reward')
+                    ->label(__('Registration Reward'))
                     ->state(fn (): string => number_format(RegistrationRewardSetting::getPoints()) . ' ' . __('point-settings.units.points')),
 
                 TextColumn::make('visit_reward')
@@ -198,15 +198,15 @@ class PointSettingResource extends Resource
                     ->color('primary'),
 
                 TextColumn::make('subscription_rewards')
-                    ->label('Subscription Rewards')
+                    ->label(__('Subscription Rewards'))
                     ->state(function (): string {
                         $configuredPlans = SubscriptionPlan::query()
                             ->where('subscription_reward_points', '>', 0)
                             ->count();
 
                         return $configuredPlans > 0
-                            ? 'Configured per plan'
-                            : 'No plan rewards configured';
+                            ? __('Configured per plan')
+                            : __('No plan rewards configured');
                     })
                     ->description(function (): string {
                         $configuredPlans = SubscriptionPlan::query()
@@ -217,7 +217,7 @@ class PointSettingResource extends Resource
                             return 'Open Subscription Plans to assign reward points for each package.';
                         }
 
-                        return number_format($configuredPlans) . ' plan(s) currently grant subscription reward points.';
+                        return number_format($configuredPlans) . __('plan(s) currently grant subscription reward points.');
                     }),
 
                 TextColumn::make('notes')
