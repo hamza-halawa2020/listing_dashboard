@@ -16,6 +16,11 @@ class ContentPulseChart extends ChartWidget
 
     protected int | string | array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('dashboard.view') ?? false;
+    }
+
     public function getHeading(): string | Htmlable | null
     {
         return __('dashboard.content.heading');

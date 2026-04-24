@@ -19,6 +19,11 @@ class SystemOverviewStats extends StatsOverviewWidget
 
     protected int | string | array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('dashboard.view') ?? false;
+    }
+
     protected function getHeading(): ?string
     {
         return __('dashboard.overview.heading');

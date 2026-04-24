@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\AuthorizesPageAccess;
 use App\Models\Setting;
 use BackedEnum;
 use Filament\Forms\Components\TextInput;
@@ -15,6 +16,8 @@ use UnitEnum;
 
 class ManageContactSettings extends Page
 {
+    use AuthorizesPageAccess;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhone;
 
     protected static ?int $navigationSort = 99;
@@ -28,14 +31,24 @@ class ManageContactSettings extends Page
         return __('Contact Settings');
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
+
     public static function getNavigationGroup(): string|UnitEnum|null
     {
         return __('Settings');
     }
 
+    protected static function getAccessPermissionName(): ?string
+    {
+        return 'contact_settings.manage';
+    }
+
     public function getTitle(): string|Htmlable
     {
-        return __('Contact & Social Settings');
+        return __('Contact Settings');
     }
 
     public function mount(): void
@@ -73,7 +86,7 @@ class ManageContactSettings extends Page
                             ->placeholder('+20 1xxxxxxxxx')
                             ->placeholder('+20 1xxxxxxxxx'),
                         TextInput::make('vodafonecash')
-                            ->label(__('vVdafone Cash Number'))
+                            ->label(__('Vdafone Cash Number'))
                             ->tel()
                             ->placeholder('+20 1xxxxxxxxx')
                             ->placeholder('+20 1xxxxxxxxx'),

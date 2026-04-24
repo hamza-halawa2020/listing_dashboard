@@ -17,6 +17,11 @@ class SystemGrowthChart extends ChartWidget
 
     protected int | string | array $columnSpan = 1;
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('dashboard.view') ?? false;
+    }
+
     public function getHeading(): string | Htmlable | null
     {
         return __('dashboard.growth.heading');

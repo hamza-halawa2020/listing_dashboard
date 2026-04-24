@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PointSettings;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\PointSettings\Pages\ManagePointSettings;
 use App\Models\PointSetting;
 use App\Models\RegistrationRewardSetting;
@@ -13,8 +14,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Resource;
-use Filament\Schemas\Components\Section;
+use Filament\Resources\Resource;use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -22,7 +22,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class PointSettingResource extends Resource
+class PointSettingResource extends AuthorizedResource
 {
     protected static ?string $model = PointSetting::class;
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Visits;
 
+use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Visits\Pages\ListVisits;
 use App\Filament\Resources\Visits\Pages\ViewVisit;
 use App\Models\Visit;
@@ -17,7 +18,7 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 
-class VisitResource extends Resource
+class VisitResource extends AuthorizedResource
 {
     protected static ?string $model = Visit::class;
 

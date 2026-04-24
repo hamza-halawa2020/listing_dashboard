@@ -762,5 +762,11 @@
     "Reason for Change": "سبب التغيير",
     "This will grant :points points to :user.": "سيتم منح :points نقطة إلى :user.",
     "Subscription reward points are configured separately for each subscription plan.": "يتم تحديد نقاط مكافأة الاشتراك بشكل منفصل لكل خطة اشتراك.",
-    "Visit":"زيارة"
+    "Visit": "زيارة",
+    "Contact Settings": "إعدادات التواصل",
+    "These details appear on the website and are used for customer communication.": "تظهر هذه البيانات على الموقع وتُستخدم للتواصل مع العملاء.",
+    "WhatsApp Number": "رقم واتساب",
+    "Vdafone Cash Number": "رقم فودافون كاش",
+    "Instapay Number": "رقم إنستاباي",
+    "Include country code, e.g. +201234567890": "يرجى تضمين كود الدولة، مثل +201234567890"
 }

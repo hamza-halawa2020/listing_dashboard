@@ -12,6 +12,11 @@ class ReferralOverviewStats extends StatsOverviewWidget
 {
     protected int | string | array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('referrals.view_any') ?? false;
+    }
+
     protected function getStats(): array
     {
         $totalReferrals = Referral::count();

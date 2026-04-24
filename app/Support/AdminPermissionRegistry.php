@@ -85,6 +85,13 @@ class AdminPermissionRegistry
             'subscription_plans',
             'chat_conversations',
             'chat_messages',
+            'visits',
+            'point_settings',
+            'reviews',
+            'price_requests',
+            'guest_customers',
+            'listing_applications',
+            'listing_import_runs',
         ];
     }
 
@@ -112,6 +119,7 @@ class AdminPermissionRegistry
             'dashboard.view',
             'backups.manage',
             'settings.manage',
+            'contact_settings.manage',
         ];
     }
 
@@ -134,7 +142,7 @@ class AdminPermissionRegistry
         return [
             'super_admin' => static::allPermissions(),
             'admin' => array_values(array_unique(array_merge(
-                ['dashboard.view', 'backups.manage'],
+                ['dashboard.view', 'backups.manage', 'contact_settings.manage'],
                 static::permissionsForResources(array_values(array_diff(static::resourcePrefixes(), ['users', 'roles', 'permissions']))),
             ))),
             'moderator' => array_values(array_unique(array_merge(
@@ -210,9 +218,17 @@ class AdminPermissionRegistry
             'subscription_plans' => __('Subscription Plans'),
             'chat_conversations' => __('Chat Conversations'),
             'chat_messages' => __('Chat Messages'),
+            'visits' => __('Visits'),
+            'point_settings' => __('Point Settings'),
+            'reviews' => __('Reviews'),
+            'price_requests' => __('Price Requests'),
+            'guest_customers' => __('Guest Customers'),
+            'listing_applications' => __('Listing Applications'),
+            'listing_import_runs' => __('Listing Import Runs'),
             'dashboard' => __('Dashboard'),
             'backups' => __('Backups'),
             'settings' => __('Settings'),
+            'contact_settings' => __('Contact Settings'),
             default => null,
         };
     }
