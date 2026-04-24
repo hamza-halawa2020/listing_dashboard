@@ -17,11 +17,17 @@ class SettingController extends ApiController
     public function index(Request $request)
     {
         $settings = Setting::pluck('value', 'key')->toArray();
-        
-        if (empty($settings)) {
-            return response()->json(['data' => (object)[]]);
-        }
 
-        return new SettingResource((object)$settings);
+        return response()->json([
+            'data' => [
+                // Contact
+                'phone'     => $settings['phone'] ?? null,
+                'whatsapp'  => $settings['whatsapp'] ?? null,
+                'instapay'  => $settings['instapay'] ?? null,
+                'vodafonecash'  => $settings['vodafonecash'] ?? null,
+                // Referral
+                'referral_enabled' => filter_var($settings['referral_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN),
+            ],
+        ]);
     }
 }
