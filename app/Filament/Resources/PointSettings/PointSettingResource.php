@@ -60,7 +60,7 @@ class PointSettingResource extends AuthorizedResource
                     ->schema([
                         TextInput::make('points_to_egp_rate')
                             ->label(__('point-settings.fields.points_to_egp_rate.label'))
-                            ->helperText(__('point-settings.fields.points_to_egp_rate.helper'))
+                            // ->helperText(__('point-settings.fields.points_to_egp_rate.helper'))
                             ->required()
                             ->numeric()
                             ->step(0.0001)
@@ -172,14 +172,14 @@ class PointSettingResource extends AuthorizedResource
     {
         return $table
             ->columns([
-                TextColumn::make('points_to_egp_rate')
-                    ->label(__('point-settings.table.current_rate'))
-                    ->formatStateUsing(fn ($state): string => number_format((float) $state, 4) . ' ' . __('point-settings.table.rate_format_suffix'))
-                    ->badge()
-                    ->color('success')
-                    ->description(fn (): string => __('point-settings.table.current_rate_description', [
-                        'points' => number_format(PointSetting::calculatePointsNeeded(100)),
-                    ])),
+                // TextColumn::make('points_to_egp_rate')
+                //     ->label(__('point-settings.table.current_rate'))
+                //     ->formatStateUsing(fn ($state): string => number_format((float) $state, 2) . ' ' . __('point-settings.table.rate_format_suffix'))
+                //     ->badge()
+                //     ->color('success')
+                //     ->description(fn (): string => __('point-settings.table.current_rate_description', [
+                //         'points' => number_format(PointSetting::calculatePointsNeeded(100)),
+                //     ])),
 
                 TextColumn::make('conversion_preview')
                     ->label(__('point-settings.table.quick_preview'))

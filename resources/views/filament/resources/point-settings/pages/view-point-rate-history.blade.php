@@ -4,7 +4,7 @@
     {{-- STATS ROW --}}
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-        <div class="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
+        <!-- <div class="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
             <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-500/10">
                 <x-heroicon-o-currency-dollar class="h-5 w-5 text-primary-600 dark:text-primary-400" />
             </div>
@@ -16,7 +16,7 @@
                 </p>
                 <p class="mt-0.5 text-xs text-gray-400">100 EGP {{ $pointsFor100 }} {{ __('point-settings.units.points') }}</p>
             </div>
-        </div>
+        </div> -->
 
         <div class="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
             <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-success-50 dark:bg-success-500/10">
