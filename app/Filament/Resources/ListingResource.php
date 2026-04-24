@@ -8,6 +8,7 @@ use App\Filament\Resources\ListingResource\RelationManagers\LinksRelationManager
 use App\Filament\Resources\ListingResource\RelationManagers\OffersRelationManager;
 use App\Filament\Resources\ListingResource\RelationManagers\PhonesRelationManager;
 use App\Forms\Components\MapPicker;
+use App\Models\Category;
 use App\Models\Listing;
 use App\Models\Location;
 use App\Models\Offer;
@@ -65,12 +66,60 @@ class ListingResource extends AuthorizedResource
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
-                        Select::make('category_id')
+                        Select::make('parent_category_id')
                             ->label(__('Category'))
-                            ->relationship('category', 'name')
+                            ->options(
+                                Category::whereNull('parent_id')
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                            )
                             ->required()
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(function (callable $set, $state) {
+                                $set('category_id', $state);
+                                $set('child_category_id', null);
+                            })
+                            ->afterStateHydrated(function (callable $set, $get, $state) {
+                                // on edit: populate parent from the saved category_id
+                                $categoryId = $get('category_id');
+                                if ($categoryId) {
+                                    $cat = Category::find($categoryId);
+                                    if ($cat?->parent_id) {
+                                        $set('parent_category_id', $cat->parent_id);
+                                        $set('child_category_id', $cat->id);
+                                    } else {
+                                        $set('parent_category_id', $cat?->id);
+                                    }
+                                }
+                            }),
+
+                        Select::make('child_category_id')
+                            ->label(__('Sub Category'))
+                            ->options(fn (Get $get): array =>
+                                $get('parent_category_id')
+                                    ? Category::where('parent_id', $get('parent_category_id'))
+                                        ->orderBy('name')
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                    : []
+                            )
+                            ->searchable()
+                            ->live()
+                            ->afterStateUpdated(function (callable $set, $state, Get $get) {
+                                // if child selected use it, otherwise fall back to parent
+                                $set('category_id', $state ?? $get('parent_category_id'));
+                            })
+                            ->visible(fn (Get $get): bool =>
+                                filled($get('parent_category_id')) &&
+                                Category::where('parent_id', $get('parent_category_id'))->exists()
+                            )
+                            ->dehydrated(false),
+
+                        // hidden - stores the real final category_id
+                        \Filament\Forms\Components\Hidden::make('category_id')
+                            ->required(),
                         
                         // Level 1 - Root
                         Select::make('location_level_1')
@@ -222,14 +271,14 @@ class ListingResource extends AuthorizedResource
                         Toggle::make('is_active')
                             ->label(__('Active'))
                             ->default(true)
-                            ->disabled(fn (Listing $record) => 
-                                $record->id && 
+                            ->disabled(fn (?Listing $record) => 
+                                $record?->id && 
                                 \App\Models\ListingApplication::where('listing_id', $record->id)
                                     ->where('status','!=','approved')
                                     ->exists()
                             )
-                            ->helperText(fn (Listing $record) => 
-                                $record->id && 
+                            ->helperText(fn (?Listing $record) => 
+                                $record?->id && 
                                 \App\Models\ListingApplication::where('listing_id', $record->id)
                                     ->where('status','!=','approved')
                                     ->exists()
