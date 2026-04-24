@@ -84,12 +84,6 @@ class VisitResource extends Resource
                     ->limit(30)
                     ->description(fn (Visit $r): string => $r->listing?->address ?? ''),
 
-                TextColumn::make('service_type')
-                    ->label(__('Service'))
-                    ->formatStateUsing(fn (string $state): string => Visit::SERVICE_TYPES[$state] ?? $state)
-                    ->badge()
-                    ->color('info'),
-
                 TextColumn::make('attachments_count')
                     ->label(__('Files'))
                     ->counts('attachments')

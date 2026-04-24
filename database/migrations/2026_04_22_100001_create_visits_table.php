@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('listing_id')->constrained()->cascadeOnDelete();
-            $table->string('service_type'); // checkup, xray, analysis, prescription, other
             $table->text('notes')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('rejection_reason')->nullable();

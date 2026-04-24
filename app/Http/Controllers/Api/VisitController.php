@@ -87,7 +87,6 @@ class VisitController extends Controller
     {
         $request->validate([
             'listing_id'   => 'required|exists:listings,id',
-            'service_type' => 'required|in:' . implode(',', array_keys(Visit::SERVICE_TYPES)),
             'visited_at'   => 'required|date|before_or_equal:now',
             'notes'        => 'nullable|string|max:500',
             'attachments'  => 'required|array|min:1|max:5',
@@ -96,12 +95,11 @@ class VisitController extends Controller
 
         $visit = DB::transaction(function () use ($request): Visit {
             $visit = Visit::create([
-                'user_id'      => $request->user()->id,
-                'listing_id'   => $request->listing_id,
-                'service_type' => $request->service_type,
-                'notes'        => $request->notes,
-                'visited_at'   => $request->visited_at,
-                'status'       => Visit::STATUS_PENDING,
+                'user_id'    => $request->user()->id,
+                'listing_id' => $request->listing_id,
+                'notes'      => $request->notes,
+                'visited_at' => $request->visited_at,
+                'status'     => Visit::STATUS_PENDING,
             ]);
 
             foreach ($request->file('attachments') as $file) {
@@ -162,8 +160,6 @@ class VisitController extends Controller
                 'name'    => $visit->listing?->name,
                 'address' => $visit->listing?->address,
             ],
-            'service_type'     => $visit->service_type,
-            'service_label'    => Visit::SERVICE_TYPES[$visit->service_type] ?? $visit->service_type,
             'notes'            => $visit->notes,
             'status'           => $visit->status,
             'rejection_reason' => $visit->rejection_reason,
@@ -174,7 +170,7 @@ class VisitController extends Controller
             'attachments'      => $visit->attachments->map(fn ($a) => [
                 'id'        => $a->id,
                 'file_name' => $a->file_name,
-                'url'       => asset('files/' . $a->file_path),
+                'url'       => asset('storage/' . $a->file_path),
                 'mime_type' => $a->mime_type,
             ]),
         ];

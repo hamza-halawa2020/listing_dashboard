@@ -10,18 +10,9 @@ class Visit extends Model
     public const STATUS_APPROVED = 'approved';
     public const STATUS_REJECTED = 'rejected';
 
-    public const SERVICE_TYPES = [
-        'checkup'      => 'كشف',
-        'xray'         => 'أشعة',
-        'analysis'     => 'تحليل',
-        'prescription' => 'روشتة',
-        'other'        => 'أخرى',
-    ];
-
     protected $fillable = [
         'user_id',
         'listing_id',
-        'service_type',
         'notes',
         'status',
         'rejection_reason',

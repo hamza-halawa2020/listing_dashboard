@@ -1,9 +1,5 @@
 ﻿<x-filament-panels::page>
-@php
-    $points = \App\Models\Visit::getVisitPoints();
-    $serviceLabel = \App\Models\Visit::SERVICE_TYPES[$visit->service_type] ?? $visit->service_type;
-@endphp
-
+@php $points = \App\Models\Visit::getVisitPoints(); @endphp
 <div class="space-y-5">
 
     {{-- TOP ROW --}}
@@ -42,7 +38,7 @@
                 <p class="mt-0.5 text-sm text-gray-600 dark:text-gray-400">
                     @if ($visit->status === 'approved')
                         {{ __('By') }} <span class="font-semibold">{{ $visit->approvedByAdmin?->name }}</span>
-                         {{ $visit->approved_at?->diffForHumans() }}
+                        &middot; {{ $visit->approved_at?->diffForHumans() }}
                     @elseif ($visit->status === 'rejected')
                         {{ $visit->rejection_reason }}
                     @else
@@ -76,9 +72,9 @@
                     <span class="text-xs font-normal text-gray-400">pts</span>
                 </p>
                 <p class="text-xs text-gray-400">
-                    @if ($visit->status === 'approved')  {{ __('Granted') }}
-                    @elseif ($visit->status === 'rejected')  {{ __('Not granted') }}
-                    @else  {{ __('Pending') }}
+                    @if ($visit->status === 'approved') {{ __('Granted') }}
+                    @elseif ($visit->status === 'rejected') {{ __('Not granted') }}
+                    @else {{ __('Pending') }}
                     @endif
                 </p>
             </div>
@@ -132,19 +128,13 @@
             </div>
         </div>
 
-        {{-- Service & Date --}}
+        {{-- Date --}}
         <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
-            <p class="mb-3 text-xs font-bold uppercase tracking-wide text-gray-400">{{ __('Service & Date') }}</p>
+            <p class="mb-3 text-xs font-bold uppercase tracking-wide text-gray-400">{{ __('Visit Date') }}</p>
             <div class="space-y-2">
-                <div class="flex items-center gap-2">
-                    <x-heroicon-m-heart class="h-3.5 w-3.5 shrink-0 text-gray-400" />
-                    <span class="inline-flex items-center rounded-full bg-info-50 px-2.5 py-0.5 text-xs font-bold text-info-700 dark:bg-info-500/10 dark:text-info-400">
-                        {{ $serviceLabel }}
-                    </span>
-                </div>
                 <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
                     <x-heroicon-m-calendar-days class="h-3.5 w-3.5 shrink-0 text-gray-400" />
-                    <span>{{ $visit->visited_at?->format('d M Y  H:i') }}</span>
+                    <span>{{ $visit->visited_at?->format('d M Y - H:i') }}</span>
                 </div>
                 <div class="flex items-center gap-2 text-xs text-gray-500">
                     <x-heroicon-m-clock class="h-3.5 w-3.5 shrink-0 text-gray-400" />
