@@ -83,13 +83,11 @@ class ManageContactSettings extends Page
                         TextInput::make('instapay')
                             ->label(__('Instapay Number'))
                             ->tel()
-                            ->placeholder('+20 1xxxxxxxxx')
-                            ->placeholder('+20 1xxxxxxxxx'),
+                            ->placeholder('01xxxxxxxxx'),
                         TextInput::make('vodafonecash')
                             ->label(__('Vdafone Cash Number'))
                             ->tel()
-                            ->placeholder('+20 1xxxxxxxxx')
-                            ->placeholder('+20 1xxxxxxxxx'),
+                            ->placeholder('01xxxxxxxxx'),
                     ]),
 
             ])
