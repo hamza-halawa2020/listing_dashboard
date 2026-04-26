@@ -43,6 +43,13 @@ class ListingController extends ApiController
             }
         }
 
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
         if ($request->boolean('open_now')) {
             $now = Carbon::now('Africa/Cairo');
             $dayName = strtolower($now->format('l'));
