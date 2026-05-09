@@ -54,6 +54,19 @@ class LocationsTable
                     ->label(__('Filter by Parent Location'))
                     ->searchable()
                     ->preload(),
+                SelectFilter::make('location_level')
+                    ->label(__('Location Level'))
+                    ->options([
+                        'parent' => __('Parents Only (Governorates)'),
+                        'child'  => __('Children Only (Zones)'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        if ($data['value'] === 'parent') {
+                            $query->whereNull('parent_id');
+                        } elseif ($data['value'] === 'child') {
+                            $query->whereNotNull('parent_id');
+                        }
+                    }),
             ])
             ->recordActions([
                 ViewAction::make()

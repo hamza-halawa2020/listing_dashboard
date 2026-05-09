@@ -44,7 +44,11 @@ class LocationResource extends AuthorizedResource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->orderedForDisplay();
+        // Parents first, then children grouped under their parent, all ordered by priority name
+        return parent::getEloquentQuery()
+            ->orderByRaw('CASE WHEN parent_id IS NULL THEN 0 ELSE 1 END')
+            ->orderByRaw('COALESCE(parent_id, id)')
+            ->orderedForDisplay();
     }
 
     public static function getRelations(): array
