@@ -771,5 +771,20 @@
     "WhatsApp Number": "رقم واتساب",
     "Vdafone Cash Number": "رقم فودافون كاش",
     "Instapay Number": "رقم إنستاباي",
-    "Include country code, e.g. +201234567890": "يرجى تضمين كود الدولة، مثل +201234567890"
+    "Include country code, e.g. +201234567890": "يرجى تضمين كود الدولة، مثل +201234567890",
+
+    "Choose from Library": "اختر من المكتبة",
+    "Upload New": "رفع صورة جديدة",
+    "or drag & drop an image here": "أو اسحب وأفلت صورة هنا",
+    "Uploading...": "جاري الرفع...",
+    "Image selected": "تم اختيار الصورة",
+    "Change": "تغيير",
+    "Remove": "إزالة",
+    "Media Library": "مكتبة الصور",
+    "No images found": "لا توجد صور",
+    "Load more": "تحميل المزيد",
+    "Upload failed": "فشل الرفع",
+    "Drop your image here":"اسحب الصورة",
+    "PNG, JPG, GIF, WEBP supported":"PNG, JPG, GIF, WEBP الصيغ المدعومة",
+    "Upload error": "خطأ في الرفع"
 }

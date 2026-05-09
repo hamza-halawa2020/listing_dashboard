@@ -663,5 +663,18 @@
     "Your account has been created successfully and you received :points points as a registration bonus.": "Your account has been created successfully and you received :points points as a registration bonus.",
     "Subscription reward for plan: :plan": "Subscription reward for plan: :plan",
     "You earned subscription points!": "You earned subscription points!",
-    "You received :points points because your subscription to :plan was approved.": "You received :points points because your subscription to :plan was approved."
+    "You received :points points because your subscription to :plan was approved.": "You received :points points because your subscription to :plan was approved.",
+
+    "Choose from Library": "Choose from Library",
+    "Upload New": "Upload New",
+    "or drag & drop an image here": "or drag & drop an image here",
+    "Uploading...": "Uploading...",
+    "Image selected": "Image selected",
+    "Change": "Change",
+    "Remove": "Remove",
+    "Media Library": "Media Library",
+    "No images found": "No images found",
+    "Load more": "Load more",
+    "Upload failed": "Upload failed",
+    "Upload error": "Upload error"
 }

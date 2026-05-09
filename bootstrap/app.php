@@ -27,6 +27,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SetLocale::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'admin/media/upload',
+            'admin/media/library',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

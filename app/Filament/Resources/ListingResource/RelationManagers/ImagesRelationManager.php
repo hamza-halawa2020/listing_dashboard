@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\ListingResource\RelationManagers;
 
+use App\Forms\Components\MediaPicker;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -29,12 +29,12 @@ class ImagesRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                FileUpload::make('image_path')
+                MediaPicker::make('image_path')
                     ->label(__('Image'))
-                    ->image()
                     ->disk('public')
-                    ->directory('listings')
-                    ->required(),
+                    ->saveAsPath()
+                    ->required()
+                    ->columnSpanFull(),
                 Toggle::make('is_cover')
                     ->label(__('Cover Image'))
                     ->default(false),

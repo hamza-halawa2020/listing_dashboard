@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Posts;
 
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Posts\Pages\ManagePosts;
+use App\Forms\Components\MediaPicker;
 use App\Models\Post;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -11,7 +12,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -61,9 +61,10 @@ class PostResource extends AuthorizedResource
                     ->label(__('Description'))
                     ->required()
                     ->columnSpanFull(),
-                FileUpload::make('image')
+                MediaPicker::make('image')
                     ->label(__('Image'))
-                    ->image()
+                    ->disk('public')
+                    ->saveAsPath()
                     ->required(),
                 Toggle::make('status')
                     ->label(__('Status'))
@@ -82,7 +83,8 @@ class PostResource extends AuthorizedResource
                     ->html()
                     ->columnSpanFull(),
                 ImageEntry::make('image')
-                    ->label(__('Image')),
+                    ->label(__('Image'))
+                    ->disk('public'),
                 IconEntry::make('status')
                     ->label(__('Status'))
                     ->boolean(),
@@ -112,7 +114,8 @@ class PostResource extends AuthorizedResource
                     ->html()
                     ->searchable(),
                 ImageColumn::make('image')
-                    ->label(__('Image')),
+                    ->label(__('Image'))
+                    ->disk('public'),
                 IconColumn::make('status')
                     ->label(__('Status'))
                     ->boolean(),

@@ -8,6 +8,7 @@ use App\Filament\Resources\ListingResource\RelationManagers\LinksRelationManager
 use App\Filament\Resources\ListingResource\RelationManagers\OffersRelationManager;
 use App\Filament\Resources\ListingResource\RelationManagers\PhonesRelationManager;
 use App\Forms\Components\MapPicker;
+use App\Forms\Components\MediaPicker;
 use App\Models\Category;
 use App\Models\Listing;
 use App\Models\Location;
@@ -18,7 +19,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -379,11 +379,10 @@ class ListingResource extends AuthorizedResource
                         Repeater::make('images')
                             ->relationship()
                             ->schema([
-                                FileUpload::make('image_path')
+                                MediaPicker::make('image_path')
                                     ->label(__('Image'))
-                                    ->image()
                                     ->disk('public')
-                                    ->directory('listings')
+                                    ->saveAsPath()
                                     ->required()
                                     ->columnSpanFull(),
                                 Toggle::make('is_cover')
