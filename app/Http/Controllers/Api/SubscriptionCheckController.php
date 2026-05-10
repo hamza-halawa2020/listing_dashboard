@@ -30,7 +30,7 @@ class SubscriptionCheckController extends Controller
                 ->whereHas('payments', function ($query) {
                     $query->where('status', 'completed');
                 })
-                ->with(['user', 'subscriptionPlan', 'familyMembers', 'payments'])
+                ->with(['user.location', 'subscriptionPlan', 'familyMembers', 'payments'])
                 ->latest()
                 ->get();
         } else {
