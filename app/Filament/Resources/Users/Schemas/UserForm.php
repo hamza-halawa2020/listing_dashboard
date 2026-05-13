@@ -54,7 +54,17 @@ class UserForm
                     ->required(),
                 Select::make('roles')
                     ->label(__('Roles'))
-                    ->relationship('roles', 'name')
+                    ->relationship(
+                        'roles',
+                        'name',
+                        function ($query) {
+                            $currentUser = auth()->user();
+
+                            if (! $currentUser || ! $currentUser->hasRole('super_admin')) {
+                                $query->where('name', '!=', 'super_admin');
+                            }
+                        }
+                    )
                     ->getOptionLabelFromRecordUsing(fn ($record): string => AdminPermissionRegistry::roleLabel($record->name))
                     ->multiple()
                     ->preload()

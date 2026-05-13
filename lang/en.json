@@ -676,5 +676,18 @@
     "No images found": "No images found",
     "Load more": "Load more",
     "Upload failed": "Upload failed",
-    "Upload error": "Upload error"
+    "Upload error": "Upload error",
+    "Download PDF": "Download PDF",
+    "Send PDF by Email": "Send PDF by Email",
+    "Recipient Email": "Recipient Email",
+    "Email sent successfully": "Email sent successfully",
+    "Failed to send email": "Failed to send email",
+    "Share Link": "Share Link",
+    "Share Link (valid for 30 days)": "Share Link (valid for 30 days)",
+    "Price Request #:id": "Price Request #:id",
+    "Hello,": "Hello,",
+    "Please find attached the price request PDF for request #:id.": "Please find attached the price request PDF for request #:id.",
+    "Contact Person: :name": "Contact Person: :name",
+    "Company: :name": "Company: :name",
+    "Shared link (valid for 30 days):": "Shared link (valid for 30 days):"
 }

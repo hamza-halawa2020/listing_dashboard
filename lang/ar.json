@@ -786,5 +786,18 @@
     "Upload failed": "فشل الرفع",
     "Drop your image here":"اسحب الصورة",
     "PNG, JPG, GIF, WEBP supported":"PNG, JPG, GIF, WEBP الصيغ المدعومة",
-    "Upload error": "خطأ في الرفع"
+    "Upload error": "خطأ في الرفع",
+    "Download PDF": "تحميل PDF",
+    "Send PDF by Email": "إرسال PDF عبر البريد الإلكتروني",
+    "Recipient Email": "البريد الإلكتروني للمستلم",
+    "Email sent successfully": "تم إرسال البريد الإلكتروني بنجاح",
+    "Failed to send email": "فشل في إرسال البريد الإلكتروني",
+    "Share Link": "مشاركة الرابط",
+    "Share Link (valid for 30 days)": "مشاركة الرابط (صالح لمدة 30 يومًا)",
+    "Price Request #:id": "طلب السعر #:id",
+    "Hello,": "مرحبًا،",
+    "Please find attached the price request PDF for request #:id.": "يرجى العثور على ملف PDF الخاص بطلب السعر مرفقًا للطلب رقم #:id.",
+    "Contact Person: :name": "الشخص المسؤول: :name",
+    "Company: :name": "الشركة: :name",
+    "Shared link (valid for 30 days):": "الرابط المشترك (صالح لمدة 30 يومًا):"
 }

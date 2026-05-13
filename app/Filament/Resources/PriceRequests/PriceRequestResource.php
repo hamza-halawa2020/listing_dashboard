@@ -4,8 +4,10 @@ namespace App\Filament\Resources\PriceRequests;
 
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\PriceRequests\Pages\ManagePriceRequests;
+use App\Mail\PriceRequestPdfMail;
 use App\Models\PriceRequest;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -17,13 +19,18 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Throwable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 
 class PriceRequestResource extends AuthorizedResource
 {
@@ -250,6 +257,82 @@ class PriceRequestResource extends AuthorizedResource
                     ->toggle(),
             ])
             ->recordActions([
+                Action::make('download_pdf')
+                    ->label(__('Download PDF'))
+                    ->icon(Heroicon::OutlinedArrowDownTray)
+                    ->url(fn (PriceRequest $record): string => route('price-requests.pdf.download', $record))
+                    ->openUrlInNewTab(),
+                Action::make('send_pdf_email')
+                    ->label(__('Send PDF by Email'))
+                    ->icon(Heroicon::OutlinedEnvelope)
+                    ->form([
+                        TextInput::make('recipient_email')
+                            ->label(__('Recipient Email'))
+                            ->email()
+                            ->required()
+                            ->default(fn (PriceRequest $record): string => $record->email),
+                    ])
+                    ->action(function (PriceRequest $record, array $data): void {
+                        $recipient = (string) ($data['recipient_email'] ?? '');
+
+                        Log::info('Price request PDF email attempt started', [
+                            'price_request_id' => $record->id,
+                            'recipient_email' => $recipient,
+                            'mailer' => config('mail.default'),
+                            'mail_host' => config('mail.mailers.smtp.host'),
+                            'mail_port' => config('mail.mailers.smtp.port'),
+                            'mail_encryption' => config('mail.mailers.smtp.scheme') ?? env('MAIL_ENCRYPTION'),
+                            'mail_from' => config('mail.from.address'),
+                            'queue_connection' => config('queue.default'),
+                        ]);
+
+                        try {
+                            Mail::to($recipient)->send(new PriceRequestPdfMail($record));
+
+                            Log::info('Price request PDF email sent successfully', [
+                                'price_request_id' => $record->id,
+                                'recipient_email' => $recipient,
+                            ]);
+
+                            Notification::make()
+                                ->title(__('Email sent successfully'))
+                                ->success()
+                                ->send();
+                        } catch (Throwable $e) {
+                            Log::error('Price request PDF email failed', [
+                                'price_request_id' => $record->id,
+                                'recipient_email' => $recipient,
+                                'error' => $e->getMessage(),
+                                'exception_class' => $e::class,
+                                'exception_file' => $e->getFile(),
+                                'exception_line' => $e->getLine(),
+                                'trace' => $e->getTraceAsString(),
+                            ]);
+
+                            Notification::make()
+                                ->title(__('Failed to send email'))
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
+                Action::make('share_link')
+                    ->label(__('Share Link'))
+                    ->icon(Heroicon::OutlinedLink)
+                    ->fillForm(fn (PriceRequest $record): array => [
+                        'share_link' => URL::temporarySignedRoute(
+                            'price-requests.share',
+                            now()->addDays(30),
+                            ['priceRequest' => $record->id],
+                        ),
+                    ])
+                    ->form([
+                        TextInput::make('share_link')
+                            ->label(__('Share Link (valid for 30 days)'))
+                            ->readOnly()
+                            ->dehydrated(false),
+                    ])
+                    ->modalSubmitAction(false),
                 ViewAction::make()
                     ->visible(fn ($record): bool => static::canView($record)),
                 EditAction::make()

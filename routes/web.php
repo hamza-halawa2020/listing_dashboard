@@ -5,6 +5,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ListingImportTemplateController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\PriceRequestShareController;
 use App\Http\Controllers\SubscriptionImportTemplateController;
 use App\Http\Controllers\UserImportTemplateController;
 
@@ -26,6 +27,12 @@ Route::get('/admin/media/library', [MediaController::class, 'index'])
 Route::get('/listings/import-template', ListingImportTemplateController::class)->name('listings.import-template.download');
 Route::get('/subscriptions/import-template', SubscriptionImportTemplateController::class)->name('subscriptions.import-template.download');
 Route::get('/users/import-template', UserImportTemplateController::class)->name('users.import-template.download');
+Route::get('/price-requests/{priceRequest}/pdf', [PriceRequestShareController::class, 'downloadPdf'])
+    ->name('price-requests.pdf.download')
+    ->middleware(['web', \Filament\Http\Middleware\Authenticate::class]);
+Route::get('/share/price-requests/{priceRequest}', [PriceRequestShareController::class, 'show'])
+    ->name('price-requests.share')
+    ->middleware(['signed']);
 
 // Route::get('/storage/{filename}', [FileController::class, 'show'])->name('storage.file');
 
