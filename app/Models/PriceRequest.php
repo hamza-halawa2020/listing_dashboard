@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PriceRequest extends Model
@@ -37,10 +37,10 @@ class PriceRequest extends Model
     protected function companyTypeLabel(): Attribute
     {
         return Attribute::make(
-            get: fn (): ?string => match($this->company_type) {
-                'individual' => 'فرد',
-                'company' => 'شركة',
-                'organization' => 'منظمة',
+            get: fn (): ?string => match ($this->company_type) {
+                'individual' => __('Individual'),
+                'company' => __('Company'),
+                'organization' => __('Organization'),
                 default => $this->company_type,
             },
         );
@@ -49,12 +49,12 @@ class PriceRequest extends Model
     protected function budgetRangeLabel(): Attribute
     {
         return Attribute::make(
-            get: fn (): ?string => match($this->budget_range) {
-                'under_1000' => 'أقل من 1000 جنيه',
-                '1000_5000' => '1000 - 5000 جنيه',
-                '5000_10000' => '5000 - 10000 جنيه',
-                '10000_25000' => '10000 - 25000 جنيه',
-                'over_25000' => 'أكثر من 25000 جنيه',
+            get: fn (): ?string => match ($this->budget_range) {
+                'under_1000' => __('Under 1000 EGP'),
+                '1000_5000' => __('1000 - 5000 EGP'),
+                '5000_10000' => __('5000 - 10000 EGP'),
+                '10000_25000' => __('10000 - 25000 EGP'),
+                'over_25000' => __('Over 25000 EGP'),
                 default => $this->budget_range,
             },
         );
@@ -63,12 +63,12 @@ class PriceRequest extends Model
     protected function timelineLabel(): Attribute
     {
         return Attribute::make(
-            get: fn (): ?string => match($this->timeline) {
-                'urgent' => 'عاجل (أسبوع)',
-                'week' => 'أسبوع',
-                'month' => 'شهر',
-                'quarter' => 'ربع سنة',
-                'flexible' => 'مرن',
+            get: fn (): ?string => match ($this->timeline) {
+                'urgent' => __('Urgent (1 week)'),
+                'week' => __('1 Week'),
+                'month' => __('1 Month'),
+                'quarter' => __('3 Months'),
+                'flexible' => __('Flexible'),
                 default => $this->timeline,
             },
         );
@@ -94,3 +94,4 @@ class PriceRequest extends Model
         return $query->where('status', true);
     }
 }
+
