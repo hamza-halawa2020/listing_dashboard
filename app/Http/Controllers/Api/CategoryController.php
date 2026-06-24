@@ -18,7 +18,7 @@ class CategoryController extends ApiController
     public function index(Request $request)
     {
         // Filter categories to only those that have at least one listing
-        $query = $this->model::where('slug', '!=', 'other')->with($this->with)->has('listings');
+        $query = $this->model::where('slug', '!=', 'other')->with($this->with);
 
         if ($this->paginate) {
             $items = $query->latest()->paginate(

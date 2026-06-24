@@ -799,5 +799,6 @@
     "Please find attached the price request PDF for request #:id.": "يرجى العثور على ملف PDF الخاص بطلب السعر مرفقًا للطلب رقم #:id.",
     "Contact Person: :name": "الشخص المسؤول: :name",
     "Company: :name": "الشركة: :name",
-    "Shared link (valid for 30 days):": "الرابط المشترك (صالح لمدة 30 يومًا):"
+    "Shared link (valid for 30 days):": "الرابط المشترك (صالح لمدة 30 يومًا):",
+    "Parent Categories Only":"الفئات الرئيسيه فقط"
 }

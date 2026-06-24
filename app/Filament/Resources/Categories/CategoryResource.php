@@ -20,6 +20,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Tables\Filters\Filter;
 
 class CategoryResource extends AuthorizedResource
 {
@@ -116,7 +117,11 @@ class CategoryResource extends AuthorizedResource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
-            ->filters([])
+            ->filters([
+                Filter::make('parent_only')
+                    ->label(__('Parent Categories Only'))
+                    ->query(fn ($query) => $query->whereNull('parent_id')),
+            ])
             ->headerActions([
             ])
             ->recordActions([

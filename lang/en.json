@@ -689,5 +689,6 @@
     "Please find attached the price request PDF for request #:id.": "Please find attached the price request PDF for request #:id.",
     "Contact Person: :name": "Contact Person: :name",
     "Company: :name": "Company: :name",
-    "Shared link (valid for 30 days):": "Shared link (valid for 30 days):"
+    "Shared link (valid for 30 days):": "Shared link (valid for 30 days):",
+    "Parent Categories Only":"Parent Categories Only"
 }
