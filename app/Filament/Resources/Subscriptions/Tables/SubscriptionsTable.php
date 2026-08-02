@@ -18,6 +18,7 @@ class SubscriptionsTable
             ->columns([
                 TextColumn::make('user.name')
                     ->label(__('User'))
+                    ->searchable(['name', 'national_id', 'phone'])
                     ->sortable(),
                 TextColumn::make('subscriptionPlan.name')
                     ->label(__('Plan'))
