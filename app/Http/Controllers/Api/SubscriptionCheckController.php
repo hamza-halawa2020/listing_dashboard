@@ -27,9 +27,10 @@ class SubscriptionCheckController extends Controller
             $memberName = $user->name;
             $subscriptions = $user->subscriptions()
                 ->where('membership_card_number', $membershipNumber)
-                ->whereHas('payments', function ($query) {
-                    $query->where('status', 'completed');
-                })
+                ->whereDate('ends_at', '>=', now()->toDateString())
+                // ->whereHas('payments', function ($query) {
+                //     $query->where('status', 'completed');
+                // })
                 ->with(['user.location', 'subscriptionPlan', 'familyMembers', 'payments'])
                 ->latest()
                 ->get();
@@ -48,9 +49,10 @@ class SubscriptionCheckController extends Controller
                 $memberName = $familyMember->name . ' (Family Member of ' . $familyMember->user->name . ')';
                 $subscriptions = $familyMember->user->subscriptions()
                     ->where('membership_card_number', $membershipNumber)
-                    ->whereHas('payments', function ($query) {
-                        $query->where('status', 'completed');
-                    })
+                    ->whereDate('ends_at', '>=', now()->toDateString())
+                    // ->whereHas('payments', function ($query) {
+                    //     $query->where('status', 'completed');
+                    // })
                     ->with(['user', 'subscriptionPlan', 'familyMembers', 'payments'])
                     ->latest()
                     ->get();
