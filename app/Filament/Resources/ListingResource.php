@@ -515,6 +515,46 @@ class ListingResource extends AuthorizedResource
             ->defaultSort('created_at', 'desc')
             ->filters([
                 TernaryFilter::make('is_active')->label(__('Active')),
+
+                SelectFilter::make('category_id')
+                    ->label(__('Category'))
+                    ->options(fn () => Category::query()->orderBy('name')->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('governorate')
+                    ->label(__('Governorate'))
+                    ->options(
+                        fn () => Location::query()
+                            ->where('type', 'governorate')
+                            ->orderedForDisplay()
+                            ->pluck('name', 'id')
+                    )
+                    ->query(function ($query, array $data) {
+                        if (blank($data['value'])) {
+                            return;
+                        }
+                        $governorate = Location::find($data['value']);
+                        if (! $governorate) {
+                            return;
+                        }
+                        $ids = $governorate->getDescendantIds();
+                        $query->whereIn('location_id', $ids);
+                    })
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('location_id')
+                    ->label(__('Area'))
+                    ->options(
+                        fn () => Location::query()
+                            ->where('type', '!=', 'governorate')
+                            ->whereNotNull('parent_id')
+                            ->orderBy('name')
+                            ->pluck('name', 'id')
+                    )
+                    ->searchable()
+                    ->preload(),
             ])
             ->recordActions([
                 EditAction::make()

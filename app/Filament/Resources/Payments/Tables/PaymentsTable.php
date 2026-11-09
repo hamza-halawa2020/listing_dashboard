@@ -22,7 +22,16 @@ class PaymentsTable
                     ->square(),
                 TextColumn::make('user.name')
                     ->label(__('User'))
+                    ->searchable()
                     ->sortable(),
+                TextColumn::make('user.national_id')
+                    ->label(__('National ID'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.phone')
+                    ->label(__('Mobile'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('subscription.id')
                     ->label(__('Subscription #'))
                     ->sortable(),

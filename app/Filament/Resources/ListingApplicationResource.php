@@ -219,6 +219,18 @@ class ListingApplicationResource extends AuthorizedResource
                 TextColumn::make('contact_email')
                     ->label(__('Email'))
                     ->searchable(),
+                TextColumn::make('user.name')
+                    ->label(__('User Name'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.national_id')
+                    ->label(__('National ID'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.phone')
+                    ->label(__('Mobile'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 BadgeColumn::make('status')
                     ->label(__('Status'))
                     ->colors([

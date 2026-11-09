@@ -800,5 +800,11 @@
     "Contact Person: :name": "الشخص المسؤول: :name",
     "Company: :name": "الشركة: :name",
     "Shared link (valid for 30 days):": "الرابط المشترك (صالح لمدة 30 يومًا):",
-    "Parent Categories Only":"الفئات الرئيسيه فقط"
+    "Parent Categories Only":"الفئات الرئيسيه فقط",
+
+    "Category Already Exists": "الفئة موجودة بالفعل",
+    "A category with the name \":name\" already exists. Do you want to add it again anyway?": "توجد فئة باسم \":name\" بالفعل. هل تريد إضافتها مرة أخرى على أي حال؟",
+    "Location Already Exists": "الموقع موجود بالفعل",
+    "A location with the name \":name\" already exists. Do you want to add it again anyway?": "يوجد موقع باسم \":name\" بالفعل. هل تريد إضافته مرة أخرى على أي حال؟",
+    "Add Anyway": "إضافة على أي حال"
 }

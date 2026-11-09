@@ -690,5 +690,11 @@
     "Contact Person: :name": "Contact Person: :name",
     "Company: :name": "Company: :name",
     "Shared link (valid for 30 days):": "Shared link (valid for 30 days):",
-    "Parent Categories Only":"Parent Categories Only"
+    "Parent Categories Only":"Parent Categories Only",
+
+    "Category Already Exists": "Category Already Exists",
+    "A category with the name \":name\" already exists. Do you want to add it again anyway?": "A category with the name \":name\" already exists. Do you want to add it again anyway?",
+    "Location Already Exists": "Location Already Exists",
+    "A location with the name \":name\" already exists. Do you want to add it again anyway?": "A location with the name \":name\" already exists. Do you want to add it again anyway?",
+    "Add Anyway": "Add Anyway"
 }
