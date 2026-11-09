@@ -34,7 +34,7 @@ class SubscriptionResource extends AuthorizedResource
 
     public static function canCreate(): bool
     {
-        return false;
+        return static::can('create');
     }
     
     public static function form(Schema $schema): Schema

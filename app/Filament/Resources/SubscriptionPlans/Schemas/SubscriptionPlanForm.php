@@ -6,6 +6,7 @@ use App\Models\Referral;
 use App\Models\PointSetting;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Placeholder;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -31,6 +32,11 @@ class SubscriptionPlanForm
                     ->validationMessages([
                         'unique' => __('This code is already used by another plan. Please choose a different code.'),
                     ]),
+                Toggle::make('is_public')
+                    ->label(__('Visible to Users'))
+                    ->helperText(__('When enabled, this plan appears in the app for users to subscribe. Disable it to make it admin-only (e.g. for corporate contracts).'))
+                    ->default(true)
+                    ->inline(false),
                 Select::make('type')
                     ->label(__('Type'))
                     ->options([

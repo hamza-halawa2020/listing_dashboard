@@ -64,6 +64,7 @@ class SubscriptionForm
                         'cash' => __('Cash'),
                         'credit_card' => __('Credit card'),
                         'bank_transfer' => __('Bank transfer'),
+                        'free' => __('Free'),
                         'fawry' => __('Fawry'),
                         'instapay' => __('Instapay'),
                         'vodafone_cash' => __('Vodafone cash'),

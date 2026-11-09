@@ -22,6 +22,10 @@ class ApiController extends Controller
             $query->active();
         }
 
+        if (method_exists(new $this->model, 'scopePublic')) {
+            $query->public();
+        }
+
         if ($this->paginate) {
             $items = $query->latest()->paginate(
                 $request->get('limit', $this->perPage)

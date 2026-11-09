@@ -183,11 +183,54 @@ class SubscriptionSpreadsheetImporter
             throw new RuntimeException("The [{$field}] field is required.");
         }
 
-        try {
-            return Carbon::parse($value);
-        } catch (Throwable) {
-            throw new RuntimeException("The [{$field}] value must be a valid date.");
+        $value = trim($value);
+
+        // Excel serial number (e.g. 46084 = 2026-03-03)
+        // Excel counts days from 1900-01-01 (with a leap-year bug that adds 1 extra day)
+        if (ctype_digit($value) && (int) $value > 59) {
+            // Subtract 25569 days = offset between 1970-01-01 and 1900-01-01 (accounting for Excel's bug)
+            $timestamp = ((int) $value - 25569) * 86400;
+            $carbon = Carbon::createFromTimestampUTC($timestamp)->startOfDay();
+            if ($carbon->year >= 1900 && $carbon->year <= 2100) {
+                return $carbon;
+            }
         }
+
+        // Formats tried in order — most unambiguous first
+        $formats = [
+            'Y-m-d',          // 2026-03-12   (ISO — from Excel date cells via normalizeCellValue)
+            'Y-m-d H:i:s',    // 2026-03-12 00:00:00 (also from normalizeCellValue)
+            'Y/m/d',          // 2026/03/12
+            'd/m/Y',          // 03/03/2026  (day/month — Arabic/EU style)
+            'd-m-Y',          // 03-03-2026
+            'd.m.Y',          // 03.03.2026
+            'j/n/Y',          // 3/3/2026    (day/month, no leading zeros)
+            'n/j/Y',          // 3/3/2026    (month/day US style)
+            'd/m/y',          // 03/03/26
+            'j/n/y',          // 3/3/26
+        ];
+
+        foreach ($formats as $format) {
+            $parsed = \DateTime::createFromFormat($format, $value);
+            if ($parsed !== false) {
+                $carbon = Carbon::instance($parsed)->startOfDay();
+                if ($carbon->year >= 1900 && $carbon->year <= 2100) {
+                    return $carbon;
+                }
+            }
+        }
+
+        // Last resort: Carbon's own parser
+        try {
+            $carbon = Carbon::parse($value)->startOfDay();
+            if ($carbon->year >= 1900 && $carbon->year <= 2100) {
+                return $carbon;
+            }
+        } catch (Throwable) {
+            // fall through
+        }
+
+        throw new RuntimeException("The [{$field}] value must be a valid date.");
     }
 
     private function ensureUniqueMembershipNumber(string $membershipCardNumber, Subscription $subscription): void

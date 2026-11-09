@@ -692,6 +692,18 @@
     "Shared link (valid for 30 days):": "Shared link (valid for 30 days):",
     "Parent Categories Only":"Parent Categories Only",
 
+    "Plan Original Price": "Plan Original Price",
+    "Amount to Charge": "Amount to Charge",
+    "Set to 0 for a free subscription.": "Set to 0 for a free subscription.",
+    "Payment Status": "Payment Status",
+    "Free": "Free",
+    "Subscription created successfully": "Subscription created successfully",
+    "Create Subscription": "Create Subscription",
+    "Visible to Users": "Visible to Users",
+    "When enabled, this plan appears in the app for users to subscribe. Disable it to make it admin-only (e.g. for corporate contracts).": "When enabled, this plan appears in the app for users to subscribe. Disable it to make it admin-only (e.g. for corporate contracts).",
+    "Public plans only": "Public plans only",
+    "Admin-only plans": "Admin-only plans",
+
     "Category Already Exists": "Category Already Exists",
     "A category with the name \":name\" already exists. Do you want to add it again anyway?": "A category with the name \":name\" already exists. Do you want to add it again anyway?",
     "Location Already Exists": "Location Already Exists",

@@ -9,6 +9,7 @@ class SubscriptionPlan extends Model
     protected $fillable = [
         'name',
         'code',
+        'is_public',
         'type',
         'coverage_type',
         'price',
@@ -22,10 +23,11 @@ class SubscriptionPlan extends Model
     ];
 
     protected $casts = [
-        'referrer_reward_points' => 'integer',
+        'is_public'                  => 'boolean',
+        'referrer_reward_points'     => 'integer',
         'subscription_reward_points' => 'integer',
-        'referee_reward_value' => 'decimal:2',
-        'points_price' => 'integer',
+        'referee_reward_value'       => 'decimal:2',
+        'points_price'               => 'integer',
     ];
 
     protected $appends = [
@@ -36,6 +38,11 @@ class SubscriptionPlan extends Model
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function scopePublic($query)
+    {
+        return $query->where('is_public', true);
     }
 
     public function rewardHistory()

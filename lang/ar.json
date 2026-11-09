@@ -802,6 +802,18 @@
     "Shared link (valid for 30 days):": "الرابط المشترك (صالح لمدة 30 يومًا):",
     "Parent Categories Only":"الفئات الرئيسيه فقط",
 
+    "Plan Original Price": "السعر الأصلي للخطة",
+    "Amount to Charge": "المبلغ المطلوب تحصيله",
+    "Set to 0 for a free subscription.": "اضبطه على 0 لجعل الاشتراك مجانياً.",
+    "Payment Status": "حالة الدفع",
+    "Free": "مجاني",
+    "Subscription created successfully": "تم إنشاء الاشتراك بنجاح",
+    "Create Subscription": "إنشاء اشتراك",
+    "Visible to Users": "ظاهر للمستخدمين",
+    "When enabled, this plan appears in the app for users to subscribe. Disable it to make it admin-only (e.g. for corporate contracts).": "عند التفعيل تظهر هذه الخطة في التطبيق للمستخدمين للاشتراك فيها. عطّلها لجعلها خاصة بالأدمن فقط (مثلاً للعقود مع الشركات).",
+    "Public plans only": "الخطط العامة فقط",
+    "Admin-only plans": "الخطط الخاصة بالأدمن",
+
     "Category Already Exists": "الفئة موجودة بالفعل",
     "A category with the name \":name\" already exists. Do you want to add it again anyway?": "توجد فئة باسم \":name\" بالفعل. هل تريد إضافتها مرة أخرى على أي حال؟",
     "Location Already Exists": "الموقع موجود بالفعل",

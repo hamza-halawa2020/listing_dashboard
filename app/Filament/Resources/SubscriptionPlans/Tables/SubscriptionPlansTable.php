@@ -6,7 +6,9 @@ use App\Filament\Resources\SubscriptionPlans\SubscriptionPlanResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class SubscriptionPlansTable
@@ -22,6 +24,10 @@ class SubscriptionPlansTable
                 TextColumn::make('code')
                     ->label(__('Code'))
                     ->searchable(),
+                IconColumn::make('is_public')
+                    ->label(__('Visible to Users'))
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('type')
                     ->label(__('Type'))
                     ->formatStateUsing(fn (?string $state): ?string => match ($state) {
@@ -68,7 +74,10 @@ class SubscriptionPlansTable
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                TernaryFilter::make('is_public')
+                    ->label(__('Visible to Users'))
+                    ->trueLabel(__('Public plans only'))
+                    ->falseLabel(__('Admin-only plans')),
             ])
             ->recordActions([
                 EditAction::make()
