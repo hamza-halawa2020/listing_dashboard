@@ -15,6 +15,7 @@ use App\Models\Listing;
 use App\Models\Location;
 use App\Models\Offer;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -26,6 +27,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
@@ -561,6 +563,24 @@ class ListingResource extends AuthorizedResource
             ->recordActions([
                 EditAction::make()
                     ->visible(fn ($record): bool => static::canEdit($record)),
+                Action::make('duplicate')
+                    ->label(__('Duplicate'))
+                    ->icon(Heroicon::OutlinedDocumentDuplicate)
+                    ->visible(fn (): bool => static::canCreate())
+                    ->fillForm(fn (Listing $record): array => [
+                        'name' => $record->name . __(' - Copy'),
+                    ])
+                    ->form([
+                        TextInput::make('name')
+                            ->label(__('New Name'))
+                            ->required()
+                            ->maxLength(255)
+                            ->helperText(__('Enter a name for the duplicated listing. All other data (phones, links, images, offers, working hours) will be copied 100%.')),
+                    ])
+                    ->action(function (Listing $record, array $data): void {
+                        $record->createDuplicate($data['name']);
+                    })
+                    ->successNotificationTitle(__('Listing duplicated successfully')),
                 DeleteAction::make()
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])

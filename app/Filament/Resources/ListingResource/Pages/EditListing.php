@@ -6,8 +6,10 @@ use App\Filament\Resources\ListingResource;
 use App\Models\Location;
 use App\Models\ListingApplication;
 use Filament\Actions;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Icons\Heroicon;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section as InfoSection;
 use Filament\Infolists\Components\TextEntry;
@@ -28,6 +30,28 @@ class EditListing extends EditRecord
         }
 
         $actions = [
+            Actions\Action::make('duplicate')
+                ->label(__('Duplicate'))
+                ->icon(Heroicon::OutlinedDocumentDuplicate)
+                ->visible(fn (): bool => ListingResource::canCreate())
+                ->fillForm(fn (): array => [
+                    'name' => $record->name . __(' - Copy'),
+                ])
+                ->form([
+                    TextInput::make('name')
+                        ->label(__('New Name'))
+                        ->required()
+                        ->maxLength(255)
+                        ->helperText(__('Enter a name for the duplicated listing. All other data (phones, links, images, offers, working hours) will be copied 100%.')),
+                ])
+                ->action(function (array $data) use ($record): void {
+                    $record->createDuplicate($data['name']);
+                })
+                ->successNotification(fn (Notification $notification) => $notification
+                    ->title(__('Listing duplicated successfully'))
+                    ->success()
+                ),
+
             Actions\DeleteAction::make()
                 ->visible(fn (): bool => ListingResource::canDelete($this->getRecord()))
                 ->disabled(fn () => $pendingApplication !== null)

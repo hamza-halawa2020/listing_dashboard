@@ -6,6 +6,7 @@ use App\Filament\Exports\Exporters\CategoryExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Categories\Pages\ManageCategories;
 use App\Models\Category;
+use App\Support\CategoryIcons;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -14,11 +15,13 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
@@ -65,7 +68,21 @@ class CategoryResource extends AuthorizedResource
                     ->relationship('parent', 'name')
                     ->searchable()
                     ->preload()
-                    ->nullable(),
+                    ->nullable()
+                    ->live()
+                    ->helperText(fn ($state): string => blank($state)
+                        ? __('This is a parent category. Set a color and icon to display on the website.')
+                        : __('Color and icon are inherited from the parent category.')),
+                ColorPicker::make('color')
+                    ->label(__('Color'))
+                    ->visible(fn (callable $get): bool => blank($get('parent_id')))
+                    ->helperText(__('Shown on the website for this category and its sub-categories.')),
+                Select::make('icon')
+                    ->label(__('Icon'))
+                    ->visible(fn (callable $get): bool => blank($get('parent_id')))
+                    ->allowHtml()
+                    ->searchable()
+                    ->options(CategoryIcons::options()),
             ]);
     }
 
@@ -80,6 +97,14 @@ class CategoryResource extends AuthorizedResource
                 TextEntry::make('parent.name')
                     ->label(__('Parent Category'))
                     ->placeholder('-'),
+                TextEntry::make('color')
+                    ->label(__('Color'))
+                    ->placeholder('-')
+                    ->visible(fn ($record): bool => blank($record->parent_id)),
+                TextEntry::make('icon')
+                    ->label(__('Icon'))
+                    ->placeholder('-')
+                    ->visible(fn ($record): bool => blank($record->parent_id)),
                 TextEntry::make('createdBy.name')
                     ->label(__('Created By'))
                     ->placeholder('-'),
@@ -101,7 +126,18 @@ class CategoryResource extends AuthorizedResource
                     ->sortable(),
                 TextColumn::make('slug')
                     ->label(__('Slug'))
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                ColorColumn::make('color')
+                    ->label(__('Color'))
+                    ->toggleable(),
+                TextColumn::make('icon')
+                    ->label(__('Icon'))
+                    ->toggleable()
+                    ->html()
+                    ->formatStateUsing(fn (?string $state): string => $state
+                        ? \Illuminate\Support\Facades\Blade::render("@svg('{$state}', 'w-6 h-6')")
+                        : '-'),
                 TextColumn::make('parent.name')
                     ->label(__('Parent'))
                     ->searchable()

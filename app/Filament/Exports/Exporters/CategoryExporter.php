@@ -17,6 +17,8 @@ class CategoryExporter extends BaseExporter
     protected static array $columnLabels = [
         'name'        => 'Category Name',
         'slug'        => 'Slug',
+        'color'       => 'Color',
+        'icon'        => 'Icon',
         'parent_id'   => 'Parent Category',
         'created_by'  => 'Created By',
         'parent.name'    => 'Parent Category',
