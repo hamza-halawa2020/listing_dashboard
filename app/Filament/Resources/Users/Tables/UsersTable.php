@@ -99,6 +99,8 @@ class UsersTable
                 Filter::make('subscribers_with_payments')
                     ->label(__('Subscribers (Paid)'))
                     ->query(fn (Builder $query): Builder => $query
+                        ->whereDoesntHave('roles', fn (Builder $q): Builder => $q
+                            ->whereIn('name', AdminPermissionRegistry::panelRoles()))
                         ->whereHas('subscriptions')
                         ->whereHas('payments', fn (Builder $q): Builder => $q
                             ->where('status', 'completed'))),
@@ -106,6 +108,8 @@ class UsersTable
                 Filter::make('non_subscribers')
                     ->label(__('Non-Subscribers'))
                     ->query(fn (Builder $query): Builder => $query
+                        ->whereDoesntHave('roles', fn (Builder $q): Builder => $q
+                            ->whereIn('name', AdminPermissionRegistry::panelRoles()))
                         ->whereDoesntHave('subscriptions')),
             ])
             ->recordActions([
