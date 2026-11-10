@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Subscriptions\Tables;
 
+use App\Filament\Exports\Exporters\SubscriptionExporter;
 use App\Filament\Resources\Subscriptions\SubscriptionResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -44,13 +46,30 @@ class SubscriptionsTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->label(__('Status'))
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'active' => __('Active'),
+                        'expired' => __('Expired'),
+                        'cancelled' => __('Cancelled'),
+                        default => $state ?? '-',
+                    }),
                 TextColumn::make('payment_reference')
                     ->label(__('Payment Reference'))
                     ->searchable(),
                 TextColumn::make('payment_method')
                     ->label(__('Payment Method'))
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'cash' => __('Cash'),
+                        'credit_card' => __('Credit card'),
+                        'bank_transfer' => __('Bank transfer'),
+                        'free' => __('Free'),
+                        'fawry' => __('Fawry'),
+                        'instapay' => __('Instapay'),
+                        'vodafone_cash' => __('Vodafone cash'),
+                        'online' => __('Online'),
+                        default => $state ?? '-',
+                    }),
                 TextColumn::make('created_at')
                     ->label(__('Created At'))
                     ->dateTime()
@@ -71,6 +90,7 @@ class SubscriptionsTable
                     ->visible(fn ($record): bool => SubscriptionResource::canEdit($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(SubscriptionExporter::class),
                 BulkActionGroup::make([
                     // DeleteBulkAction::make()
                     //     ->visible(fn (): bool => SubscriptionResource::canDeleteAny()),

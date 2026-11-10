@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Referrals;
 
+use App\Filament\Exports\Exporters\ReferralExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Referrals\Pages\ManageReferrals;
 use App\Models\Referral;
 use BackedEnum;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -154,7 +156,9 @@ class ReferralResource extends AuthorizedResource
                     ->options($rewardTypeLabels),
             ])
             ->recordActions([])
-            ->toolbarActions([]);
+            ->toolbarActions([
+                ExportAction::make()->exporter(ReferralExporter::class),
+            ]);
     }
 
     public static function getPages(): array

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Reviews;
 
+use App\Filament\Exports\Exporters\ReviewExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Reviews\Pages\ManageReviews;
 use App\Models\Review;
@@ -10,6 +11,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -177,6 +179,7 @@ class ReviewResource extends AuthorizedResource
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(ReviewExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => static::canDeleteAny()),

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Locations\Tables;
 
+use App\Filament\Exports\Exporters\LocationExporter;
 use App\Filament\Resources\Locations\LocationResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -82,6 +84,7 @@ class LocationsTable
                         : ($record->children()->exists() ? __('This location has child locations and cannot be deleted') : null)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(LocationExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => LocationResource::canDeleteAny()),

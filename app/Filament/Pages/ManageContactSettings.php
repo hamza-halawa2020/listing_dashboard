@@ -54,10 +54,12 @@ class ManageContactSettings extends Page
     public function mount(): void
     {
         $this->form->fill([
-            'phone'     => Setting::getValue('phone'),
-            'whatsapp'  => Setting::getValue('whatsapp'),
-            'instapay'  => Setting::getValue('instapay'),
-            'vodafonecash'  => Setting::getValue('vodafonecash'),
+            'phone'        => Setting::getValue('phone'),
+            'whatsapp'     => Setting::getValue('whatsapp'),
+            'instapay'     => Setting::getValue('instapay'),
+            'vodafonecash' => Setting::getValue('vodafonecash'),
+            'address'      => Setting::getValue('address'),
+            'email'        => Setting::getValue('email'),
         ]);
     }
 
@@ -88,6 +90,14 @@ class ManageContactSettings extends Page
                             ->label(__('Vdafone Cash Number'))
                             ->tel()
                             ->placeholder('01xxxxxxxxx'),
+                        TextInput::make('address')
+                            ->label(__('Company Address'))
+                            ->placeholder(__('Company Address'))
+                            ->columnSpan(2),
+                        TextInput::make('email')
+                            ->label(__('Company Email'))
+                            ->email()
+                            ->placeholder('info@example.com'),
                     ]),
 
             ])
@@ -98,7 +108,7 @@ class ManageContactSettings extends Page
     {
         $data = $this->form->getState();
 
-        $keys = ['phone', 'whatsapp','instapay','vodafonecash'];
+        $keys = ['phone', 'whatsapp', 'instapay', 'vodafonecash', 'address', 'email'];
 
         foreach ($keys as $key) {
             Setting::setValue($key, $data[$key] ?? '');

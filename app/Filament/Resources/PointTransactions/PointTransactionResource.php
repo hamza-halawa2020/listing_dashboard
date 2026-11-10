@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\PointTransactions;
 
+use App\Filament\Exports\Exporters\PointTransactionExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\PointTransactions\Pages\ManagePointTransactions;
 use App\Models\PointTransaction;
 use BackedEnum;
+use Filament\Actions\ExportAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -147,7 +149,9 @@ class PointTransactionResource extends AuthorizedResource
                     ->options($typeLabels),
             ])
             ->recordActions([])
-            ->toolbarActions([]);
+            ->toolbarActions([
+                ExportAction::make()->exporter(PointTransactionExporter::class),
+            ]);
     }
 
     public static function getPages(): array

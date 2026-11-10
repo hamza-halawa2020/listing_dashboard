@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories;
 
+use App\Filament\Exports\Exporters\CategoryExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Categories\Pages\ManageCategories;
 use App\Models\Category;
@@ -11,6 +12,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -133,6 +135,7 @@ class CategoryResource extends AuthorizedResource
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(CategoryExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => static::canDeleteAny()),

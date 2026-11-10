@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\Exporters\ListingApplicationExporter;
 use App\Filament\Resources\ListingApplicationResource\Pages\ListApplications;
 use App\Filament\Resources\ListingApplicationResource\Pages\ViewApplication;
 use App\Models\ListingApplication;
 use BackedEnum;
+use Filament\Actions\ExportAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
@@ -254,7 +256,10 @@ class ListingApplicationResource extends AuthorizedResource
                     ]),
             ])
             ->defaultSort('created_at', 'desc')
-            ->recordUrl(fn (ListingApplication $record) => ViewApplication::getUrl([$record]));
+            ->recordUrl(fn (ListingApplication $record) => ViewApplication::getUrl([$record]))
+            ->toolbarActions([
+                ExportAction::make()->exporter(ListingApplicationExporter::class),
+            ]);
     }
 
     public static function getPages(): array

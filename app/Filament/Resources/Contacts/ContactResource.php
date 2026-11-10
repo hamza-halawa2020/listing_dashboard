@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Contacts;
 
+use App\Filament\Exports\Exporters\ContactExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Contacts\Pages\ManageContacts;
 use App\Models\Contact;
@@ -9,6 +10,7 @@ use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -109,6 +111,7 @@ class ContactResource extends AuthorizedResource
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(ContactExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => static::canDeleteAny()),

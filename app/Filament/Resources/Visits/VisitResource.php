@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Visits;
 
+use App\Filament\Exports\Exporters\VisitExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Visits\Pages\ListVisits;
 use App\Filament\Resources\Visits\Pages\ViewVisit;
@@ -10,6 +11,7 @@ use App\Services\ReferralService;
 use App\Services\SystemNotificationService;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Actions\ExportAction;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -227,7 +229,10 @@ class VisitResource extends AuthorizedResource
                             ->send();
                     }),
             ])
-            ->bulkActions([]);
+            ->bulkActions([])
+            ->toolbarActions([
+                ExportAction::make()->exporter(VisitExporter::class),
+            ]);
     }
 
     public static function getPages(): array

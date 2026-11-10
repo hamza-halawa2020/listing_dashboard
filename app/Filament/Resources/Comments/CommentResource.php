@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Comments;
 
+use App\Filament\Exports\Exporters\CommentExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\Comments\Pages\ManageComments;
 use App\Models\Comment;
@@ -10,6 +11,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Textarea;
@@ -144,6 +146,7 @@ class CommentResource extends AuthorizedResource
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(CommentExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => static::canDeleteAny()),

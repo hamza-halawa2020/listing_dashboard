@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PriceRequests;
 
+use App\Filament\Exports\Exporters\PriceRequestExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\PriceRequests\Pages\ManagePriceRequests;
 use App\Mail\PriceRequestPdfMail;
@@ -12,6 +13,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -341,6 +343,7 @@ class PriceRequestResource extends AuthorizedResource
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(PriceRequestExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => static::canDeleteAny()),

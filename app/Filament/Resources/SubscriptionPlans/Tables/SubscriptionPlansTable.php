@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\SubscriptionPlans\Tables;
 
+use App\Filament\Exports\Exporters\SubscriptionPlanExporter;
 use App\Filament\Resources\SubscriptionPlans\SubscriptionPlanResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
@@ -84,6 +86,7 @@ class SubscriptionPlansTable
                     ->visible(fn ($record): bool => SubscriptionPlanResource::canEdit($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(SubscriptionPlanExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => SubscriptionPlanResource::canDeleteAny()),

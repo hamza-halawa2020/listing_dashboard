@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\FamilyMembers\Tables;
 
+use App\Filament\Exports\Exporters\FamilyMemberExporter;
 use App\Filament\Resources\FamilyMembers\FamilyMemberResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -63,6 +65,7 @@ class FamilyMembersTable
                     ->visible(fn ($record): bool => FamilyMemberResource::canEdit($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(FamilyMemberExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => FamilyMemberResource::canDeleteAny()),

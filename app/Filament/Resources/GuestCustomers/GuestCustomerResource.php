@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\GuestCustomers;
 
+use App\Filament\Exports\Exporters\GuestCustomerExporter;
 use App\Filament\Resources\AuthorizedResource;
 use App\Filament\Resources\GuestCustomers\Pages\ManageGuestCustomers;
 use App\Models\Contact;
@@ -9,6 +10,7 @@ use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -118,6 +120,7 @@ class GuestCustomerResource extends AuthorizedResource
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(GuestCustomerExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => static::canDeleteAny()),

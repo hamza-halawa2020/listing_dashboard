@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Payments\Tables;
 
+use App\Filament\Exports\Exporters\PaymentExporter;
 use App\Filament\Resources\Payments\PaymentResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -93,6 +95,7 @@ class PaymentsTable
                     ->visible(fn ($record): bool => PaymentResource::canEdit($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(PaymentExporter::class),
                 BulkActionGroup::make([
                     // DeleteBulkAction::make(),
                 ]),

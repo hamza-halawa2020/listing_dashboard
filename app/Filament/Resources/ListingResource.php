@@ -7,6 +7,7 @@ use App\Filament\Resources\ListingResource\RelationManagers\ImagesRelationManage
 use App\Filament\Resources\ListingResource\RelationManagers\LinksRelationManager;
 use App\Filament\Resources\ListingResource\RelationManagers\OffersRelationManager;
 use App\Filament\Resources\ListingResource\RelationManagers\PhonesRelationManager;
+use App\Filament\Exports\Exporters\ListingExporter;
 use App\Forms\Components\MapPicker;
 use App\Forms\Components\MediaPicker;
 use App\Models\Category;
@@ -18,6 +19,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -563,6 +565,7 @@ class ListingResource extends AuthorizedResource
                     ->visible(fn ($record): bool => static::canDelete($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(ListingExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn (): bool => static::canDeleteAny()),

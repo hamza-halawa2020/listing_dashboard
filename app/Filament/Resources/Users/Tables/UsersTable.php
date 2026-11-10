@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Exports\Exporters\UserExporter;
 use App\Filament\Resources\Users\UserResource;
 use App\Models\User;
 use App\Support\AdminPermissionRegistry;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -93,6 +95,7 @@ class UsersTable
                     ->visible(fn ($record): bool => UserResource::canEdit($record)),
             ])
             ->toolbarActions([
+                ExportAction::make()->exporter(UserExporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->authorizeIndividualRecords()
