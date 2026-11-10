@@ -11,7 +11,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class UsersTable
 {
@@ -88,7 +90,23 @@ class UsersTable
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Filter::make('admins')
+                    ->label(__('Admins'))
+                    ->query(fn (Builder $query): Builder => $query
+                        ->whereHas('roles', fn (Builder $q): Builder => $q
+                            ->whereIn('name', AdminPermissionRegistry::panelRoles()))),
+
+                Filter::make('subscribers_with_payments')
+                    ->label(__('Subscribers (Paid)'))
+                    ->query(fn (Builder $query): Builder => $query
+                        ->whereHas('subscriptions')
+                        ->whereHas('payments', fn (Builder $q): Builder => $q
+                            ->where('status', 'completed'))),
+
+                Filter::make('non_subscribers')
+                    ->label(__('Non-Subscribers'))
+                    ->query(fn (Builder $query): Builder => $query
+                        ->whereDoesntHave('subscriptions')),
             ])
             ->recordActions([
                 EditAction::make()
