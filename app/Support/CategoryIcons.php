@@ -146,7 +146,7 @@ class CategoryIcons
     {
         return collect(static::icons())
             ->mapWithKeys(function (string $label, string $icon): array {
-                return [$icon => Blade::render("@svg('{$icon}', 'w-5 h-5 inline') {$label}")];
+                return [$icon => Blade::render("@svg('{$icon}', 'icon-svg', ['style' => 'width:1rem;height:1rem;display:inline-block;vertical-align:middle']) {$label}")];
             })
             ->toArray();
     }

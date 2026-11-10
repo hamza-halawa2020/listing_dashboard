@@ -134,10 +134,11 @@ class CategoryResource extends AuthorizedResource
                 TextColumn::make('icon')
                     ->label(__('Icon'))
                     ->toggleable()
-                    ->html()
-                    ->formatStateUsing(fn (?string $state): string => $state
-                        ? \Illuminate\Support\Facades\Blade::render("@svg('{$state}', 'w-6 h-6')")
-                        : '-'),
+                    ->formatStateUsing(fn (?string $state): \Illuminate\Support\HtmlString => new \Illuminate\Support\HtmlString(
+                        $state
+                            ? \Illuminate\Support\Facades\Blade::render("@svg('{$state}', 'icon-svg', ['style' => 'width:1rem;height:1rem;display:inline-block'])")
+                            : '-'
+                    )),
                 TextColumn::make('parent.name')
                     ->label(__('Parent'))
                     ->searchable()
