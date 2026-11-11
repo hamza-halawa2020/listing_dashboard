@@ -37,11 +37,11 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('logo.svg'))
             ->darkModeBrandLogo(asset('logo.svg'))
             ->brandLogoHeight('3rem')
-            ->brandName('Care & Share')
+            ->brandName('Aman-Med')
             ->databaseNotifications()
             ->databaseNotificationsPolling(null)
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::Red,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

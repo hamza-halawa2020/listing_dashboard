@@ -28,6 +28,11 @@ class SubscriptionResource extends JsonResource
             ),
             'payments' => CheckSubscriptionPaymentResource::collection($this->whenLoaded('payments')),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            // Card activation
+            'card_activation_status'       => $this->card_activation_status,
+            'card_activation_requested_at' => $this->card_activation_requested_at?->format('Y-m-d H:i:s'),
+            'card_activation_approved_at'  => $this->card_activation_approved_at?->format('Y-m-d H:i:s'),
+            'card_activation_notes'        => $this->card_activation_notes,
         ];
     }
 }

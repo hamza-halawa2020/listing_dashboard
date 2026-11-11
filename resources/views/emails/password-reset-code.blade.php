@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="footer">
-            © {{ date('Y') }} Care & Share — جميع الحقوق محفوظة
+            © {{ date('Y') }} Aman-Med — جميع الحقوق محفوظة
         </div>
     </div>
 </body>

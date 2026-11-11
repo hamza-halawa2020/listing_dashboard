@@ -21,7 +21,13 @@ class ReferralService
     ) {}
     public function isUserEligibleToRefer(User $user): bool
     {
-        return $user->payments()->where('status', 'completed')->exists();
+        // Eligible if has a completed payment (paid subscription)
+        if ($user->payments()->where('status', 'completed')->exists()) {
+            return true;
+        }
+
+        // Also eligible if has an active subscription (e.g. activated via membership card)
+        return $user->subscriptions()->where('status', 'active')->exists();
     }
 
     public function registerReferralForUser(User $user, ?string $referralCode): ?Referral

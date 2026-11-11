@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CardActivationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChatConversationController;
@@ -102,6 +103,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/visits', [VisitController::class, 'store']);
     Route::get('/visits/listing/{listingId}', [VisitController::class, 'byListing']);
     Route::get('/visits/{id}', [VisitController::class, 'show']);
+    // Card activation
+    Route::post('/card-activation', [CardActivationController::class, 'activate']);
+    Route::get('/my-cards', [CardActivationController::class, 'myCards']);
+
     Route::get('/chat/contacts', [ChatConversationController::class, 'contacts']);
     Route::get('/chat/summary', [ChatConversationController::class, 'summary']);
     Route::get('/chat/conversations', [ChatConversationController::class, 'index']);

@@ -4,8 +4,8 @@ namespace App\Filament\Resources\Subscriptions\Tables;
 
 use App\Filament\Exports\Exporters\SubscriptionExporter;
 use App\Filament\Resources\Subscriptions\SubscriptionResource;
+use App\Models\Subscription;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
@@ -27,7 +27,8 @@ class SubscriptionsTable
                     ->sortable(),
                 TextColumn::make('membership_card_number')
                     ->label(__('Membership Number'))
-                    ->searchable(),
+                    ->searchable()
+                    ->placeholder('-'),
                 ToggleColumn::make('is_card_issued')
                     ->label(__('Card Issued'))
                     ->sortable(),
@@ -48,10 +49,10 @@ class SubscriptionsTable
                     ->label(__('Status'))
                     ->badge()
                     ->formatStateUsing(fn (?string $state): string => match ($state) {
-                        'active' => __('Active'),
-                        'expired' => __('Expired'),
+                        'active'    => __('Active'),
+                        'expired'   => __('Expired'),
                         'cancelled' => __('Cancelled'),
-                        default => $state ?? '-',
+                        default     => $state ?? '-',
                     }),
                 TextColumn::make('payment_reference')
                     ->label(__('Payment Reference'))
@@ -60,15 +61,15 @@ class SubscriptionsTable
                     ->label(__('Payment Method'))
                     ->badge()
                     ->formatStateUsing(fn (?string $state): string => match ($state) {
-                        'cash' => __('Cash'),
-                        'credit_card' => __('Credit card'),
-                        'bank_transfer' => __('Bank transfer'),
-                        'free' => __('Free'),
-                        'fawry' => __('Fawry'),
-                        'instapay' => __('Instapay'),
-                        'vodafone_cash' => __('Vodafone cash'),
-                        'online' => __('Online'),
-                        default => $state ?? '-',
+                        'cash'           => __('Cash'),
+                        'credit_card'    => __('Credit card'),
+                        'bank_transfer'  => __('Bank transfer'),
+                        'free'           => __('Free'),
+                        'fawry'          => __('Fawry'),
+                        'instapay'       => __('Instapay'),
+                        'vodafone_cash'  => __('Vodafone cash'),
+                        'online'         => __('Online'),
+                        default          => $state ?? '-',
                     }),
                 TextColumn::make('created_at')
                     ->label(__('Created At'))
@@ -82,9 +83,7 @@ class SubscriptionsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->recordActions([
                 EditAction::make()
                     ->visible(fn ($record): bool => SubscriptionResource::canEdit($record)),
