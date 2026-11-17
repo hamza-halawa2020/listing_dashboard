@@ -1,25 +1,21 @@
 <?php
-
 namespace App\Http\Controllers\Api;
-
 use App\Http\Resources\Api\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
-
 class CategoryController extends ApiController
 {
     public function __construct()
     {
         $this->model = Category::class;
         $this->resource = CategoryResource::class;
-        $this->with = ['children', 'listings', 'parent'];
+        $this->with = ['children' => fn($q) => $q->withCount('listings'), 'parent'];
     }
-
     public function index(Request $request)
     {
-        // Filter categories to only those that have at least one listing
-        $query = $this->model::where('slug', '!=', 'other')->with($this->with);
-
+        $query = $this->model::where('slug', '!=', 'other')
+            ->with($this->with)
+            ->withCount('listings');
         if ($this->paginate) {
             $items = $query->latest()->paginate(
                 $request->get('limit', $this->perPage)
@@ -27,15 +23,12 @@ class CategoryController extends ApiController
         } else {
             $items = $query->latest()->get();
         }
-
         return $this->resource::collection($items);
     }
-
     public function withOthers(Request $request)
     {
-        // Filter categories to only those that have at least one listing
-        $query = $this->model::with($this->with);
-
+        $query = $this->model::with($this->with)
+            ->withCount('listings');
         if ($this->paginate) {
             $items = $query->latest()->paginate(
                 $request->get('limit', $this->perPage)
@@ -43,7 +36,6 @@ class CategoryController extends ApiController
         } else {
             $items = $query->latest()->get();
         }
-
         return $this->resource::collection($items);
     }
 }
