@@ -26,6 +26,7 @@ class ListingSpreadsheetImporter
     private const DEFAULT_GOVERNORATE_SHIPPING_COST = 90;
 
     private const HEADING_ALIASES = [
+        'network_category' => 'network_category',
         'name' => 'name',
         'title' => 'name',
         'listing' => 'name',
@@ -264,7 +265,7 @@ class ListingSpreadsheetImporter
     {
         $attributes = [];
 
-        foreach (['name', 'address', 'description'] as $field) {
+        foreach (['name', 'address', 'description', 'network_category'] as $field) {
             if ($this->hasFilledValue($row, $field)) {
                 $attributes[$field] = trim((string) $row[$field]);
             }
@@ -594,7 +595,7 @@ class ListingSpreadsheetImporter
             'is_active' => true,
         ];
 
-        $offer = $listing->offers()->first();
+        $offer = $listing->offers()->where('title', '')->first();
 
         if ($offer) {
             $offer->fill($attributes)->save();
