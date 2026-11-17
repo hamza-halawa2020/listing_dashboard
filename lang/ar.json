@@ -959,6 +959,12 @@
     "Approved at": "تاريخ الموافقة",
     "Guest email": "البريد الإلكتروني للزائر",
     "Source": "المصدر",
-    "Referee points awarded": "النقاط الممنوحة للمُحال"
-    
+    "Referee points awarded": "النقاط الممنوحة للمُحال",
+    "Network Category": "فئة الشبكة",
+    "Agreed Prices and Discount Terms": "الأسعار المتفق عليها وشروط الخصم",
+    "Located on Map": "محدد على الخريطة",
+    "Map Location Status": "حالة الموقع على الخريطة",
+    "Has Coordinates": "له إحداثيات",
+    "Needs Location": "يحتاج تحديد موقع",
+    "Search on Map": "بحث بالخريطة"
 }

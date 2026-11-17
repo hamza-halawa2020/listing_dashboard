@@ -15,6 +15,7 @@ use App\Models\Listing;
 use App\Models\Location;
 use App\Models\Offer;
 use BackedEnum;
+use Illuminate\Support\Facades\Schema as DatabaseSchema;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -70,6 +71,11 @@ class ListingResource extends AuthorizedResource
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
+                        ...(DatabaseSchema::hasColumn('listings', 'network_category') ? [
+                        TextInput::make('network_category')
+                            ->label(__('Network Category'))
+                            ->maxLength(32),
+                        ] : []),
                         Select::make('parent_category_id')
                             ->label(__('Category'))
                             ->options(
@@ -511,13 +517,31 @@ class ListingResource extends AuthorizedResource
             ->columns([
                 TextColumn::make('id')->label(__('ID'))->sortable(),
                 TextColumn::make('name')->label(__('Name'))->searchable()->sortable(),
+                ...(DatabaseSchema::hasColumn('listings', 'network_category') ? [
+                TextColumn::make('network_category')->label(__('Network Category'))->searchable()->sortable(),
+                ] : []),
                 TextColumn::make('category.name')->label(__('Category'))->sortable(),
                 TextColumn::make('location.name')->label(__('Location'))->sortable(),
+                IconColumn::make('has_coordinates')->label(__('Located on Map'))
+                    ->state(fn (Listing $record): bool => $record->latitude !== null && $record->longitude !== null)->boolean(),
                 IconColumn::make('is_active')->label(__('Active'))->boolean(),
                 TextColumn::make('created_at')->label(__('Created At'))->dateTime()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                ...(DatabaseSchema::hasColumn('listings', 'network_category') ? [
+                SelectFilter::make('network_category')->label(__('Network Category'))
+                    ->options(fn () => Listing::query()->whereNotNull('network_category')->distinct()->pluck('network_category', 'network_category')->all()),
+                ] : []),
+                SelectFilter::make('map_status')->label(__('Map Location Status'))
+                    ->options(['mapped' => __('Has Coordinates'), 'missing' => __('Needs Location')])
+                    ->query(function ($query, array $data) {
+                        if (($data['value'] ?? null) === 'mapped') {
+                            $query->whereNotNull('latitude')->whereNotNull('longitude');
+                        } elseif (($data['value'] ?? null) === 'missing') {
+                            $query->where(fn ($q) => $q->whereNull('latitude')->orWhereNull('longitude'));
+                        }
+                    }),
                 TernaryFilter::make('is_active')->label(__('Active')),
 
                 SelectFilter::make('category_id')
@@ -561,7 +585,10 @@ class ListingResource extends AuthorizedResource
                     ->preload(),
             ])
             ->recordActions([
+                Action::make('search_map')->label(__('Search on Map'))->icon('heroicon-o-map-pin')
+                    ->url(fn (Listing $record): string => $record->mapSearchUrl())->openUrlInNewTab(),
                 EditAction::make()
+                    ->label(__('Edit'))
                     ->visible(fn ($record): bool => static::canEdit($record)),
                 Action::make('duplicate')
                     ->label(__('Duplicate'))

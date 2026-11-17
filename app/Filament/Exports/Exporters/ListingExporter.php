@@ -17,9 +17,12 @@ class ListingExporter extends BaseExporter
     protected static array $relationshipColumns = [
         'category.name',
         'location.name',
+        'offers.description',
     ];
 
     protected static array $columnLabels = [
+        'network_category' => 'Network Category',
+        'offers.description' => 'Agreed Prices and Discount Terms',
         'name'        => 'Business Name',
         'category_id' => 'Category',
         'location_id' => 'Location',

@@ -828,5 +828,12 @@
     "Approved at": "Approved At",
     "Guest email": "Guest Email",
     "Source": "Source",
-    "Referee points awarded": "Referee Points Awarded"
+    "Referee points awarded": "Referee Points Awarded",
+    "Network Category": "Network Category",
+    "Agreed Prices and Discount Terms": "Agreed Prices and Discount Terms",
+    "Located on Map": "Located on Map",
+    "Map Location Status": "Map Location Status",
+    "Has Coordinates": "Has Coordinates",
+    "Needs Location": "Needs Location",
+    "Search on Map": "Search on Map"
 }

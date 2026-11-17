@@ -35,6 +35,10 @@ class ListingController extends ApiController
             }
         }
 
+        if ($request->filled('network_category')) {
+            $query->where('network_category', $request->string('network_category')->toString());
+        }
+
         if ($request->has('location_id')) {
             $location = Location::find($request->location_id);
             if ($location) {
@@ -77,6 +81,7 @@ class ListingController extends ApiController
         $lng = $request->lng ?? $request->longitude;
 
         if ($lat && $lng) {
+            $query->whereNotNull('latitude')->whereNotNull('longitude');
             $query->selectRaw("*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance", [$lat, $lng, $lat])
                   ->orderBy('distance', 'asc');
         } else {

@@ -14,6 +14,7 @@ class Listing extends Model
         'location_id',
         'address',
         'description',
+        'network_category',
         'latitude',
         'longitude',
         'is_active',
@@ -22,6 +23,20 @@ class Listing extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function mapSearchUrl(): string
+    {
+        $parts = [$this->name, $this->address];
+        $location = $this->location;
+        $visited = [];
+        while ($location && ! isset($visited[$location->id])) {
+            $visited[$location->id] = true;
+            $parts[] = $location->name;
+            $location = $location->parent;
+        }
+        $parts[] = 'Egypt';
+        return 'https://www.google.com/maps/search/?api=1&query='.rawurlencode(implode(', ', array_filter($parts)));
+    }
 
     public function scopeActive($query)
     {

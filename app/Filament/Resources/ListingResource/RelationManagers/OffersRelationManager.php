@@ -79,6 +79,9 @@ class OffersRelationManager extends RelationManager
                 TextColumn::make('title')
                     ->label(__('Title'))
                     ->searchable(),
+                TextColumn::make('description')
+                    ->label(__('Description'))->wrap()->limit(160)
+                    ->tooltip(fn (Offer $record): ?string => $record->description),
                 TextColumn::make('price_before_discount')
                     ->label(__('Price Before Discount'))
                     ->money('egp')
