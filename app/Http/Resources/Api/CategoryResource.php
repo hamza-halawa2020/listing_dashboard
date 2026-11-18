@@ -19,7 +19,7 @@ class CategoryResource extends JsonResource
             'parent_id' => $this->parent_id,
             'parent' => new CategoryResource($this->whenLoaded('parent')),
             'children' => CategoryResource::collection($this->whenLoaded('children')),
-            'count' => ($this->listings_count ?? 0) + $this->children->sum(fn($child) => $child->listings_count ?? 0),
+            // 'count' => ($this->listings_count ?? 0) + $this->children->sum(fn($child) => $child->listings_count ?? 0),
         ];
 
     }
